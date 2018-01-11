@@ -9,6 +9,7 @@ repository = "https://github.com/valeriansaliou/raider.git"
 keywords = ["affiliates", "dashboard", "sales", "tracker"]
 categories = ["web-programming"]
 authors = ["Valerian Saliou <valerian@valeriansaliou.name>"]
+exclude = ["dev/*"]
 
 [badges]
 travis-ci = { repository = "valeriansaliou/raider", branch = "master" }
