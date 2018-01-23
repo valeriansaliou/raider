@@ -9,6 +9,8 @@ Raider is easy to integrate in your existing system. You can also customize the 
 
 **🚨 Raider is currently Work In Progress (WIP). Stable version is coming soon (2 weeks ETA).**
 
+![Raider](https://valeriansaliou.github.io/raider/images/raider.png)
+
 ## Who uses it?
 
 <table>
