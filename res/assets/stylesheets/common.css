@@ -80,6 +80,87 @@ a:hover {
   display: none !important;
 }
 
+.lock {
+  background-color: rgba(15, 21, 29, 0.60);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  animation-duration: 0.25s;
+  animation-name: lock-fade;
+}
+
+.close {
+  background-image: url("/assets/images/common/close.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.modal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modal-inner {
+  background-color: #FFFFFF;
+  width: 460px;
+  padding: 28px 34px 24px;
+  box-shadow: 0 5px 16px 0 rgba(0, 0, 0, 0.16);
+  border-radius: 2px;
+  animation-duration: 0.6s;
+  animation-name: modal-appear;
+}
+
+.modal-title {
+  margin-bottom: 20px;
+}
+
+.modal-title h1 {
+  color: #000000;
+  font-size: 16px;
+  float: left;
+}
+
+.modal-title a {
+  width: 14px;
+  height: 14px;
+  margin-top: 3px;
+  opacity: 0.5;
+  float: right;
+  transition: opacity 0.2s linear;
+}
+
+.modal-title a:hover {
+  opacity: 0.75;
+}
+
+.modal-title a:active {
+  opacity: 0.85;
+}
+
+.modal p.modal-main {
+  color: #000000;
+  margin-bottom: 10px;
+}
+
+.modal p {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.5);
+  line-height: 18px;
+}
+
+.modal-actions {
+  margin-top: 24px;
+}
+
+.modal-actions button {
+  float: right;
+}
+
 .button {
   background: #3C82E7;
   color: #FFFFFF;
@@ -87,6 +168,7 @@ a:hover {
   text-align: center;
   cursor: pointer;
   outline: none;
+  display: block;
   box-shadow: 0 2px 3px 0 rgba(15, 31, 64, 0.06);
   border-radius: 2px;
   transition: all 0.2s linear;
@@ -102,8 +184,65 @@ a:hover {
   transform: translateY(1px);
 }
 
+.button.button-important {
+  background: #FA5E13;
+}
+
+.button.button-important:active {
+  background: #E3510A;
+}
+
 .button.button-large {
   font-size: 12.5px;
   letter-spacing: 0.3px;
   line-height: 50px;
+  padding: 0 26px;
+}
+
+.button.button-medium {
+  font-size: 12px;
+  letter-spacing: 0.2px;
+  line-height: 38px;
+  padding: 0 22px;
+}
+
+.button.button-next:after {
+  content: "";
+  background-image: url("/assets/images/common/next.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 12px;
+  width: 6px;
+  margin-left: 20px;
+  margin-right: -6px;
+  margin-bottom: -1px;
+  opacity: 0.5;
+  display: inline-block;
+}
+
+@keyframes lock-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-appear {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0;
+    transform: scale3d(.9, .9, .9);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
 }

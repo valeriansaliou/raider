@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="6px" height="11px" viewBox="0 0 6 11" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs></defs>
+    <g id="Dashboard-/-Home-(Initialize)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-873.000000, -459.000000)" stroke-linecap="round">
+        <g id="Master-Wrap" transform="translate(0.000000, -1.000000)" stroke="#FFFFFF" stroke-width="1.5">
+            <g id="Modal" transform="translate(0.000000, 1.000000)">
+                <g id="Inner" transform="translate(470.000000, 295.000000)">
+                    <g id="Actions" transform="translate(212.000000, 153.000000)">
+                        <g id="Add">
+                            <g id="Arrow" transform="translate(194.000000, 16.500000) rotate(-90.000000) translate(-194.000000, -16.500000) translate(189.000000, 14.000000)">
+                                <g id="Group-3">
+                                    <path d="M0.5,0.5 L4.74264069,4.74264069" id="Line-2"></path>
+                                </g>
+                                <g id="Group-2" transform="translate(4.500000, 0.000000)">
+                                    <path d="M0.5,0.5 L4.74264069,4.74264069" id="Line-2" transform="translate(2.621320, 2.621320) scale(-1, 1) translate(-2.621320, -2.621320) "></path>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

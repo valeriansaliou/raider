@@ -1,0 +1,250 @@
+body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+header {
+  background: #FFFFFF;
+  height: 50px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 1px 3px 0 rgba(15, 31, 64, 0.10);
+}
+
+header .logo {
+  margin-top: 13px;
+  margin-left: 40px;
+  float: left;
+}
+
+header .logo img,
+header .logo .logo-label {
+  vertical-align: middle;
+  display: inline-block;
+}
+
+header .logo img {
+  height: 22px;
+  max-width: 200px;
+}
+
+header .logo .logo-label {
+  color: rgba(0, 0, 0, 0.80);
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 13.5px;
+  text-transform: lowercase;
+  line-height: 24px;
+  letter-spacing: -0.15px;
+  margin-top: -2px;
+  margin-left: 9px;
+  padding-left: 12px;
+}
+
+header .menu {
+  margin-right: 60px;
+  margin-top: 12px;
+  float: right;
+}
+
+header .menu-logout {
+  list-style-type: none;
+}
+
+header .menu-logout a {
+  color: #E10000;
+  font-size: 12px;
+  text-decoration: underline;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+main aside {
+  background: #FFFFFF;
+  width: 280px;
+  flex: 1;
+  position: relative;
+  box-shadow: 1px 0 3px 0 rgba(15, 31, 64, 0.10);
+  animation-duration: 0.5s;
+  animation-name: sidebar-slide;
+}
+
+main aside .infobox {
+  background: #FFEA00;
+  padding: 13px 16px 13px 40px;
+}
+
+main aside .infobox h6,
+main aside .infobox p {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+main aside .infobox h6 {
+  color: #000000;
+}
+
+main aside .infobox p {
+  color: rgba(0, 0, 0, 0.65);
+  margin-top: 4px;
+}
+
+main aside .side {
+  padding: 24px 20px 0;
+}
+
+main aside .payout {
+  background-color: #F7F8FA;
+  margin-bottom: 24px;
+  border-radius: 2px;
+}
+
+main aside .payout-inner {
+  color: #000000;
+  padding: 12px 20px;
+}
+
+main aside .payout h6 {
+  font-size: 12px;
+}
+
+main aside .payout .payout-amount {
+  font-size: 15px;
+  margin-top: 5px;
+}
+
+main aside .payout .button {
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+
+main aside .navigate ul li {
+  list-style-type: none;
+  margin-bottom: 10px;
+  display: block;
+}
+
+main aside .navigate ul li a {
+  background-color: #F7F8FA;
+  letter-spacing: 0.15px;
+  padding: 13px 20px 15px;
+  display: block;
+  border-radius: 2px;
+  transition: background-color 0.15s linear;
+}
+
+main aside .navigate ul li a:hover {
+  background-color: #F0F1F5;
+}
+
+main aside .navigate ul li a:active {
+  background-color: #E8E9EF;
+}
+
+main aside .navigate ul li a.selected {
+  background: #3C82E7;
+  box-shadow: inset 0 1px 4px 0 rgba(0, 0, 0, 0.12);
+}
+
+main aside .navigate ul li a.selected .navigate-title {
+  color: #FFFFFF;
+}
+
+main aside .navigate ul li a.selected .navigate-label {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+main aside .navigate ul li a .navigate-title,
+main aside .navigate ul li a .navigate-label {
+  display: block;
+}
+
+main aside .navigate ul li a .navigate-title {
+  color: #000000;
+  font-size: 13px;
+}
+
+main aside .navigate ul li a .navigate-label {
+  color: rgba(0, 0, 0, 0.55);
+  font-size: 11.5px;
+  line-height: 15px;
+  text-align: justify;
+  margin-top: 5px;
+}
+
+main aside .controls {
+  background: rgba(255, 255, 255, 0.98);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 16px 22px 18px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+main aside .controls li {
+  line-height: 16px;
+  list-style-type: none;
+}
+
+main aside .controls li:nth-of-type(1) {
+  float: left;
+}
+
+main aside .controls li:nth-of-type(2) {
+  float: right;
+}
+
+main aside .controls li a {
+  font-size: 11.5px;
+  text-decoration: underline;
+  display: block;
+}
+
+main aside .controls li:nth-of-type(1) a {
+  color: #3C82E7;
+}
+
+main aside .controls li:nth-of-type(2) a {
+  color: rgba(0, 0, 0, 0.9);
+}
+
+main aside .controls li:nth-of-type(1) a:before {
+  content: "";
+  background-image: url("/assets/images/common/external.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  vertical-align: middle;
+  height: 14px;
+  width: 15px;
+  margin-top: -2px;
+  margin-right: 3px;
+  display: inline-block;
+}
+
+main section {
+  flex: 1;
+}
+
+@keyframes sidebar-slide {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
