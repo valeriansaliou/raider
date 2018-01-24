@@ -1,0 +1,185 @@
+mark {
+  font-size: 12.5px;
+  text-align: center;
+  line-height: 16px;
+  letter-spacing: 0.1px;
+  padding: 13px 12px 15px;
+  display: block;
+  animation-duration: 0.5s;
+  animation-name: mark-slide;
+}
+
+mark.information {
+  background-color: #FFEA00;
+  color: #000000;
+}
+
+mark.notice {
+  background-color: #F37C00;
+  color: #FFFFFF;
+}
+
+mark.failure {
+  background-color: #E10000;
+  color: #FFFFFF;
+}
+
+main {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-duration: 0.5s;
+  animation-name: main-appear;
+}
+
+main .logo {
+  text-align: center;
+  margin-bottom: 34px;
+  display: block;
+}
+
+main .logo .logo-inner {
+  display: inline-block;
+}
+
+main .logo img,
+main .logo .logo-label {
+  vertical-align: middle;
+  display: inline-block;
+}
+
+main .logo img {
+  height: 32px;
+  max-width: 200px;
+}
+
+main .logo .logo-label {
+  color: rgba(0, 0, 0, 0.80);
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 15.5px;
+  text-transform: lowercase;
+  line-height: 24px;
+  letter-spacing: -0.15px;
+  margin-top: -2px;
+  margin-left: 11px;
+  padding-left: 14px;
+}
+
+main .error {
+  color: #E10000;
+  font-size: 13px;
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 22px;
+  display: block;
+}
+
+main form label input,
+main form button {
+  width: 100%;
+  display: block;
+}
+
+main form label input {
+  background: #FFFFFF;
+  border: 0 none;
+  font-size: 13.5px;
+  letter-spacing: 0.1px;
+  text-indent: 34px;
+  outline: none;
+  height: 51px;
+  margin: 0 0 12px;
+  padding: 0;
+  box-shadow: 0 2px 3px 0 rgba(15, 31, 64, 0.1);
+  border-radius: 2px;
+  transition: box-shadow 0.2s linear;
+}
+
+main form label input:focus {
+  box-shadow: 0 3px 8px 0 rgba(15, 31, 64, 0.15);
+}
+
+main form label input::-webkit-input-placeholder {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+main form label input::-moz-placeholder {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+main form label input:-ms-input-placeholder {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+main form label input:-moz-placeholder {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+main form button {
+  margin-top: 22px;
+}
+
+main nav {
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  margin-top: 42px;
+}
+
+main nav ul {
+  list-style-type: none;
+  padding-top: 10px;
+}
+
+main nav ul li:nth-of-type(1) {
+  float: left;
+}
+
+main nav ul li:nth-of-type(2) {
+  float: right;
+}
+
+main nav ul li a {
+  font-size: 12.5px;
+  letter-spacing: -0.18px;
+}
+
+main nav ul li a:hover {
+  text-decoration: underline;
+}
+
+main nav ul li:nth-of-type(1) a {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+main nav ul li:nth-of-type(2) a {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+@keyframes mark-slide {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes main-appear {
+  0% {
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,109 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "Raider Open Sans Light";
+  src: url("/assets/fonts/open_sans/open_sans_light.woff2") format("woff2"), url("/assets/fonts/open_sans/open_sans_light.woff") format("woff");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Raider Open Sans Regular";
+  src: url("/assets/fonts/open_sans/open_sans_regular.woff2") format("woff2"), url("/assets/fonts/open_sans/open_sans_regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Raider Open Sans Semibold";
+  src: url("/assets/fonts/open_sans/open_sans_semibold.woff2") format("woff2"), url("/assets/fonts/open_sans/open_sans_semibold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Raider Open Sans Bold";
+  src: url("/assets/fonts/open_sans/open_sans_bold.woff2") format("woff2"), url("/assets/fonts/open_sans/open_sans_bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+}
+
+.font-sans-light {
+  font-family: "Raider Open Sans Light", sans-serif;
+}
+
+.font-sans-regular {
+  font-family: "Raider Open Sans Regular", sans-serif;
+}
+
+.font-sans-semibold {
+  font-family: "Raider Open Sans Semibold", sans-serif;
+}
+
+.font-sans-bold {
+  font-family: "Raider Open Sans Bold", sans-serif;
+}
+
+body {
+  font-family: "Raider Open Sans Regular", sans-serif;
+  font-size: 14px;
+  background: #F7F8FA !important;
+  color: #000000;
+}
+
+* {
+  font-weight: normal !important;
+  margin: 0;
+  padding: 0;
+}
+
+a,
+button {
+  outline: 0 none !important;
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
+.clear {
+  display: block !important;
+  clear: both !important;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.button {
+  background: #3C82E7;
+  color: #FFFFFF;
+  border: 0 none;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 2px 3px 0 rgba(15, 31, 64, 0.06);
+  border-radius: 2px;
+  transition: all 0.2s linear;
+  transition-property: background, box-shadow, transform;
+}
+
+.button:hover {
+  box-shadow: 0 3px 8px 0 rgba(15, 31, 64, 0.125);
+}
+
+.button:active {
+  background: #3272D0;
+  transform: translateY(1px);
+}
+
+.button.button-large {
+  font-size: 12.5px;
+  letter-spacing: 0.3px;
+  line-height: 50px;
+}

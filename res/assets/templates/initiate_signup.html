@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" href="https://crisp.chat/favicon-512x512.png" type="image/png">
+    <link rel="apple-touch-icon" href="https://crisp.chat/favicon-512x512.png" type="image/png">
+
+    <meta name="msapplication-TileColor" content="#3C82E7">
+    <meta name="msapplication-TileImage" content="https://crisp.chat/favicon-512x512.png">
+    <meta property="og:image" content="https://crisp.chat/favicon-512x512.png">
+
+    <title>Crisp Affiliates | Signup</title>
+
+    <link rel="stylesheet" href="/assets/stylesheets/common.css" type="text/css" />
+    <link rel="stylesheet" href="/assets/stylesheets/initiate.css" type="text/css" />
+  </head>
+
+  <body>
+    <mark class="notice font-sans-bold">Signup for a new Crisp Affiliates account to access your dashboard.</mark>
+    <mark class="failure hidden font-sans-bold">Oops. The account could not be created. Please check your credentials and try again.</mark>
+
+    <main>
+      <div class="logo">
+        <div class="logo-inner">
+          <img src="https://crisp.chat/static/images/common/logo/blue.svg" alt="" />
+
+          <span class="logo-label font-sans-semibold">Affiliates</span>
+        </div>
+      </div>
+
+      <form action="/signup/" method="post" name="signup">
+        <label>
+          <input type="email" name="email" placeholder="Email address" class="font-sans-regular" autofocus>
+        </label>
+
+        <label>
+          <input type="password" name="password" placeholder="Password" class="font-sans-regular">
+        </label>
+
+        <label>
+          <input type="password" name="password" placeholder="Password (repeat)" class="font-sans-regular">
+        </label>
+
+        <button type="submit" class="button button-large font-sans-semibold">Create your Crisp Affiliates account</button>
+      </form>
+
+      <nav>
+        <ul>
+          <li>
+            <a href="/assets/templates/initiate_login.html" class="font-sans-semibold">Login to your account.</a>
+          </li>
+
+          <div class="clear"></div>
+        </ul>
+      </nav>
+    </main>
+  </body>
+</html>
