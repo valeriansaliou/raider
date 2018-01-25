@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="17px" height="17px" viewBox="0 0 17 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs></defs>
+    <g id="Dashboard-(Toast)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-42.000000, -769.000000)">
+        <g id="Master-Wrap" transform="translate(-1.000000, 0.000000)" fill="#FFFFFF">
+            <g id="Toasts" transform="translate(0.000000, 624.000000)">
+                <g id="Toast-(Error)" transform="translate(0.000000, 132.000000)">
+                    <path d="M47,13 L56,13 C58.209139,13 60,14.790861 60,17 L60,26 C60,28.209139 58.209139,30 56,30 L47,30 C44.790861,30 43,28.209139 43,26 L43,17 C43,14.790861 44.790861,13 47,13 Z M52.4926758,22.838623 L52.4926758,16.642334 L50.2580566,16.642334 L50.2580566,22.838623 L52.4926758,22.838623 Z M52.4926758,26.2399902 L52.4926758,24.3745117 L50.2580566,24.3745117 L50.2580566,26.2399902 L52.4926758,26.2399902 Z" id="Icon"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

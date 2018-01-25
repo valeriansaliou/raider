@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs></defs>
+    <g id="Dashboard-/-Trackers" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-1062.000000, -81.000000)">
+        <g id="Content" transform="translate(0.000000, 1.000000)">
+            <g id="View" transform="translate(338.000000, 71.000000)">
+                <g id="Results">
+                    <g id="Title-Wrap" transform="translate(8.000000, 0.000000)">
+                        <g id="Actions" transform="translate(703.000000, 0.000000)">
+                            <g id="One">
+                                <g id="Icon" transform="translate(13.000000, 9.000000)">
+                                    <rect id="Box" fill="#000000" x="0" y="0" width="14" height="14" rx="2"></rect>
+                                    <g id="Checkmark" transform="translate(4.200000, 4.200000)" stroke="#FFFFFF" stroke-width="2">
+                                        <path d="M5.6,0 L0.0202846721,5.57971533" id="Line"></path>
+                                        <path d="M5.6,0 L0.0202846721,5.57971533" id="Line" transform="translate(2.810142, 2.789858) scale(-1, 1) translate(-2.810142, -2.789858) "></path>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

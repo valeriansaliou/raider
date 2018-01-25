@@ -1,3 +1,7 @@
+body {
+  background: #3B3F4F !important;
+}
+
 mark {
   font-size: 12.5px;
   text-align: center;
@@ -53,13 +57,13 @@ main .logo .logo-label {
 }
 
 main .logo img {
-  height: 32px;
+  height: 30px;
   max-width: 200px;
 }
 
 main .logo .logo-label {
-  color: rgba(0, 0, 0, 0.80);
-  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  color: rgba(255, 255, 255, 0.80);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 15.5px;
   text-transform: lowercase;
   line-height: 24px;
@@ -70,12 +74,17 @@ main .logo .logo-label {
 }
 
 main .error {
-  color: #E10000;
-  font-size: 13px;
+  background-color: #E10000;
+  color: #FFFFFF;
+  font-size: 12px;
   text-align: center;
-  margin-top: -8px;
-  margin-bottom: 22px;
+  line-height: 12px;
+  letter-spacing: 0.1px;
+  margin-top: -12px;
+  margin-bottom: 20px;
+  padding: 14px 10px;
   display: block;
+  border-radius: 2px;
 }
 
 main form label input,
@@ -89,12 +98,12 @@ main form label input {
   border: 0 none;
   font-size: 13.5px;
   letter-spacing: 0.1px;
-  text-indent: 34px;
+  text-indent: 30px;
   outline: none;
   height: 51px;
   margin: 0 0 12px;
   padding: 0;
-  box-shadow: 0 2px 3px 0 rgba(15, 31, 64, 0.1);
+  box-shadow: 0 2px 3px 0 rgba(6, 15, 34, 0.12);
   border-radius: 2px;
   transition: box-shadow 0.2s linear;
 }
@@ -123,8 +132,16 @@ main form button {
   margin-top: 22px;
 }
 
+main form button.button {
+  box-shadow: 0 2px 3px 0 rgba(6, 15, 34, 0.12);
+}
+
+main form button.button:hover {
+  box-shadow: 0 3px 8px 0 rgba(6, 15, 34, 0.175);
+}
+
 main nav {
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   margin-top: 42px;
 }
 
@@ -151,11 +168,11 @@ main nav ul li a:hover {
 }
 
 main nav ul li:nth-of-type(1) a {
-  color: rgba(0, 0, 0, 0.85);
+  color: #FFFFFF;
 }
 
 main nav ul li:nth-of-type(2) a {
-  color: rgba(0, 0, 0, 0.65);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 @keyframes mark-slide {

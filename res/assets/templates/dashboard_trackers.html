@@ -12,7 +12,7 @@
     <meta name="msapplication-TileImage" content="https://crisp.chat/favicon-512x512.png">
     <meta property="og:image" content="https://crisp.chat/favicon-512x512.png">
 
-    <title>Crisp Affiliates | Dashboard | Home</title>
+    <title>Crisp Affiliates | Dashboard | Trackers</title>
 
     <link rel="stylesheet" href="/assets/stylesheets/common.css" type="text/css" />
     <link rel="stylesheet" href="/assets/stylesheets/dashboard.css" type="text/css" />
@@ -36,10 +36,10 @@
     </header>
 
     <main>
-      <aside class="animated">
+      <aside>
         <div class="infobox">
-          <h6 class="font-sans-bold">This is your affiliates dashboard.</h6>
-          <p class="font-sans-regular">Manage your trackers, payouts &amp; account. Pick a category below.</p>
+          <h6 class="font-sans-bold">Manage your trackers.</h6>
+          <p class="font-sans-regular">Send those tracker links to people and start earning money.</p>
         </div>
 
         <div class="side">
@@ -55,7 +55,7 @@
           <nav class="navigate">
             <ul>
               <li>
-                <a href="/assets/templates/dashboard_trackers.html">
+                <a href="/assets/templates/dashboard_trackers.html" class="selected">
                   <span class="navigate-title font-sans-bold">Trackers</span>
                   <span class="navigate-label font-sans-regular">Manage tracker links you send to people. See earned money for each.</span>
                 </a>
@@ -90,6 +90,81 @@
           <div class="clear"></div>
         </ul>
       </aside>
+
+      <section>
+        <div class="section-wrap">
+          <div class="section-title">
+            <div class="section-title-main">
+              <h2 class="font-sans-bold">Trackers</h2>
+
+              <div class="section-title-status font-sans-semibold">(2 trackers)</div>
+            </div>
+
+            <ul>
+              <li class="icon remove">
+                <a href="#" class="button button-small button-action font-sans-semibold">Remove selection</a>
+              </li>
+
+              <li>
+                <a href="#" class="button button-small font-sans-semibold">Add a new tracker</a>
+              </li>
+            </ul>
+
+            <div class="clear"></div>
+          </div>
+
+          <div class="section-box">
+            <ul class="section-list">
+              <li class="selected">
+                <div class="section-list-selection">
+                  <input id="select_item" class="checkbox" type="checkbox" checked>
+
+                  <label class="checkbox-label" for="select_item">
+                    <span class="checkbox-image"></span>
+                  </label>
+                </div>
+
+                <div class="section-list-content section-list-content-trackers">
+                  <div class="item-identity">
+                    <h6 class="font-sans-bold">Blog Article #1</h6>
+                    <p class="font-sans-regular">https://crisp.chat/?t=xVdpf1dfM</p>
+                  </div>
+
+                  <div class="item-metrics">
+                    <div class="item-metrics-one">
+                      <p class="font-sans-regular">Signups</p>
+                      <h5 class="font-sans-semibold">10,230</h5>
+                    </div>
+
+                    <div class="item-metrics-one">
+                      <p class="font-sans-regular">Paying now</p>
+                      <h5 class="font-sans-semibold">5,129</h5>
+                    </div>
+
+                    <div class="item-metrics-one">
+                      <p class="font-sans-regular">Earned so far</p>
+                      <h5 class="font-sans-semibold">$20,431 (USD)</h5>
+                    </div>
+
+                    <div class="clear"></div>
+                  </div>
+
+                  <div class="clear"></div>
+                </div>
+
+                <div class="section-list-actions">
+                  <a href="#" class="button button-tiny button-dark font-sans-semibold">View banners</a>
+                  <a href="#" class="button button-tiny font-sans-semibold">Copy tracker link</a>
+
+                  <div class="clear"></div>
+                </div>
+
+                <div class="clear"></div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
     </main>
   </body>
 </html>

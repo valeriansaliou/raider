@@ -66,15 +66,17 @@ header .menu-logout a {
 main {
   flex: 1;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 main aside {
   background: #FFFFFF;
   width: 280px;
-  flex: 1;
   position: relative;
   box-shadow: 1px 0 3px 0 rgba(15, 31, 64, 0.10);
+}
+
+main aside.animated {
   animation-duration: 0.5s;
   animation-name: sidebar-slide;
 }
@@ -137,18 +139,20 @@ main aside .navigate ul li {
 main aside .navigate ul li a {
   background-color: #F7F8FA;
   letter-spacing: 0.15px;
-  padding: 13px 20px 15px;
+  padding: 12px 20px 15px;
   display: block;
   border-radius: 2px;
-  transition: background-color 0.15s linear;
+  transition: all 0.15s linear;
+  transition-property: background-color, box-shadow;
 }
 
 main aside .navigate ul li a:hover {
-  background-color: #F0F1F5;
+  background-color: #E8E9EF;
 }
 
 main aside .navigate ul li a:active {
-  background-color: #E8E9EF;
+  background-color: #DFE0E6;
+  box-shadow: inset 0 1px 4px 0 rgba(0, 0, 0, 0.06);
 }
 
 main aside .navigate ul li a.selected {
@@ -235,6 +239,188 @@ main aside .controls li:nth-of-type(1) a:before {
 
 main section {
   flex: 1;
+}
+
+main section hr {
+  border-color: rgba(0, 0, 0, 0.06);
+  border-width: 1px 0 0 0;
+  border-style: solid;
+  margin: 16px 0 4px;
+}
+
+.section-wrap {
+  padding: 26px 60px 24px;
+}
+
+.section-title-main h2,
+.section-title-main h3,
+.section-title-status {
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.section-title-main {
+  float: left;
+}
+
+.section-title-main h2,
+.section-title-main h3 {
+  color: #000000;
+}
+
+.section-title-main h2 {
+  font-size: 17px;
+}
+
+.section-title-main h3 {
+  font-size: 15.5px;
+}
+
+.section-title-status {
+  color: #2484F4;
+  font-size: 14px;
+  margin-left: 15px;
+}
+
+.section-title ul {
+  margin-top: -3px;
+  float: right;
+}
+
+.section-title ul li {
+  list-style-type: none;
+  margin-left: 6px;
+  display: inline-block;
+}
+
+.section-title ul li.icon a:before {
+  content: "";
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  vertical-align: middle;
+  margin-right: 11px;
+  margin-left: -1px;
+  display: inline-block;
+  opacity: 0.35;
+}
+
+.section-title ul li.remove a:before {
+  background-image: url("/assets/images/dashboard/action_remove.svg");
+  width: 15px;
+  height: 15px;
+  margin-top: -2px;
+}
+
+.section-box {
+  background: #FFFFFF;
+  margin-top: 14px;
+  min-height: 80px;
+  padding: 24px 20px 14px;
+  box-shadow: 0 2px 3px 0 rgba(15,31,64,0.12);
+  border-radius: 2px;
+}
+
+.section-list {
+  display: block;
+}
+
+.section-list li {
+  background: #F7F8FA;
+  list-style-type: none;
+  height: 56px;
+  margin-bottom: 8px;
+  display: block;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.section-list li.selected .section-list-selection:before {
+  background-color: #3C82E7;
+}
+
+.section-list-selection {
+  height: 100%;
+  float: left;
+}
+
+.section-list-selection:before {
+  content: "";
+  width: 3px;
+  height: 100%;
+  float: left;
+}
+
+.section-list-selection .checkbox-label {
+  margin-top: 17px;
+  margin-left: 15px;
+}
+
+.section-list-content {
+  margin-top: 11px;
+  margin-left: 28px;
+  float: left;
+}
+
+.section-list-content.section-list-content-trackers .item-identity {
+  width: 220px;
+}
+
+.section-list-content.section-list-content-payouts .item-identity {
+  width: 160px;
+}
+
+.section-list-actions {
+  margin-top: 12px;
+  margin-right: 20px;
+  float: right;
+}
+
+.section-list-actions a {
+  margin-left: 6px;
+  float: left;
+}
+
+.item-identity,
+.item-metrics,
+.item-metrics-one {
+  float: left;
+}
+
+.item-identity h6 {
+  color: #000000;
+  font-size: 12.5px;
+}
+
+.item-identity p {
+  color: #000000;
+  font-size: 10.5px;
+  text-decoration: underline;
+  margin-top: 3px;
+  opacity: 0.55;
+}
+
+.item-metrics-one {
+  border-left: 1px solid rgba(0, 0, 0, 0.06);
+  margin-left: 15px;
+  padding-left: 16px;
+}
+
+.item-metrics-one p {
+  color: #000000;
+  font-size: 10px;
+}
+
+.item-metrics-one h5 {
+  color: #3C82E7;
+  font-size: 14px;
+  margin-top: 3px;
+}
+
+.item-metrics-one:first-of-type {
+  border-left: 0 none;
+  margin-left: 0;
+  padding-left: 0;
 }
 
 @keyframes sidebar-slide {

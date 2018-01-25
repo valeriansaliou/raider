@@ -36,10 +36,10 @@
     </header>
 
     <main>
-      <aside class="animated">
+      <aside>
         <div class="infobox">
-          <h6 class="font-sans-bold">This is your affiliates dashboard.</h6>
-          <p class="font-sans-regular">Manage your trackers, payouts &amp; account. Pick a category below.</p>
+          <h6 class="font-sans-bold">Manage your payouts.</h6>
+          <p class="font-sans-regular">Get the money you earned wired to your bank and retrieve invoices.</p>
         </div>
 
         <div class="side">
@@ -62,7 +62,7 @@
               </li>
 
               <li>
-                <a href="/assets/templates/dashboard_payouts.html">
+                <a href="/assets/templates/dashboard_payouts.html" class="selected">
                   <span class="navigate-title font-sans-bold">Payouts</span>
                   <span class="navigate-label font-sans-regular">Request for a payout and review your payout history and invoices.</span>
                 </a>
@@ -90,6 +90,78 @@
           <div class="clear"></div>
         </ul>
       </aside>
+
+      <section>
+        <div class="section-wrap">
+          <div class="section-title">
+            <div class="section-title-main">
+              <h2 class="font-sans-bold">Payouts</h2>
+            </div>
+
+            <div class="clear"></div>
+          </div>
+
+          <div class="section-box">
+
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="section-wrap">
+          <div class="section-title">
+            <div class="section-title-main">
+              <h3 class="font-sans-semibold">Payout history</h3>
+
+              <div class="section-title-status font-sans-semibold">(42 payouts, 1 pending)</div>
+            </div>
+
+            <div class="clear"></div>
+          </div>
+
+          <div class="section-box">
+            <ul class="section-list">
+              <li class="selected">
+                <div class="section-list-content section-list-content-payouts">
+                  <div class="item-identity">
+                    <h6 class="font-sans-bold">Payout #40</h6>
+                    <p class="font-sans-regular">01/02/2017</p>
+                  </div>
+
+                  <div class="item-metrics">
+                    <div class="item-metrics-one">
+                      <p class="font-sans-regular">Status</p>
+                      <h5 class="color-green font-sans-semibold">Processed</h5>
+                    </div>
+
+                    <div class="item-metrics-one">
+                      <p class="font-sans-regular">Payout amount</p>
+                      <h5 class="color-blue font-sans-regular">$8,920 (USD)</h5>
+                    </div>
+
+                    <div class="item-metrics-one">
+                      <p class="font-sans-regular">Payout account</p>
+                      <h5 class="color-grey font-sans-regular">SILICON VALLEY BANK</h5>
+                    </div>
+
+                    <div class="clear"></div>
+                  </div>
+
+                  <div class="clear"></div>
+                </div>
+
+                <div class="section-list-actions">
+                  <a href="#" class="button disabled button-tiny font-sans-semibold">Download invoice</a>
+
+                  <div class="clear"></div>
+                </div>
+
+                <div class="clear"></div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
     </main>
   </body>
 </html>

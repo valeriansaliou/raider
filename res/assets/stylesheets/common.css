@@ -80,6 +80,22 @@ a:hover {
   display: none !important;
 }
 
+.color-green {
+  color: #37C234 !important;
+}
+
+.color-blue {
+  color: #3C82E7 !important;
+}
+
+.color-orange {
+  color: #FF8C25 !important;
+}
+
+.color-grey {
+  color: #878889 !important;
+}
+
 .lock {
   background-color: rgba(15, 21, 29, 0.60);
   position: fixed;
@@ -161,6 +177,73 @@ a:hover {
   float: right;
 }
 
+.popup {
+  position: absolute;
+  left: 50%;
+  top: 80px;
+  bottom: 0;
+  transform: translateX(-50%);
+}
+
+.popup-inner {
+  background-color: #FFFFFF;
+  width: 680px;
+  height: 100%;
+  box-shadow: 0 5px 16px 0 rgba(0, 0, 0, 0.16);
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  animation-duration: 0.6s;
+  animation-name: popup-appear;
+}
+
+.popup-scroll {
+  padding: 28px 34px 24px;
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.popup-title {
+  margin-bottom: 34px;
+  padding-left: 22px;
+  padding-right: 8px;
+}
+
+.popup-title h1 {
+  color: #000000;
+  font-size: 17px;
+  float: left;
+}
+
+.popup-title a {
+  width: 14px;
+  height: 14px;
+  margin-top: 3px;
+  opacity: 0.5;
+  float: right;
+  transition: opacity 0.2s linear;
+}
+
+.popup-title a:hover {
+  opacity: 0.75;
+}
+
+.popup-title a:active {
+  opacity: 0.85;
+}
+
+.popup-actions {
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 14px 34px;
+  box-shadow: 0 -1px 3px 0 rgba(15, 31, 64, 0.025);
+}
+
+.popup-actions button {
+  float: right;
+}
+
 .button {
   background: #3C82E7;
   color: #FFFFFF;
@@ -182,6 +265,14 @@ a:hover {
 .button:active {
   background: #3272D0;
   transform: translateY(1px);
+  box-shadow: 0 1px 2px 0 rgba(15, 31, 64, 0.1);
+}
+
+.button.disabled {
+  background: rgba(0, 0, 0, 0.1) !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  box-shadow: none !important;
 }
 
 .button.button-important {
@@ -190,6 +281,14 @@ a:hover {
 
 .button.button-important:active {
   background: #E3510A;
+}
+
+.button.button-dark {
+  background: #3D3E3E;
+}
+
+.button.button-dark:active {
+  background: #1F1F1F;
 }
 
 .button.button-large {
@@ -206,6 +305,25 @@ a:hover {
   padding: 0 22px;
 }
 
+.button.button-small {
+  font-size: 11.5px;
+  letter-spacing: 0.1px;
+  line-height: 34px;
+  padding: 0 17px;
+}
+
+.button.button-tiny {
+  font-size: 11px;
+  letter-spacing: 0.05px;
+  line-height: 32px;
+  padding: 0 16px;
+}
+
+.button.button-action {
+  background: #FFFFFF;
+  color: #000000;
+}
+
 .button.button-next:after {
   content: "";
   background-image: url("/assets/images/common/next.svg");
@@ -219,6 +337,194 @@ a:hover {
   margin-bottom: -1px;
   opacity: 0.5;
   display: inline-block;
+}
+
+.checkbox {
+  width: 0;
+  height: 0;
+  opacity: 0;
+  display: none;
+}
+
+.checkbox + .checkbox-label {
+  margin: 0;
+  display: inline-block;
+}
+
+.checkbox,
+.checkbox-image {
+  width: 20px;
+  height: 20px;
+}
+
+.checkbox-image:hover {
+  border-color: rgba(0, 0, 0, 0.3);
+}
+
+.checkbox-image {
+  display: inline-block;
+  cursor: pointer;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  position: relative;
+  border-radius: 2px;
+}
+
+.checkbox:checked + .checkbox-label .checkbox-image {
+  background-color: #3C82E7;
+  border: 0 none;
+  width: 22px;
+  height: 22px;
+}
+
+.checkbox:checked + .checkbox-label .checkbox-image:before {
+  content: "";
+  background-image: url("/assets/images/checkbox/checked.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 13px;
+  height: 13px;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.toast-wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.toast {
+  width: 100%;
+  position: relative;
+  z-index: 90;
+  margin-bottom: -46px;
+  visibility: hidden;
+  transition: margin-bottom 0.25s linear;
+}
+
+.toast[data-active="true"] {
+  margin-bottom: 0;
+}
+
+.toast[data-active="true"] .toast-view-progress {
+  animation: toast-progress;
+  animation-timing-function: linear;
+  animation-delay: 1s;
+  animation-duration: 8.25s;
+  animation-fill-mode: forwards;
+}
+
+.toast[data-level="success"],
+.toast[data-level="info"],
+.toast[data-level="warning"],
+.toast[data-level="error"] {
+  visibility: visible;
+}
+
+.toast[data-level="success"] .toast-view {
+  background-color: #37C234;
+}
+
+.toast[data-level="success"] .toast-view-wrapped-icon:before {
+  background-image: url("/assets/images/toast/success.svg");
+}
+
+.toast[data-level="info"] .toast-view {
+  background-color: #2484F4;
+}
+
+.toast[data-level="info"] .toast-view-wrapped-icon:before {
+  background-image: url("/assets/images/toast/information.svg");
+}
+
+.toast[data-level="warning"] .toast-view {
+  background-color: #FF8C25;
+}
+
+.toast[data-level="warning"] .toast-view-wrapped-icon:before,
+.toast[data-level="error"] .toast-view-wrapped-icon:before {
+  background-image: url("/assets/images/toast/critical.svg");
+}
+
+.toast[data-level="error"] .toast-view {
+  background-color: #F14040;
+}
+
+.toast-view {
+  color: #FFFFFF;
+  min-height: 46px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.toast-view-wrapped {
+  line-height: 21px;
+  overflow: hidden;
+  font-size: 12.5px;
+  letter-spacing: 0.1px;
+  padding: 12px 36px 12px 70px;
+  position: relative;
+  display: block;
+  z-index: 1;
+}
+
+.toast-view-wrapped-icon {
+  height: 20px;
+  position: absolute;
+  left: 40px;
+}
+
+.toast-view-wrapped-icon:before {
+  content: "";
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.toast-view-wrapped-message-sub {
+  margin-left: 6px;
+}
+
+.toast-view-wrapped-close {
+  background-image: url("/assets/images/toast/close.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 10px;
+  height: 10px;
+  margin-top: -1px;
+  opacity: 0.85;
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+}
+
+.toast-view-wrapped-close:hover {
+  opacity: 0.95;
+}
+
+.toast-view-wrapped-close:active {
+  opacity: 1;
+}
+
+.toast-view-progress {
+  background-color: rgba(0, 0, 0, 0.04);
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
 }
 
 @keyframes lock-fade {
@@ -238,11 +544,38 @@ a:hover {
 
   50% {
     opacity: 0;
-    transform: scale3d(.9, .9, .9);
+    transform: scale3d(0.9, 0.9, 0.9);
   }
 
   100% {
     opacity: 1;
     transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes popup-appear {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0;
+    transform: translate3d(0, 4%, 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes toast-progress {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    visibility: hidden;
+    transform: translate3d(-100%, 0, 0);
   }
 }

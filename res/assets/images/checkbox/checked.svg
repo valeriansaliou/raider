@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="13px" height="11px" viewBox="0 0 13 11" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs></defs>
+    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-267.000000, -223.000000)" stroke-linecap="round">
+        <g id="Checkmark" transform="translate(269.000000, 225.000000)" stroke="#FFFFFF" stroke-width="2.5">
+            <path d="M0,4 L3,7" id="Line"></path>
+            <path d="M9,0 L3,7" id="Line"></path>
+        </g>
+    </g>
+</svg>
