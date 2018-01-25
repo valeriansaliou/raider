@@ -57,6 +57,14 @@ body {
   padding: 0;
 }
 
+::-moz-selection {
+  background-color: rgba(182, 212, 255, 0.5);
+}
+
+::selection {
+  background-color: rgba(182, 212, 255, 0.5);
+}
+
 a,
 button {
   outline: 0 none !important;
@@ -78,6 +86,10 @@ a:hover {
 
 .hidden {
   display: none !important;
+}
+
+.underlined {
+  text-decoration: underline !important;
 }
 
 .color-green {
@@ -298,11 +310,21 @@ a:hover {
   padding: 0 26px;
 }
 
+button.button.button-large {
+  line-height: 16px;
+  height: 50px;
+}
+
 .button.button-medium {
   font-size: 12px;
   letter-spacing: 0.2px;
   line-height: 38px;
   padding: 0 22px;
+}
+
+button.button.button-medium {
+  line-height: 14px;
+  height: 38px;
 }
 
 .button.button-small {
@@ -312,11 +334,21 @@ a:hover {
   padding: 0 17px;
 }
 
+button.button.button-small {
+  line-height: 13px;
+  height: 34px;
+}
+
 .button.button-tiny {
   font-size: 11px;
   letter-spacing: 0.05px;
   line-height: 32px;
   padding: 0 16px;
+}
+
+button.button.button-tiny {
+  line-height: 12px;
+  height: 32px;
 }
 
 .button.button-action {
@@ -357,10 +389,6 @@ a:hover {
   height: 20px;
 }
 
-.checkbox-image:hover {
-  border-color: rgba(0, 0, 0, 0.3);
-}
-
 .checkbox-image {
   display: inline-block;
   cursor: pointer;
@@ -368,6 +396,15 @@ a:hover {
   border: 1px solid rgba(0, 0, 0, 0.125);
   position: relative;
   border-radius: 2px;
+  transition: border-color 0.1s linear;
+}
+
+.checkbox-image:hover {
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+.checkbox-image:active {
+  border-color: rgba(0, 0, 0, 0.35);
 }
 
 .checkbox:checked + .checkbox-label .checkbox-image {

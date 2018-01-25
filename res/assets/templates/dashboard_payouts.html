@@ -57,7 +57,7 @@
               <li>
                 <a href="/assets/templates/dashboard_trackers.html">
                   <span class="navigate-title font-sans-bold">Trackers</span>
-                  <span class="navigate-label font-sans-regular">Manage tracker links you send to people. See earned money for each.</span>
+                  <span class="navigate-label font-sans-regular">Manage tracker links you send to people. See earned money.</span>
                 </a>
               </li>
 
@@ -71,7 +71,7 @@
               <li>
                 <a href="/assets/templates/dashboard_account.html">
                   <span class="navigate-title font-sans-bold">Account</span>
-                  <span class="navigate-label font-sans-regular">Manage your account settings, and configure your legal information.</span>
+                  <span class="navigate-label font-sans-regular">Manage your account settings, and configure your legal info.</span>
                 </a>
               </li>
             </ul>
@@ -102,7 +102,29 @@
           </div>
 
           <div class="section-box">
+            <div class="section-box-inner">
+              <div class="payout-balances">
+                <div class="payout-balance payout-balance-unpaid">
+                  <div class="payout-balance-inner">
+                    <h6 class="font-sans-regular">Your unpaid balance:</h6>
+                    <p class="payout-balance-amount color-blue font-sans-semibold">$1,200 (USD)</p>
+                  </div>
 
+                  <a href="#" class="button button-medium font-sans-semibold">Request payout of $1,200 (USD)</a>
+                </div>
+
+                <div class="payout-balance payout-balance-all">
+                  <div class="payout-balance-inner">
+                    <h6 class="font-sans-regular">You earned in total:</h6>
+                    <p class="payout-balance-amount color-grey font-sans-semibold">$21,431 (USD)</p>
+
+                    <p class="payout-balance-notice font-sans-regular">This includes your paid and unpaid balance.</p>
+                  </div>
+                </div>
+
+                <div class="clear"></div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -120,45 +142,51 @@
           </div>
 
           <div class="section-box">
-            <ul class="section-list">
-              <li class="selected">
-                <div class="section-list-content section-list-content-payouts">
-                  <div class="item-identity">
-                    <h6 class="font-sans-bold">Payout #40</h6>
-                    <p class="font-sans-regular">01/02/2017</p>
-                  </div>
-
-                  <div class="item-metrics">
-                    <div class="item-metrics-one">
-                      <p class="font-sans-regular">Status</p>
-                      <h5 class="color-green font-sans-semibold">Processed</h5>
+            <div class="section-box-inner">
+              <ul class="section-list">
+                <li class="selected">
+                  <div class="section-list-content section-list-content-payouts">
+                    <div class="item-identity">
+                      <h6 class="font-sans-bold">Payout #40</h6>
+                      <p class="font-sans-regular">01/02/2017</p>
                     </div>
 
-                    <div class="item-metrics-one">
-                      <p class="font-sans-regular">Payout amount</p>
-                      <h5 class="color-blue font-sans-regular">$8,920 (USD)</h5>
-                    </div>
+                    <div class="item-metrics">
+                      <div class="item-metrics-one">
+                        <p class="font-sans-regular">Status</p>
+                        <h5 class="color-green font-sans-semibold">Processed</h5>
+                      </div>
 
-                    <div class="item-metrics-one">
-                      <p class="font-sans-regular">Payout account</p>
-                      <h5 class="color-grey font-sans-regular">SILICON VALLEY BANK</h5>
+                      <div class="item-metrics-one">
+                        <p class="font-sans-regular">Payout amount</p>
+                        <h5 class="color-blue font-sans-regular">$8,920 (USD)</h5>
+                      </div>
+
+                      <div class="item-metrics-one">
+                        <p class="font-sans-regular">Payout account</p>
+                        <h5 class="color-grey font-sans-regular">SILICON VALLEY BANK</h5>
+                      </div>
+
+                      <div class="clear"></div>
                     </div>
 
                     <div class="clear"></div>
                   </div>
 
+                  <div class="section-list-actions">
+                    <a href="#" class="button disabled button-tiny font-sans-semibold">Download invoice</a>
+
+                    <div class="clear"></div>
+                  </div>
+
                   <div class="clear"></div>
-                </div>
+                </li>
+              </ul>
+            </div>
+          </div>
 
-                <div class="section-list-actions">
-                  <a href="#" class="button disabled button-tiny font-sans-semibold">Download invoice</a>
-
-                  <div class="clear"></div>
-                </div>
-
-                <div class="clear"></div>
-              </li>
-            </ul>
+          <div class="section-box-more-wrap">
+            <a class="section-box-more font-sans-semibold" href="#">Load older payouts</a>
           </div>
         </div>
       </section>

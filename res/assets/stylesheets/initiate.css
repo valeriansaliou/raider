@@ -9,6 +9,8 @@ mark {
   letter-spacing: 0.1px;
   padding: 13px 12px 15px;
   display: block;
+  position: relative;
+  z-index: 1;
   animation-duration: 0.5s;
   animation-name: mark-slide;
 }
@@ -198,5 +200,14 @@ main nav ul li:nth-of-type(2) a {
 
   100% {
     opacity: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  main {
+    max-width: calc(100% - 30px);
+    margin-top: 60px;
+    position: static;
+    transform: none;
   }
 }

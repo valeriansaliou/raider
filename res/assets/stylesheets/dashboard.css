@@ -1,7 +1,7 @@
 body {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  min-width: 1020px;
   position: absolute;
   left: 0;
   right: 0;
@@ -64,6 +64,7 @@ header .menu-logout a {
 }
 
 main {
+  overflow: hidden;
   flex: 1;
   display: flex;
   flex-direction: row;
@@ -238,6 +239,11 @@ main aside .controls li:nth-of-type(1) a:before {
 }
 
 main section {
+  max-width: 1040px;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: auto;
+  padding-bottom: 24px;
   flex: 1;
 }
 
@@ -312,13 +318,98 @@ main section hr {
   margin-top: -2px;
 }
 
-.section-box {
+.section-box,
+.section-box-more {
   background: #FFFFFF;
+  box-shadow: 0 2px 3px 0 rgba(15, 31, 64, 0.12);
+  border-radius: 2px;
+}
+
+.section-box {
   margin-top: 14px;
   min-height: 80px;
-  padding: 24px 20px 14px;
-  box-shadow: 0 2px 3px 0 rgba(15,31,64,0.12);
-  border-radius: 2px;
+  overflow: hidden;
+}
+
+.section-box-inner,
+.section-box-notice {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.section-box-inner {
+  padding-top: 24px;
+  padding-bottom: 14px;
+}
+
+.section-box-more-wrap {
+  text-align: center;
+  margin-top: 20px;
+  display: block;
+}
+
+.section-box-more {
+  color: #000000;
+  font-size: 12px;
+  padding: 12px 32px;
+  display: inline-block;
+  transition: all 0.2s linear;
+  transition-property: box-shadow, transform;
+}
+
+.section-box-more:before,
+form.section-wrap label .select-wrap:after {
+  content: "";
+  background-image: url("/assets/images/dashboard/expand.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  vertical-align: middle;
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  opacity: 0.35;
+}
+
+.section-box-more:before {
+  margin-right: 18px;
+  margin-left: -8px;
+  margin-top: -2px;
+}
+
+.section-box-more:hover {
+  box-shadow: 0 3px 8px 0 rgba(15, 31, 64, 0.175);
+}
+
+.section-box-more:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px 0 rgba(15, 31, 64, 0.15);
+}
+
+.section-box-notice {
+  background-color: #E6EAF0;
+  line-height: 17px;
+  margin-bottom: 4px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.section-box-notice h4 {
+  font-size: 12.5px;
+  margin-bottom: 7px;
+}
+
+.section-box-notice p {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.section-actions {
+  margin-top: 17px;
+}
+
+.section-actions .button {
+  float: right;
 }
 
 .section-list {
@@ -381,6 +472,98 @@ main section hr {
   float: left;
 }
 
+form.section-wrap label {
+  margin-bottom: 9px;
+  padding-left: 8px;
+  display: block;
+}
+
+form.section-wrap label .label,
+form.section-wrap label .link {
+  line-height: 42px;
+}
+
+form.section-wrap label .label {
+  color: #000000;
+  font-size: 12px;
+  width: 180px;
+  float: left;
+}
+
+form.section-wrap label .link {
+  font-size: 12.5px;
+}
+
+form.section-wrap label input,
+form.section-wrap label select,
+form.section-wrap label textarea {
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  padding-left: 20px;
+  outline: none;
+  border-radius: 1px;
+  transition: border-color 0.1s linear;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+form.section-wrap label input,
+form.section-wrap label select {
+  height: 40px;
+}
+
+form.section-wrap label input,
+form.section-wrap label textarea {
+  background: #FFFFFF;
+  font-size: 12.5px;
+  height: 40px;
+  box-shadow: inset 0 1px 3px 0 rgba(15, 31, 64, 0.03);
+}
+
+form.section-wrap label input:focus,
+form.section-wrap label textarea:focus {
+  border-color: rgba(0, 0, 0, 0.4);
+}
+
+form.section-wrap label input {
+  width: 100%;
+  max-width: 320px;
+}
+
+form.section-wrap label .select-wrap {
+  width: 100%;
+  max-width: 260px;
+  display: inline-block;
+  position: relative;
+}
+
+form.section-wrap label .select-wrap:after {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+}
+
+form.section-wrap label select {
+  background: #FCFCFC;
+  font-size: 12px;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: 0 2px 2px 0 rgba(15, 31, 64, 0.01);
+}
+
+form.section-wrap label select:hover {
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+form.section-wrap label textarea {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 100%;
+  max-width: 440px;
+  min-height: 100px;
+  resize: vertical;
+}
+
 .item-identity,
 .item-metrics,
 .item-metrics-one {
@@ -395,7 +578,6 @@ main section hr {
 .item-identity p {
   color: #000000;
   font-size: 10.5px;
-  text-decoration: underline;
   margin-top: 3px;
   opacity: 0.55;
 }
@@ -408,7 +590,8 @@ main section hr {
 
 .item-metrics-one p {
   color: #000000;
-  font-size: 10px;
+  font-size: 11px;
+  margin-top: -1px;
 }
 
 .item-metrics-one h5 {
@@ -423,6 +606,53 @@ main section hr {
   padding-left: 0;
 }
 
+.payout-balances {
+  padding-left: 64px;
+  padding-top: 6px;
+  padding-bottom: 16px;
+}
+
+.payout-balance {
+  float: left;
+}
+
+.payout-balance-unpaid .payout-balance-inner {
+  background: #F7F8FA;
+  padding: 12px 20px 16px;
+  border-radius: 2px 2px 0 0;
+}
+
+.payout-balance-all {
+  border-left: 1px solid rgba(0, 0, 0, 0.06);
+  margin-left: 64px;
+  margin-top: 18px;
+  padding-left: 24px;
+}
+
+.payout-balance-inner h6 {
+  color: #000000;
+  font-size: 11.5px;
+}
+
+.payout-balance-amount {
+  font-size: 22px;
+  line-height: 22px;
+  margin-top: 9px;
+}
+
+.payout-balance-notice {
+  color: rgba(0, 0, 0, 0.55);
+  font-size: 11.5px;
+  font-style: italic;
+  margin-top: 15px;
+}
+
+.payout-balance .button {
+  padding: 0 34px;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+
 @keyframes sidebar-slide {
   from {
     transform: translateX(-100%);
@@ -432,5 +662,15 @@ main section hr {
   to {
     transform: none;
     opacity: 1;
+  }
+}
+
+@media (max-width: 1140px) {
+  .payout-balances {
+    padding-left: 22px;
+  }
+
+  .payout-balance-all {
+    margin-left: 40px;
   }
 }
