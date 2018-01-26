@@ -25,6 +25,11 @@ mark.notice {
   color: #FFFFFF;
 }
 
+mark.success {
+  background-color: #04BB00;
+  color: #FFFFFF;
+}
+
 mark.failure {
   background-color: #E10000;
   color: #FFFFFF;

@@ -31,6 +31,22 @@ pub fn database_connection_timeout() -> u64 {
     10
 }
 
+pub fn email_smtp_host() -> String {
+    "localhost".to_string()
+}
+
+pub fn email_smtp_port() -> u16 {
+    587
+}
+
+pub fn email_smtp_encrypt() -> bool {
+    true
+}
+
 pub fn assets_path() -> PathBuf {
     PathBuf::from("./res/assets/")
+}
+
+pub fn branding_page_title() -> String {
+    "Enrich Affiliates".to_string()
 }

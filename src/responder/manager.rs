@@ -11,6 +11,7 @@ use rocket::config::{Config, Environment};
 use rocket_contrib::Template;
 
 use super::{routes, catchers};
+use storage::db;
 
 use APP_CONF;
 
@@ -50,8 +51,11 @@ pub fn run() {
 
                 routes::get_initiate_base,
                 routes::get_initiate_login,
+                routes::get_initiate_login_args,
                 routes::get_initiate_signup,
+                routes::get_initiate_signup_args,
                 routes::get_initiate_recover,
+                routes::get_initiate_recover_args,
                 routes::get_initiate_logout,
 
                 routes::get_dashboard_base,
@@ -73,5 +77,6 @@ pub fn run() {
             catchers::gone,
         ])
         .attach(Template::fairing())
+        .manage(db::pool())
         .launch();
 }

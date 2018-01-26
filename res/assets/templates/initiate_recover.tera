@@ -19,8 +19,13 @@
   </head>
 
   <body>
-    <mark class="notice font-sans-bold">Enter your email address to recover your account. You will receive a recovery email.</mark>
-    <mark class="failure hidden font-sans-bold">No account was found for the email you entered.</mark>
+    {% if failure %}
+      <mark class="failure font-sans-bold">No account was found for the email you entered.</mark>
+    {% elif success %}
+      <mark class="success font-sans-bold">An account recovery email is on its way to your mailbox. Follow the instructions there.</mark>
+    {% else %}
+      <mark class="notice font-sans-bold">Enter your email address to recover your account. You will receive a recovery email.</mark>
+    {% endif %}
 
     <main>
       <a class="logo" href="/dashboard/">
@@ -30,6 +35,10 @@
           <span class="logo-label font-sans-semibold">Affiliates</span>
         </div>
       </a>
+
+      {% if failure %}
+        <p class="error font-sans-semibold">Could not recover account (not found).</p>
+      {% endif %}
 
       <form action="/initiate/recover/" method="post" name="recover">
         <label>

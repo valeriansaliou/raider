@@ -17,17 +17,24 @@ extern crate lazy_static;
 extern crate diesel;
 #[macro_use]
 extern crate serde_derive;
+extern crate sha2;
 extern crate time;
+extern crate rand;
+extern crate validate;
 extern crate toml;
 extern crate url_serde;
-extern crate uuid;
 extern crate chrono;
+extern crate native_tls;
+extern crate openssl_probe;
+extern crate lettre;
+extern crate lettre_email;
 extern crate r2d2;
 extern crate r2d2_diesel;
 extern crate rocket;
 extern crate rocket_contrib;
 
 mod config;
+mod notifier;
 mod responder;
 mod storage;
 
@@ -114,6 +121,9 @@ fn spawn_responder() {
 }
 
 fn main() {
+    // Ensure OpenSSL root chain is found on current environment
+    openssl_probe::init_ssl_cert_env_vars();
+
     // Initialize shared logger
     let _logger = ConfigLogger::init(
         LogLevelFilter::from_str(&APP_CONF.server.log_level).expect("invalid log level"),

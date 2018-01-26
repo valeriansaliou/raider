@@ -4,12 +4,11 @@
 // Copyright: 2018, Valerian Saliou <valerian@valeriansaliou.name>
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
-use std::env;
 use std::time::Duration;
 use std::ops::Deref;
 use log;
 use r2d2;
-use r2d2_diesel::{ConnectionManager, Error};
+use r2d2_diesel::ConnectionManager;
 use rocket::http::Status;
 use rocket::request::{self, FromRequest};
 use rocket::{Request, State, Outcome};
@@ -42,7 +41,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for DbConn {
     }
 }
 
-fn pool() -> Pool {
+pub fn pool() -> Pool {
     log::debug!("setting up db pool...");
 
     let manager = ConnectionManager::<MysqlConnection>::new(APP_CONF.database.url.as_str());

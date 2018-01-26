@@ -5,13 +5,11 @@
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
 table! {
-    use diesel::types::*;
-    use uuid::Uuid;
-
     account (id) {
-        id -> Uuid,
+        id -> Integer,
         email -> Varchar,
         password -> Binary,
+        recovery -> Nullable<Binary>,
         created_at -> Timestamp,
         updated_at -> Timestamp,
     }

@@ -15,7 +15,9 @@ use super::defaults;
 pub struct Config {
     pub server: ConfigServer,
     pub database: ConfigDatabase,
+    pub email: ConfigEmail,
     pub assets: ConfigAssets,
+    pub branding: ConfigBranding,
 }
 
 #[derive(Deserialize)]
@@ -44,10 +46,37 @@ pub struct ConfigDatabase {
 
     #[serde(default = "defaults::database_connection_timeout")]
     pub connection_timeout: u64,
+
+    pub password_salt: String,
+}
+
+#[derive(Deserialize)]
+pub struct ConfigEmail {
+    pub from: String,
+
+    #[serde(default = "defaults::email_smtp_host")]
+    pub smtp_host: String,
+
+    #[serde(default = "defaults::email_smtp_port")]
+    pub smtp_port: u16,
+
+    pub smtp_username: Option<String>,
+    pub smtp_password: Option<String>,
+
+    #[serde(default = "defaults::email_smtp_encrypt")]
+    pub smtp_encrypt: bool,
 }
 
 #[derive(Deserialize)]
 pub struct ConfigAssets {
     #[serde(default = "defaults::assets_path")]
     pub path: PathBuf,
+}
+
+#[derive(Deserialize)]
+pub struct ConfigBranding {
+    #[serde(default = "defaults::branding_page_title")]
+    pub page_title: String,
+
+    pub page_url: SerdeUrl,
 }

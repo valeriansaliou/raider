@@ -8,6 +8,10 @@ use log;
 use rocket::Outcome;
 use rocket::http::{Status, Cookies, Cookie};
 use rocket::request::{self, Request, FromRequest};
+use rand::{self, Rng};
+use sha2::{Sha256, Digest};
+
+use APP_CONF;
 
 pub struct AuthGuard;
 pub struct AuthAnonymousGuard;
@@ -21,8 +25,6 @@ impl<'a, 'r> FromRequest<'a, 'r> for AuthGuard {
         if let Outcome::Success(cookies) = request.guard::<Cookies>() {
             if let Some(user_id) = read(cookies) {
                 log::debug!("got user_id from cookies: {}", &user_id);
-
-                // TODO: validate user ID against DB
 
                 return Outcome::Success(AuthGuard);
             }
@@ -53,4 +55,31 @@ pub fn cleanup(mut cookies: Cookies) {
 
 fn read(mut cookies: Cookies) -> Option<Cookie> {
     cookies.get_private(AUTH_USER_COOKIE_NAME)
+}
+
+pub fn password_encode(password: &str) -> Vec<u8> {
+    let password_salted = [password, APP_CONF.database.password_salt.as_str()].join("");
+
+    log::debug!("salted password: {} and got result: {}", password, &password_salted);
+
+    let mut hasher = Sha256::default();
+
+    hasher.input(&password_salted.into_bytes());
+
+    hasher.result().to_vec()
+}
+
+pub fn password_verify(reference: &[u8], password: &str) -> bool {
+    let password_encoded = password_encode(password);
+
+    password_encoded == reference
+}
+
+pub fn recovery_generate() -> (Vec<u8>, String) {
+    let recovery_password = rand::thread_rng()
+        .gen_ascii_chars()
+        .take(40)
+        .collect::<String>();
+
+    (password_encode(&recovery_password), recovery_password)
 }
