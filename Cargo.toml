@@ -1,6 +1,6 @@
 [package]
 name = "raider-server"
-version = "0.0.1"
+version = "1.0.0"
 description = "Affiliates dashboard. Used by affiliates to generate tracking codes and review their balance."
 readme = "README.md"
 license = "MPL-2.0"
@@ -22,6 +22,15 @@ doc = false
 
 [dependencies]
 log = "0.3"
+clap = { version = "2.29", default-features = false }
+lazy_static = "1.0"
+time = "0.1"
+serde = "1.0"
+serde_derive = "1.0"
+toml = "0.4"
+rocket = { version = "0.3", default-features = false }
+rocket_codegen = "0.3"
+rocket_contrib = { version = "0.3", features = ["tera_templates"] }
 
 [profile.dev]
 opt-level = 0

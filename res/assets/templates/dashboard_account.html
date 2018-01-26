@@ -20,7 +20,7 @@
 
   <body>
     <header>
-      <a class="logo" href="/assets/templates/dashboard_home.html">
+      <a class="logo" href="/dashboard/">
         <img src="https://crisp.chat/static/images/common/logo/blue.svg" alt="" />
 
         <span class="logo-label font-sans-semibold">Affiliates</span>
@@ -28,7 +28,7 @@
 
       <ul class="menu">
         <li class="menu-logout">
-          <a href="/logout/" class="font-sans-bold">Logout</a>
+          <a href="/initiate/logout/" class="font-sans-bold">Logout</a>
         </li>
       </ul>
 
@@ -49,27 +49,27 @@
               <p class="payout-amount font-sans-semibold">$1,200 (USD)</p>
             </div>
 
-            <a href="/assets/templates/dashboard_payouts.html" class="button button-medium font-sans-semibold">Go to payout manager</a>
+            <a href="/dashboard/payouts/" class="button button-medium font-sans-semibold">Go to payout manager</a>
           </div>
 
           <nav class="navigate">
             <ul>
               <li>
-                <a href="/assets/templates/dashboard_trackers.html">
+                <a href="/dashboard/trackers/">
                   <span class="navigate-title font-sans-bold">Trackers</span>
                   <span class="navigate-label font-sans-regular">Manage tracker links you send to people. See earned money.</span>
                 </a>
               </li>
 
               <li>
-                <a href="/assets/templates/dashboard_payouts.html">
+                <a href="/dashboard/payouts/">
                   <span class="navigate-title font-sans-bold">Payouts</span>
                   <span class="navigate-label font-sans-regular">Request for a payout and review your payout history and invoices.</span>
                 </a>
               </li>
 
               <li>
-                <a href="/assets/templates/dashboard_account.html" class="selected">
+                <a href="/dashboard/account/" class="selected">
                   <span class="navigate-title font-sans-bold">Account</span>
                   <span class="navigate-label font-sans-regular">Manage your account settings, and configure your legal info.</span>
                 </a>
@@ -92,7 +92,7 @@
       </aside>
 
       <section>
-        <form class="section-wrap" method="post" action="/assets/templates/dashboard_account.html">
+        <form class="section-wrap" method="post" action="/dashboard/account/">
           <div class="section-title">
             <div class="section-title-main">
               <h2 class="font-sans-bold">Account</h2>
@@ -128,7 +128,7 @@
 
         <hr>
 
-        <form class="section-wrap" method="post" action="/assets/templates/dashboard_account.html">
+        <form class="section-wrap" method="post" action="/dashboard/account/">
           <div class="section-title">
             <div class="section-title-main">
               <h3 class="font-sans-semibold">Payout recipient</h3>

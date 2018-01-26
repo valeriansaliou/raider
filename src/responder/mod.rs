@@ -4,8 +4,9 @@
 // Copyright: 2018, Valerian Saliou <valerian@valeriansaliou.name>
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
-mod defaults;
+mod routes;
+mod catchers;
+mod asset_file;
+mod auth_guard;
 
-pub mod logger;
-pub mod config;
-pub mod reader;
+pub mod manager;

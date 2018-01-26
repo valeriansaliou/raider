@@ -8,7 +8,6 @@ use std::net::SocketAddr;
 use std::path::PathBuf;
 
 use super::defaults;
-use prober::mode::Mode;
 
 #[derive(Deserialize)]
 pub struct Config {
@@ -26,6 +25,8 @@ pub struct ConfigServer {
 
     #[serde(default = "defaults::server_workers")]
     pub workers: u16,
+
+    pub secret_key: String,
 }
 
 #[derive(Deserialize)]
