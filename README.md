@@ -7,8 +7,6 @@ Raider
 
 Raider is easy to integrate in your existing system. You can also customize the dashboard look & feel with templates and styles.
 
-**🚨 Raider is currently Work In Progress (WIP). Stable version is coming soon (2 weeks ETA).**
-
 ![Raider](https://valeriansaliou.github.io/raider/images/raider.png)
 
 ## Who uses it?
