@@ -14,14 +14,22 @@ extern crate clap;
 #[macro_use]
 extern crate lazy_static;
 #[macro_use]
+extern crate diesel;
+#[macro_use]
 extern crate serde_derive;
 extern crate time;
 extern crate toml;
+extern crate url_serde;
+extern crate uuid;
+extern crate chrono;
+extern crate r2d2;
+extern crate r2d2_diesel;
 extern crate rocket;
 extern crate rocket_contrib;
 
 mod config;
 mod responder;
+mod storage;
 
 use std::thread;
 use std::ops::Deref;

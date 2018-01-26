@@ -19,6 +19,18 @@ pub fn server_workers() -> u16 {
     4
 }
 
+pub fn database_pool_size() -> u32 {
+    4
+}
+
+pub fn database_idle_timeout() -> u64 {
+    300
+}
+
+pub fn database_connection_timeout() -> u64 {
+    10
+}
+
 pub fn assets_path() -> PathBuf {
     PathBuf::from("./res/assets/")
 }

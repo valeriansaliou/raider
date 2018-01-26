@@ -7,11 +7,14 @@
 use std::net::SocketAddr;
 use std::path::PathBuf;
 
+use url_serde::SerdeUrl;
+
 use super::defaults;
 
 #[derive(Deserialize)]
 pub struct Config {
     pub server: ConfigServer,
+    pub database: ConfigDatabase,
     pub assets: ConfigAssets,
 }
 
@@ -27,6 +30,20 @@ pub struct ConfigServer {
     pub workers: u16,
 
     pub secret_key: String,
+}
+
+#[derive(Deserialize)]
+pub struct ConfigDatabase {
+    pub url: SerdeUrl,
+
+    #[serde(default = "defaults::database_pool_size")]
+    pub pool_size: u32,
+
+    #[serde(default = "defaults::database_idle_timeout")]
+    pub idle_timeout: u64,
+
+    #[serde(default = "defaults::database_connection_timeout")]
+    pub connection_timeout: u64,
 }
 
 #[derive(Deserialize)]
