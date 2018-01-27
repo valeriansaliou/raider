@@ -17,7 +17,6 @@ lazy_static! {
         icon_color: APP_CONF.branding.icon_color.to_owned(),
         icon_url: APP_CONF.branding.icon_url.to_owned(),
         icon_mime: ImageMime::guess_from(APP_CONF.branding.icon_url.as_str()),
-        logo_color: APP_CONF.branding.logo_color.to_owned(),
         logo_white_url: APP_CONF.branding.logo_white_url.to_owned(),
         logo_dark_url: APP_CONF.branding.logo_dark_url.to_owned(),
     };
@@ -63,7 +62,6 @@ pub struct ConfigContext {
     pub icon_color: String,
     pub icon_url: SerdeUrl,
     pub icon_mime: ImageMime,
-    pub logo_color: String,
     pub logo_white_url: SerdeUrl,
     pub logo_dark_url: SerdeUrl,
 }

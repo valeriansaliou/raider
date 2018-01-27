@@ -81,7 +81,6 @@ pub struct ConfigBranding {
     pub page_url: SerdeUrl,
     pub icon_color: String,
     pub icon_url: SerdeUrl,
-    pub logo_color: String,
     pub logo_white_url: SerdeUrl,
     pub logo_dark_url: SerdeUrl,
 }
