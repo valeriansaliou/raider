@@ -13,7 +13,7 @@ Raider is easy to integrate in your existing system. You can also customize the 
 
 <table>
 <tr>
-<td align="center"><a href="https://crisp.chat/"><img src="https://valeriansaliou.github.io/raider/images/crisp.png" height="64" /></a></td>
+<td align="center"><a href="https://crisp.chat/"><img src="https://valeriansaliou.github.io/raider/images/crisp-icon.png" height="64" /></a></td>
 </tr>
 <tr>
 <td align="center">Crisp</td>
