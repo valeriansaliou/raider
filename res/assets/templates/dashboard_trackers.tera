@@ -1,172 +1,97 @@
-<!DOCTYPE html>
+{% extends "__base" %}
 
-<html lang="en" dir="ltr">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% import "_dashboard_header" as dashboard_header %}
+{% import "_dashboard_menu" as dashboard_menu %}
 
-    <link rel="icon" href="https://crisp.chat/favicon-512x512.png" type="image/png">
-    <link rel="apple-touch-icon" href="https://crisp.chat/favicon-512x512.png" type="image/png">
+{% block title %}Trackers | Dashboard{% endblock title %}
 
-    <meta name="msapplication-TileColor" content="#3C82E7">
-    <meta name="msapplication-TileImage" content="https://crisp.chat/favicon-512x512.png">
-    <meta property="og:image" content="https://crisp.chat/favicon-512x512.png">
+{% block stylesheets %}
+  {{ super() }}
 
-    <title>Crisp Affiliates | Dashboard | Trackers</title>
+  <link rel="stylesheet" href="/assets/stylesheets/dashboard.css?v={{ config.runtime_version | escape }}" type="text/css" />
+{% endblock stylesheets %}
 
-    <link rel="stylesheet" href="/assets/stylesheets/common.css" type="text/css" />
-    <link rel="stylesheet" href="/assets/stylesheets/dashboard.css" type="text/css" />
-  </head>
+{% block body %}
+  {{ dashboard_header::header(config=config) }}
 
-  <body>
-    <header>
-      <a class="logo" href="/dashboard/">
-        <img src="https://crisp.chat/static/images/common/logo/blue.svg" alt="" />
+  <main>
+    {{ dashboard_menu::menu(config=config, sidebar="", selected="trackers") }}
 
-        <span class="logo-label font-sans-semibold">Affiliates</span>
-      </a>
+    <section>
+      <div class="section-wrap">
+        <div class="section-title">
+          <div class="section-title-main">
+            <h2 class="font-sans-bold">Trackers</h2>
 
-      <ul class="menu">
-        <li class="menu-logout">
-          <a href="/initiate/logout/" class="font-sans-bold">Logout</a>
-        </li>
-      </ul>
-
-      <div class="clear"></div>
-    </header>
-
-    <main>
-      <aside>
-        <div class="infobox">
-          <h6 class="font-sans-bold">Manage your trackers.</h6>
-          <p class="font-sans-regular">Send those tracker links to people and start earning money.</p>
-        </div>
-
-        <div class="side">
-          <div class="payout">
-            <div class="payout-inner">
-              <h6 class="font-sans-regular">You have money on your balance:</h6>
-              <p class="payout-amount font-sans-semibold">$1,200 (USD)</p>
-            </div>
-
-            <a href="/dashboard/payouts/" class="button button-medium font-sans-semibold">Go to payout manager</a>
+            <div class="section-title-status font-sans-semibold">(2 trackers)</div>
           </div>
 
-          <nav class="navigate">
-            <ul>
-              <li>
-                <a href="/dashboard/trackers/" class="selected">
-                  <span class="navigate-title font-sans-bold">Trackers</span>
-                  <span class="navigate-label font-sans-regular">Manage tracker links you send to people. See earned money.</span>
-                </a>
-              </li>
+          <ul>
+            <li class="icon remove">
+              <a href="#" class="button button-small button-action font-sans-semibold">Remove selection</a>
+            </li>
 
-              <li>
-                <a href="/dashboard/payouts/">
-                  <span class="navigate-title font-sans-bold">Payouts</span>
-                  <span class="navigate-label font-sans-regular">Request for a payout and review your payout history and invoices.</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="/dashboard/account/">
-                  <span class="navigate-title font-sans-bold">Account</span>
-                  <span class="navigate-label font-sans-regular">Manage your account settings, and configure your legal info.</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-
-        <ul class="controls">
-          <li>
-            <a href="https://help.crisp.chat/" target="_blank" class="font-sans-semibold">Get help</a>
-          </li>
-
-          <li>
-            <a href="mailto:support@crisp.chat" class="font-sans-semibold">Contact support</a>
-          </li>
+            <li>
+              <a href="#" class="button button-small font-sans-semibold">Add a new tracker</a>
+            </li>
+          </ul>
 
           <div class="clear"></div>
-        </ul>
-      </aside>
+        </div>
 
-      <section>
-        <div class="section-wrap">
-          <div class="section-title">
-            <div class="section-title-main">
-              <h2 class="font-sans-bold">Trackers</h2>
+        <div class="section-box">
+          <div class="section-box-inner">
+            <ul class="section-list">
+              <li class="selected">
+                <div class="section-list-selection">
+                  <input id="select_item" class="checkbox" type="checkbox" checked>
 
-              <div class="section-title-status font-sans-semibold">(2 trackers)</div>
-            </div>
+                  <label class="checkbox-label" for="select_item">
+                    <span class="checkbox-image"></span>
+                  </label>
+                </div>
 
-            <ul>
-              <li class="icon remove">
-                <a href="#" class="button button-small button-action font-sans-semibold">Remove selection</a>
-              </li>
-
-              <li>
-                <a href="#" class="button button-small font-sans-semibold">Add a new tracker</a>
-              </li>
-            </ul>
-
-            <div class="clear"></div>
-          </div>
-
-          <div class="section-box">
-            <div class="section-box-inner">
-              <ul class="section-list">
-                <li class="selected">
-                  <div class="section-list-selection">
-                    <input id="select_item" class="checkbox" type="checkbox" checked>
-
-                    <label class="checkbox-label" for="select_item">
-                      <span class="checkbox-image"></span>
-                    </label>
+                <div class="section-list-content section-list-content-trackers">
+                  <div class="item-identity">
+                    <h6 class="font-sans-bold">Blog Article #1</h6>
+                    <p class="underlined font-sans-regular">https://crisp.chat/?t=xVdpf1dfM</p>
                   </div>
 
-                  <div class="section-list-content section-list-content-trackers">
-                    <div class="item-identity">
-                      <h6 class="font-sans-bold">Blog Article #1</h6>
-                      <p class="underlined font-sans-regular">https://crisp.chat/?t=xVdpf1dfM</p>
+                  <div class="item-metrics">
+                    <div class="item-metrics-one">
+                      <p class="font-sans-regular">Signups</p>
+                      <h5 class="font-sans-semibold">10,230</h5>
                     </div>
 
-                    <div class="item-metrics">
-                      <div class="item-metrics-one">
-                        <p class="font-sans-regular">Signups</p>
-                        <h5 class="font-sans-semibold">10,230</h5>
-                      </div>
-
-                      <div class="item-metrics-one">
-                        <p class="font-sans-regular">Paying now</p>
-                        <h5 class="font-sans-semibold">5,129</h5>
-                      </div>
-
-                      <div class="item-metrics-one">
-                        <p class="font-sans-regular">Earned so far</p>
-                        <h5 class="font-sans-semibold">$20,431 (USD)</h5>
-                      </div>
-
-                      <div class="clear"></div>
+                    <div class="item-metrics-one">
+                      <p class="font-sans-regular">Paying now</p>
+                      <h5 class="font-sans-semibold">5,129</h5>
                     </div>
 
-                    <div class="clear"></div>
-                  </div>
-
-                  <div class="section-list-actions">
-                    <a href="#" class="button button-tiny button-dark font-sans-semibold">View banners</a>
-                    <a href="#" class="button button-tiny font-sans-semibold">Copy tracker link</a>
+                    <div class="item-metrics-one">
+                      <p class="font-sans-regular">Earned so far</p>
+                      <h5 class="font-sans-semibold">$20,431 (USD)</h5>
+                    </div>
 
                     <div class="clear"></div>
                   </div>
 
                   <div class="clear"></div>
-                </li>
-              </ul>
-            </div>
+                </div>
+
+                <div class="section-list-actions">
+                  <a href="#" class="button button-tiny button-dark font-sans-semibold">View banners</a>
+                  <a href="#" class="button button-tiny font-sans-semibold">Copy tracker link</a>
+
+                  <div class="clear"></div>
+                </div>
+
+                <div class="clear"></div>
+              </li>
+            </ul>
           </div>
         </div>
-      </section>
-    </main>
-  </body>
-</html>
+      </div>
+    </section>
+  </main>
+{% endblock body %}

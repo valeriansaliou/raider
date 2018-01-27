@@ -1,0 +1,17 @@
+{% macro header(config) %}
+  <header>
+    <a class="logo" href="/dashboard/">
+      <img src="{{ config.logo_dark_url | escape }}" alt="" />
+
+      <span class="logo-label font-sans-semibold">Affiliates</span>
+    </a>
+
+    <ul class="menu">
+      <li class="menu-logout">
+        <a href="/initiate/logout/" class="font-sans-bold">Logout</a>
+      </li>
+    </ul>
+
+    <div class="clear"></div>
+  </header>
+{% endmacro header %}

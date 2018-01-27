@@ -1,195 +1,120 @@
-<!DOCTYPE html>
+{% extends "__base" %}
 
-<html lang="en" dir="ltr">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% import "_dashboard_header" as dashboard_header %}
+{% import "_dashboard_menu" as dashboard_menu %}
 
-    <link rel="icon" href="https://crisp.chat/favicon-512x512.png" type="image/png">
-    <link rel="apple-touch-icon" href="https://crisp.chat/favicon-512x512.png" type="image/png">
+{% block title %}Trackers | Dashboard{% endblock title %}
 
-    <meta name="msapplication-TileColor" content="#3C82E7">
-    <meta name="msapplication-TileImage" content="https://crisp.chat/favicon-512x512.png">
-    <meta property="og:image" content="https://crisp.chat/favicon-512x512.png">
+{% block stylesheets %}
+  {{ super() }}
 
-    <title>Crisp Affiliates | Dashboard | Home</title>
+  <link rel="stylesheet" href="/assets/stylesheets/dashboard.css?v={{ config.runtime_version | escape }}" type="text/css" />
+{% endblock stylesheets %}
 
-    <link rel="stylesheet" href="/assets/stylesheets/common.css" type="text/css" />
-    <link rel="stylesheet" href="/assets/stylesheets/dashboard.css" type="text/css" />
-  </head>
+{% block body %}
+  {{ dashboard_header::header(config=config) }}
 
-  <body>
-    <header>
-      <a class="logo" href="/dashboard/">
-        <img src="https://crisp.chat/static/images/common/logo/blue.svg" alt="" />
+  <main>
+    {{ dashboard_menu::menu(config=config, sidebar="", selected="payouts") }}
 
-        <span class="logo-label font-sans-semibold">Affiliates</span>
-      </a>
-
-      <ul class="menu">
-        <li class="menu-logout">
-          <a href="/initiate/logout/" class="font-sans-bold">Logout</a>
-        </li>
-      </ul>
-
-      <div class="clear"></div>
-    </header>
-
-    <main>
-      <aside>
-        <div class="infobox">
-          <h6 class="font-sans-bold">Manage your payouts.</h6>
-          <p class="font-sans-regular">Get the money you earned wired to your bank and retrieve invoices.</p>
-        </div>
-
-        <div class="side">
-          <div class="payout">
-            <div class="payout-inner">
-              <h6 class="font-sans-regular">You have money on your balance:</h6>
-              <p class="payout-amount font-sans-semibold">$1,200 (USD)</p>
-            </div>
-
-            <a href="/dashboard/payouts/" class="button button-medium font-sans-semibold">Go to payout manager</a>
+    <section>
+      <div class="section-wrap">
+        <div class="section-title">
+          <div class="section-title-main">
+            <h2 class="font-sans-bold">Payouts</h2>
           </div>
-
-          <nav class="navigate">
-            <ul>
-              <li>
-                <a href="/dashboard/trackers/">
-                  <span class="navigate-title font-sans-bold">Trackers</span>
-                  <span class="navigate-label font-sans-regular">Manage tracker links you send to people. See earned money.</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="/dashboard/payouts/" class="selected">
-                  <span class="navigate-title font-sans-bold">Payouts</span>
-                  <span class="navigate-label font-sans-regular">Request for a payout and review your payout history and invoices.</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="/dashboard/account/">
-                  <span class="navigate-title font-sans-bold">Account</span>
-                  <span class="navigate-label font-sans-regular">Manage your account settings, and configure your legal info.</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-
-        <ul class="controls">
-          <li>
-            <a href="https://help.crisp.chat/" target="_blank" class="font-sans-semibold">Get help</a>
-          </li>
-
-          <li>
-            <a href="mailto:support@crisp.chat" class="font-sans-semibold">Contact support</a>
-          </li>
 
           <div class="clear"></div>
-        </ul>
-      </aside>
+        </div>
 
-      <section>
-        <div class="section-wrap">
-          <div class="section-title">
-            <div class="section-title-main">
-              <h2 class="font-sans-bold">Payouts</h2>
-            </div>
-
-            <div class="clear"></div>
-          </div>
-
-          <div class="section-box">
-            <div class="section-box-inner">
-              <div class="payout-balances">
-                <div class="payout-balance payout-balance-unpaid">
-                  <div class="payout-balance-inner">
-                    <h6 class="font-sans-regular">Your unpaid balance:</h6>
-                    <p class="payout-balance-amount color-blue font-sans-semibold">$1,200 (USD)</p>
-                  </div>
-
-                  <a href="#" class="button button-medium font-sans-semibold">Request payout of $1,200 (USD)</a>
+        <div class="section-box">
+          <div class="section-box-inner">
+            <div class="payout-balances">
+              <div class="payout-balance payout-balance-unpaid">
+                <div class="payout-balance-inner">
+                  <h6 class="font-sans-regular">Your unpaid balance:</h6>
+                  <p class="payout-balance-amount color-blue font-sans-semibold">$1,200 (USD)</p>
                 </div>
 
-                <div class="payout-balance payout-balance-all">
-                  <div class="payout-balance-inner">
-                    <h6 class="font-sans-regular">You earned in total:</h6>
-                    <p class="payout-balance-amount color-grey font-sans-semibold">$21,431 (USD)</p>
-
-                    <p class="payout-balance-notice font-sans-regular">This includes your paid and unpaid balance.</p>
-                  </div>
-                </div>
-
-                <div class="clear"></div>
+                <a href="#" class="button button-medium font-sans-semibold">Request payout of $1,200 (USD)</a>
               </div>
+
+              <div class="payout-balance payout-balance-all">
+                <div class="payout-balance-inner">
+                  <h6 class="font-sans-regular">You earned in total:</h6>
+                  <p class="payout-balance-amount color-grey font-sans-semibold">$21,431 (USD)</p>
+
+                  <p class="payout-balance-notice font-sans-regular">This includes your paid and unpaid balance.</p>
+                </div>
+              </div>
+
+              <div class="clear"></div>
             </div>
           </div>
         </div>
+      </div>
 
-        <hr>
+      <hr>
 
-        <div class="section-wrap">
-          <div class="section-title">
-            <div class="section-title-main">
-              <h3 class="font-sans-semibold">Payout history</h3>
+      <div class="section-wrap">
+        <div class="section-title">
+          <div class="section-title-main">
+            <h3 class="font-sans-semibold">Payout history</h3>
 
-              <div class="section-title-status font-sans-semibold">(42 payouts, 1 pending)</div>
-            </div>
-
-            <div class="clear"></div>
+            <div class="section-title-status font-sans-semibold">(42 payouts, 1 pending)</div>
           </div>
 
-          <div class="section-box">
-            <div class="section-box-inner">
-              <ul class="section-list">
-                <li class="selected">
-                  <div class="section-list-content section-list-content-payouts">
-                    <div class="item-identity">
-                      <h6 class="font-sans-bold">Payout #40</h6>
-                      <p class="font-sans-regular">01/02/2017</p>
-                    </div>
+          <div class="clear"></div>
+        </div>
 
-                    <div class="item-metrics">
-                      <div class="item-metrics-one">
-                        <p class="font-sans-regular">Status</p>
-                        <h5 class="color-green font-sans-semibold">Processed</h5>
-                      </div>
-
-                      <div class="item-metrics-one">
-                        <p class="font-sans-regular">Payout amount</p>
-                        <h5 class="color-blue font-sans-regular">$8,920 (USD)</h5>
-                      </div>
-
-                      <div class="item-metrics-one">
-                        <p class="font-sans-regular">Payout account</p>
-                        <h5 class="color-grey font-sans-regular">SILICON VALLEY BANK</h5>
-                      </div>
-
-                      <div class="clear"></div>
-                    </div>
-
-                    <div class="clear"></div>
+        <div class="section-box">
+          <div class="section-box-inner">
+            <ul class="section-list">
+              <li class="selected">
+                <div class="section-list-content section-list-content-payouts">
+                  <div class="item-identity">
+                    <h6 class="font-sans-bold">Payout #40</h6>
+                    <p class="font-sans-regular">01/02/2017</p>
                   </div>
 
-                  <div class="section-list-actions">
-                    <a href="#" class="button disabled button-tiny font-sans-semibold">Download invoice</a>
+                  <div class="item-metrics">
+                    <div class="item-metrics-one">
+                      <p class="font-sans-regular">Status</p>
+                      <h5 class="color-green font-sans-semibold">Processed</h5>
+                    </div>
+
+                    <div class="item-metrics-one">
+                      <p class="font-sans-regular">Payout amount</p>
+                      <h5 class="color-blue font-sans-regular">$8,920 (USD)</h5>
+                    </div>
+
+                    <div class="item-metrics-one">
+                      <p class="font-sans-regular">Payout account</p>
+                      <h5 class="color-grey font-sans-regular">SILICON VALLEY BANK</h5>
+                    </div>
 
                     <div class="clear"></div>
                   </div>
 
                   <div class="clear"></div>
-                </li>
-              </ul>
-            </div>
-          </div>
+                </div>
 
-          <div class="section-box-more-wrap">
-            <a class="section-box-more font-sans-semibold" href="#">Load older payouts</a>
+                <div class="section-list-actions">
+                  <a href="#" class="button disabled button-tiny font-sans-semibold">Download invoice</a>
+
+                  <div class="clear"></div>
+                </div>
+
+                <div class="clear"></div>
+              </li>
+            </ul>
           </div>
         </div>
-      </section>
-    </main>
-  </body>
-</html>
+
+        <div class="section-box-more-wrap">
+          <a class="section-box-more font-sans-semibold" href="#">Load older payouts</a>
+        </div>
+      </div>
+    </section>
+  </main>
+{% endblock body %}

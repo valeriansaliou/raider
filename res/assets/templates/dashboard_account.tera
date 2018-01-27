@@ -1,207 +1,132 @@
-<!DOCTYPE html>
+{% extends "__base" %}
 
-<html lang="en" dir="ltr">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% import "_dashboard_header" as dashboard_header %}
+{% import "_dashboard_menu" as dashboard_menu %}
 
-    <link rel="icon" href="https://crisp.chat/favicon-512x512.png" type="image/png">
-    <link rel="apple-touch-icon" href="https://crisp.chat/favicon-512x512.png" type="image/png">
+{% block title %}Trackers | Dashboard{% endblock title %}
 
-    <meta name="msapplication-TileColor" content="#3C82E7">
-    <meta name="msapplication-TileImage" content="https://crisp.chat/favicon-512x512.png">
-    <meta property="og:image" content="https://crisp.chat/favicon-512x512.png">
+{% block stylesheets %}
+  {{ super() }}
 
-    <title>Crisp Affiliates | Dashboard | Home</title>
+  <link rel="stylesheet" href="/assets/stylesheets/dashboard.css?v={{ config.runtime_version | escape }}" type="text/css" />
+{% endblock stylesheets %}
 
-    <link rel="stylesheet" href="/assets/stylesheets/common.css" type="text/css" />
-    <link rel="stylesheet" href="/assets/stylesheets/dashboard.css" type="text/css" />
-  </head>
+{% block body %}
+  {{ dashboard_header::header(config=config) }}
 
-  <body>
-    <header>
-      <a class="logo" href="/dashboard/">
-        <img src="https://crisp.chat/static/images/common/logo/blue.svg" alt="" />
+  <main>
+    {{ dashboard_menu::menu(config=config, sidebar="", selected="account") }}
 
-        <span class="logo-label font-sans-semibold">Affiliates</span>
-      </a>
-
-      <ul class="menu">
-        <li class="menu-logout">
-          <a href="/initiate/logout/" class="font-sans-bold">Logout</a>
-        </li>
-      </ul>
-
-      <div class="clear"></div>
-    </header>
-
-    <main>
-      <aside>
-        <div class="infobox">
-          <h6 class="font-sans-bold">Manage your account.</h6>
-          <p class="font-sans-regular">Configure your bank account and legal information for payouts.</p>
-        </div>
-
-        <div class="side">
-          <div class="payout">
-            <div class="payout-inner">
-              <h6 class="font-sans-regular">You have money on your balance:</h6>
-              <p class="payout-amount font-sans-semibold">$1,200 (USD)</p>
-            </div>
-
-            <a href="/dashboard/payouts/" class="button button-medium font-sans-semibold">Go to payout manager</a>
+    <section>
+      <form class="section-wrap" method="post" action="/dashboard/account/">
+        <div class="section-title">
+          <div class="section-title-main">
+            <h2 class="font-sans-bold">Account</h2>
           </div>
-
-          <nav class="navigate">
-            <ul>
-              <li>
-                <a href="/dashboard/trackers/">
-                  <span class="navigate-title font-sans-bold">Trackers</span>
-                  <span class="navigate-label font-sans-regular">Manage tracker links you send to people. See earned money.</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="/dashboard/payouts/">
-                  <span class="navigate-title font-sans-bold">Payouts</span>
-                  <span class="navigate-label font-sans-regular">Request for a payout and review your payout history and invoices.</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="/dashboard/account/" class="selected">
-                  <span class="navigate-title font-sans-bold">Account</span>
-                  <span class="navigate-label font-sans-regular">Manage your account settings, and configure your legal info.</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-
-        <ul class="controls">
-          <li>
-            <a href="https://help.crisp.chat/" target="_blank" class="font-sans-semibold">Get help</a>
-          </li>
-
-          <li>
-            <a href="mailto:support@crisp.chat" class="font-sans-semibold">Contact support</a>
-          </li>
 
           <div class="clear"></div>
-        </ul>
-      </aside>
+        </div>
 
-      <section>
-        <form class="section-wrap" method="post" action="/dashboard/account/">
-          <div class="section-title">
-            <div class="section-title-main">
-              <h2 class="font-sans-bold">Account</h2>
-            </div>
+        <div class="section-box">
+          <div class="section-box-inner">
+            <label class="font-sans-semibold">
+              <span class="label">Account email</span>
+              <input type="email" name="email" placeholder="john.doe@example.com" class="font-sans-regular">
 
-            <div class="clear"></div>
+              <div class="clear"></div>
+            </label>
+
+            <label class="font-sans-semibold">
+              <span class="label">Account password</span>
+              <a href="#" class="link underlined color-blue font-sans-semibold">Change my account password...</a>
+
+              <div class="clear"></div>
+            </label>
+          </div>
+        </div>
+
+        <div class="section-actions">
+          <button type="submit" class="button button-medium font-sans-semibold">Save account settings</button>
+
+          <div class="clear"></div>
+        </div>
+      </form>
+
+      <hr>
+
+      <form class="section-wrap" method="post" action="/dashboard/account/">
+        <div class="section-title">
+          <div class="section-title-main">
+            <h3 class="font-sans-semibold">Payout recipient</h3>
           </div>
 
-          <div class="section-box">
-            <div class="section-box-inner">
-              <label class="font-sans-semibold">
-                <span class="label">Account email</span>
-                <input type="email" name="email" placeholder="john.doe@example.com" class="font-sans-regular">
+          <div class="clear"></div>
+        </div>
 
-                <div class="clear"></div>
-              </label>
+        <div class="section-box">
+          <div class="section-box-notice">
+            <h4 class="font-sans-bold">As every affiliate country is different, we don’t have a strict way to collect recipient account details.</h4>
 
-              <label class="font-sans-semibold">
-                <span class="label">Account password</span>
-                <a href="#" class="link underlined color-blue font-sans-semibold">Change my account password...</a>
-
-                <div class="clear"></div>
-              </label>
-            </div>
+            <p class="font-sans-regular">Thus, we ask you to select the recipient account type (eg. PayPal) and write manually the account details (eg. PayPal email).</p>
+            <p class="font-sans-regular">We also ask you to enter your country, address and full name for invoicing purposes.</p>
           </div>
 
-          <div class="section-actions">
-            <button type="submit" class="button button-medium font-sans-semibold">Save account settings</button>
+          <div class="section-box-inner">
+            <label class="font-sans-semibold">
+              <span class="label">Full name</span>
+              <input type="text" name="full_name" placeholder="John Doe" class="font-sans-regular">
 
-            <div class="clear"></div>
+              <div class="clear"></div>
+            </label>
+
+            <label class="font-sans-semibold">
+              <span class="label">Address</span>
+              <input type="text" name="address" placeholder="42 2nd Street New York City USA" class="font-sans-regular">
+
+              <div class="clear"></div>
+            </label>
+
+            <label class="font-sans-semibold">
+              <span class="label">Country</span>
+
+              <div class="select-wrap">
+                <select name="country" class="font-sans-semibold">
+                  <option value="fr">France</option>
+                  <option value="gb">United Kingdom</option>
+                </select>
+              </div>
+
+              <div class="clear"></div>
+            </label>
+
+            <label class="font-sans-semibold">
+              <span class="label">Payout method</span>
+
+              <div class="select-wrap">
+                <select name="payout_method" class="font-sans-semibold">
+                  <option value="bank">Bank wire</option>
+                  <option value="paypal">PayPal</option>
+                </select>
+              </div>
+
+              <div class="clear"></div>
+            </label>
+
+            <label class="font-sans-semibold">
+              <span class="label">Payout instructions</span>
+              <textarea name="payout_instructions" placeholder="Enter payout account details (eg. bank details)..." class="font-sans-regular"></textarea>
+
+              <div class="clear"></div>
+            </label>
           </div>
-        </form>
+        </div>
 
-        <hr>
+        <div class="section-actions">
+          <button type="submit" class="button button-medium font-sans-semibold">Save payout settings</button>
 
-        <form class="section-wrap" method="post" action="/dashboard/account/">
-          <div class="section-title">
-            <div class="section-title-main">
-              <h3 class="font-sans-semibold">Payout recipient</h3>
-            </div>
-
-            <div class="clear"></div>
-          </div>
-
-          <div class="section-box">
-            <div class="section-box-notice">
-              <h4 class="font-sans-bold">As every affiliate country is different, we don’t have a strict way to collect recipient account details.</h4>
-
-              <p class="font-sans-regular">Thus, we ask you to select the recipient account type (eg. PayPal) and write manually the account details (eg. PayPal email).</p>
-              <p class="font-sans-regular">We also ask you to enter your country, address and full name for invoicing purposes.</p>
-            </div>
-
-            <div class="section-box-inner">
-              <label class="font-sans-semibold">
-                <span class="label">Full name</span>
-                <input type="text" name="full_name" placeholder="John Doe" class="font-sans-regular">
-
-                <div class="clear"></div>
-              </label>
-
-              <label class="font-sans-semibold">
-                <span class="label">Address</span>
-                <input type="text" name="address" placeholder="42 2nd Street New York City USA" class="font-sans-regular">
-
-                <div class="clear"></div>
-              </label>
-
-              <label class="font-sans-semibold">
-                <span class="label">Country</span>
-
-                <div class="select-wrap">
-                  <select name="country" class="font-sans-semibold">
-                    <option value="fr">France</option>
-                    <option value="gb">United Kingdom</option>
-                  </select>
-                </div>
-
-                <div class="clear"></div>
-              </label>
-
-              <label class="font-sans-semibold">
-                <span class="label">Payout method</span>
-
-                <div class="select-wrap">
-                  <select name="payout_method" class="font-sans-semibold">
-                    <option value="bank">Bank wire</option>
-                    <option value="paypal">PayPal</option>
-                  </select>
-                </div>
-
-                <div class="clear"></div>
-              </label>
-
-              <label class="font-sans-semibold">
-                <span class="label">Payout instructions</span>
-                <textarea name="payout_instructions" placeholder="Enter payout account details (eg. bank details)..." class="font-sans-regular"></textarea>
-
-                <div class="clear"></div>
-              </label>
-            </div>
-          </div>
-
-          <div class="section-actions">
-            <button type="submit" class="button button-medium font-sans-semibold">Save payout settings</button>
-
-            <div class="clear"></div>
-          </div>
-        </form>
-      </section>
-    </main>
-  </body>
-</html>
+          <div class="clear"></div>
+        </div>
+      </form>
+    </section>
+  </main>
+{% endblock body %}

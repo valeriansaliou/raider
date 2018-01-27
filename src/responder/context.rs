@@ -14,6 +14,8 @@ lazy_static! {
     pub static ref CONFIG_CONTEXT: ConfigContext = ConfigContext {
         runtime_version: env!("CARGO_PKG_VERSION").to_string(),
         page_title: APP_CONF.branding.page_title.to_owned(),
+        help_url: APP_CONF.branding.help_url.to_owned(),
+        support_url: APP_CONF.branding.support_url.to_owned(),
         icon_color: APP_CONF.branding.icon_color.to_owned(),
         icon_url: APP_CONF.branding.icon_url.to_owned(),
         icon_mime: ImageMime::guess_from(APP_CONF.branding.icon_url.as_str()),
@@ -59,6 +61,8 @@ impl ImageMime {
 pub struct ConfigContext {
     pub runtime_version: String,
     pub page_title: String,
+    pub help_url: SerdeUrl,
+    pub support_url: SerdeUrl,
     pub icon_color: String,
     pub icon_url: SerdeUrl,
     pub icon_mime: ImageMime,

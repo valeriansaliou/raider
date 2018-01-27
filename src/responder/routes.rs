@@ -84,16 +84,24 @@ pub struct RecoverContext<'a> {
 }
 
 #[derive(Serialize)]
-pub struct DashboardBaseContext;
+pub struct DashboardBaseContext<'a> {
+    pub config: &'a ConfigContext
+}
 
 #[derive(Serialize)]
-pub struct DashboardTrackersContext;
+pub struct DashboardTrackersContext<'a> {
+    pub config: &'a ConfigContext
+}
 
 #[derive(Serialize)]
-pub struct DashboardPayoutsContext;
+pub struct DashboardPayoutsContext<'a> {
+    pub config: &'a ConfigContext
+}
 
 #[derive(Serialize)]
-pub struct DashboardAccountContext;
+pub struct DashboardAccountContext<'a> {
+    pub config: &'a ConfigContext
+}
 
 #[get("/")]
 fn get_index(_anon: AuthAnonymousGuard) -> Redirect {
@@ -330,22 +338,30 @@ fn get_initiate_logout(_auth: AuthGuard, cookies: Cookies) -> Redirect {
 
 #[get("/dashboard")]
 fn get_dashboard_base(_auth: AuthGuard) -> Template {
-    Template::render("dashboard_base", &DashboardBaseContext {})
+    Template::render("dashboard_base", &DashboardBaseContext {
+        config: &CONFIG_CONTEXT
+    })
 }
 
 #[get("/dashboard/trackers")]
 fn get_dashboard_trackers(_auth: AuthGuard) -> Template {
-    Template::render("dashboard_trackers", &DashboardTrackersContext {})
+    Template::render("dashboard_trackers", &DashboardTrackersContext {
+        config: &CONFIG_CONTEXT
+    })
 }
 
 #[get("/dashboard/payouts")]
 fn get_dashboard_payouts(_auth: AuthGuard) -> Template {
-    Template::render("dashboard_payouts", &DashboardPayoutsContext {})
+    Template::render("dashboard_payouts", &DashboardPayoutsContext {
+        config: &CONFIG_CONTEXT
+    })
 }
 
 #[get("/dashboard/account")]
 fn get_dashboard_account(_auth: AuthGuard) -> Template {
-    Template::render("dashboard_account", &DashboardAccountContext {})
+    Template::render("dashboard_account", &DashboardAccountContext {
+        config: &CONFIG_CONTEXT
+    })
 }
 
 #[get("/robots.txt")]

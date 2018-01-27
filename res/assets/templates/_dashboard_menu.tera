@@ -1,0 +1,56 @@
+{% macro menu(config, sidebar, selected) %}
+  <aside class="{{ sidebar | escape }}">
+    <div class="infobox">
+      <h6 class="font-sans-bold">This is your affiliates dashboard.</h6>
+      <p class="font-sans-regular">Manage your trackers, payouts &amp; account. Pick a category below.</p>
+    </div>
+
+    <div class="side">
+      <div class="payout">
+        <div class="payout-inner">
+          <h6 class="font-sans-regular">You have money on your balance:</h6>
+          <p class="payout-amount font-sans-semibold">$1,200 (USD)</p>
+        </div>
+
+        <a href="/dashboard/payouts/" class="button button-medium font-sans-semibold">Go to payout manager</a>
+      </div>
+
+      <nav class="navigate">
+        <ul>
+          <li>
+            <a href="/dashboard/trackers/" class="{% if selected == "trackers" %}selected{% endif %}">
+              <span class="navigate-title font-sans-bold">Trackers</span>
+              <span class="navigate-label font-sans-regular">Manage tracker links you send to people. See earned money.</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="/dashboard/payouts/" class="{% if selected == "payouts" %}selected{% endif %}">
+              <span class="navigate-title font-sans-bold">Payouts</span>
+              <span class="navigate-label font-sans-regular">Request for a payout and review your payout history and invoices.</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="/dashboard/account/" class="{% if selected == "account" %}selected{% endif %}">
+              <span class="navigate-title font-sans-bold">Account</span>
+              <span class="navigate-label font-sans-regular">Manage your account settings, and configure your legal info.</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <ul class="controls">
+      <li>
+        <a href="{{ config.help_url | escape }}" target="_blank" class="font-sans-semibold">Get help</a>
+      </li>
+
+      <li>
+        <a href="{{ config.support_url | escape }}" class="font-sans-semibold">Contact support</a>
+      </li>
+
+      <div class="clear"></div>
+    </ul>
+  </aside>
+{% endmacro menu %}
