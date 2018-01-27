@@ -16,6 +16,7 @@ use rocket_contrib::Template;
 use diesel;
 use diesel::prelude::*;
 
+use super::context::{CONFIG_CONTEXT, ConfigContext};
 use super::asset_file::AssetFile;
 use super::auth_guard::{
     AuthGuard,
@@ -64,19 +65,22 @@ pub struct RecoverData {
 }
 
 #[derive(Serialize)]
-pub struct LoginContext {
-    pub failure: bool
+pub struct LoginContext<'a> {
+    pub failure: bool,
+    pub config: &'a ConfigContext
 }
 
 #[derive(Serialize)]
-pub struct SignupContext {
-    pub failure: bool
+pub struct SignupContext<'a> {
+    pub failure: bool,
+    pub config: &'a ConfigContext
 }
 
 #[derive(Serialize)]
-pub struct RecoverContext {
+pub struct RecoverContext<'a> {
     pub success: bool,
-    pub failure: bool
+    pub failure: bool,
+    pub config: &'a ConfigContext
 }
 
 #[derive(Serialize)]
@@ -104,14 +108,16 @@ fn get_initiate_base(_anon: AuthAnonymousGuard) -> Redirect {
 #[get("/initiate/login")]
 fn get_initiate_login(_anon: AuthAnonymousGuard) -> Template {
     Template::render("initiate_login", &LoginContext {
-        failure: false
+        failure: false,
+        config: &CONFIG_CONTEXT
     })
 }
 
 #[get("/initiate/login?<args>")]
 fn get_initiate_login_args(_anon: AuthAnonymousGuard, args: InitiateArgs) -> Template {
     Template::render("initiate_login", &LoginContext {
-        failure: args.result == "failure"
+        failure: args.result == "failure",
+        config: &CONFIG_CONTEXT
     })
 }
 
@@ -179,14 +185,16 @@ fn post_initiate_login(
 #[get("/initiate/signup")]
 fn get_initiate_signup(_anon: AuthAnonymousGuard) -> Template {
     Template::render("initiate_signup", &SignupContext {
-        failure: false
+        failure: false,
+        config: &CONFIG_CONTEXT
     })
 }
 
 #[get("/initiate/signup?<args>")]
 fn get_initiate_signup_args(_anon: AuthAnonymousGuard, args: InitiateArgs) -> Template {
     Template::render("initiate_signup", &SignupContext {
-        failure: args.result == "failure"
+        failure: args.result == "failure",
+        config: &CONFIG_CONTEXT
     })
 }
 
@@ -240,6 +248,7 @@ fn get_initiate_recover(_anon: AuthAnonymousGuard) -> Template {
     Template::render("initiate_recover", &RecoverContext {
         failure: false,
         success: false,
+        config: &CONFIG_CONTEXT
     })
 }
 
@@ -247,7 +256,8 @@ fn get_initiate_recover(_anon: AuthAnonymousGuard) -> Template {
 fn get_initiate_recover_args(_anon: AuthAnonymousGuard, args: InitiateArgs) -> Template {
     Template::render("initiate_recover", &RecoverContext {
         failure: args.result == "failure",
-        success: args.result == "success"
+        success: args.result == "success",
+        config: &CONFIG_CONTEXT
     })
 }
 

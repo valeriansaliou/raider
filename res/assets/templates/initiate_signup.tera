@@ -1,68 +1,57 @@
-<!DOCTYPE html>
+{% extends "__base" %}
 
-<html lang="en" dir="ltr">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% block title %}Signup{% endblock title %}
 
-    <link rel="icon" href="https://crisp.chat/favicon-512x512.png" type="image/png">
-    <link rel="apple-touch-icon" href="https://crisp.chat/favicon-512x512.png" type="image/png">
+{% block stylesheets %}
+  {{ super() }}
 
-    <meta name="msapplication-TileColor" content="#3C82E7">
-    <meta name="msapplication-TileImage" content="https://crisp.chat/favicon-512x512.png">
-    <meta property="og:image" content="https://crisp.chat/favicon-512x512.png">
+  <link rel="stylesheet" href="/assets/stylesheets/initiate.css?v={{ config.runtime_version | escape }}" type="text/css" />
+{% endblock stylesheets %}
 
-    <title>Crisp Affiliates | Signup</title>
+{% block body %}
+  {% if failure %}
+    <mark class="failure font-sans-bold">Oops. The account could not be created. Please check your credentials and try again.</mark>
+  {% else %}
+    <mark class="notice font-sans-bold">Signup for a new {{ config.page_title | escape }} account to access your dashboard.</mark>
+  {% endif %}
 
-    <link rel="stylesheet" href="/assets/stylesheets/common.css" type="text/css" />
-    <link rel="stylesheet" href="/assets/stylesheets/initiate.css" type="text/css" />
-  </head>
+  <main>
+    <a class="logo" href="/dashboard/">
+      <div class="logo-inner">
+        <img src="{{ config.logo_white_url | escape }}" alt="" />
 
-  <body>
+        <span class="logo-label font-sans-semibold">Affiliates</span>
+      </div>
+    </a>
+
     {% if failure %}
-      <mark class="failure font-sans-bold">Oops. The account could not be created. Please check your credentials and try again.</mark>
-    {% else %}
-      <mark class="notice font-sans-bold">Signup for a new Crisp Affiliates account to access your dashboard.</mark>
+      <p class="error font-sans-semibold">Could not create account with this email.</p>
     {% endif %}
 
-    <main>
-      <a class="logo" href="/dashboard/">
-        <div class="logo-inner">
-          <img src="https://crisp.chat/static/images/common/logo/white.svg" alt="" />
+    <form action="/initiate/signup/" method="post" name="signup">
+      <label>
+        <input type="email" name="email" placeholder="Email address" class="font-sans-regular" autofocus>
+      </label>
 
-          <span class="logo-label font-sans-semibold">Affiliates</span>
-        </div>
-      </a>
+      <label>
+        <input type="password" name="password" placeholder="Password" class="font-sans-regular">
+      </label>
 
-      {% if failure %}
-        <p class="error font-sans-semibold">Could not create account with this email.</p>
-      {% endif %}
+      <label>
+        <input type="password" name="password_repeat" placeholder="Password (repeat)" class="font-sans-regular">
+      </label>
 
-      <form action="/initiate/signup/" method="post" name="signup">
-        <label>
-          <input type="email" name="email" placeholder="Email address" class="font-sans-regular" autofocus>
-        </label>
+      <button type="submit" class="button button-large font-sans-semibold">Create your {{ config.page_title | escape }} account</button>
+    </form>
 
-        <label>
-          <input type="password" name="password" placeholder="Password" class="font-sans-regular">
-        </label>
+    <nav>
+      <ul>
+        <li>
+          <a href="/initiate/login/" class="font-sans-semibold">Login to your account.</a>
+        </li>
 
-        <label>
-          <input type="password" name="password_repeat" placeholder="Password (repeat)" class="font-sans-regular">
-        </label>
-
-        <button type="submit" class="button button-large font-sans-semibold">Create your Crisp Affiliates account</button>
-      </form>
-
-      <nav>
-        <ul>
-          <li>
-            <a href="/initiate/login/" class="font-sans-semibold">Login to your account.</a>
-          </li>
-
-          <div class="clear"></div>
-        </ul>
-      </nav>
-    </main>
-  </body>
-</html>
+        <div class="clear"></div>
+      </ul>
+    </nav>
+  </main>
+{% endblock body %}
