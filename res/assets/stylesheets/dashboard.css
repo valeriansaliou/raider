@@ -2,6 +2,7 @@ body {
   display: flex;
   flex-direction: column;
   min-width: 1020px;
+  overflow: hidden;
   position: absolute;
   left: 0;
   right: 0;
@@ -63,17 +64,44 @@ header .menu-logout a {
   text-decoration: underline;
 }
 
-main {
+main,
+.main-inner {
   overflow: hidden;
   flex: 1;
   display: flex;
   flex-direction: row;
 }
 
+main[data-pending="true"] {
+  position: relative;
+}
+
+main[data-pending="true"]:after {
+  content: "Submitting. Please wait...";
+  font-family: "Raider Open Sans Semibold", sans-serif;
+  background: rgba(0, 0, 0, 0.95);
+  color: #FFFFFF;
+  font-size: 11.5px;
+  padding: 8px 22px 11px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 1;
+  transform: translateX(-50%);
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+main[data-pending="true"] .main-inner {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 main aside {
   background: #FFFFFF;
   width: 280px;
-  position: relative;
+  display: flex;
+  flex-direction: column;
   box-shadow: 1px 0 3px 0 rgba(15, 31, 64, 0.10);
 }
 
@@ -103,7 +131,10 @@ main aside .infobox p {
 }
 
 main aside .side {
-  padding: 24px 20px 0;
+  padding: 24px 20px 12px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  flex: 1;
 }
 
 main aside .payout {
@@ -191,10 +222,6 @@ main aside .controls {
   background: rgba(255, 255, 255, 0.98);
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   padding: 16px 22px 18px;
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
 }
 
 main aside .controls li {
@@ -239,11 +266,7 @@ main aside .controls li:nth-of-type(1) a:before {
 }
 
 main section {
-  max-width: 1040px;
-  margin-left: auto;
-  margin-right: auto;
   overflow: auto;
-  padding-bottom: 24px;
   flex: 1;
 }
 
@@ -252,6 +275,13 @@ main section hr {
   border-width: 1px 0 0 0;
   border-style: solid;
   margin: 16px 0 4px;
+}
+
+.section-inner {
+  max-width: 1040px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 24px;
 }
 
 .section-wrap {

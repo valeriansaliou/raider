@@ -1,5 +1,6 @@
 {% extends "__base" %}
 
+{% import "_dashboard_toast" as dashboard_toast %}
 {% import "_dashboard_header" as dashboard_header %}
 {% import "_dashboard_menu" as dashboard_menu %}
 
@@ -11,128 +12,152 @@
   <link rel="stylesheet" href="/assets/stylesheets/dashboard.css?v={{ config.runtime_version | escape }}" type="text/css" />
 {% endblock stylesheets %}
 
+{% block javascripts %}
+  {{ super() }}
+
+  <script src="/assets/javascripts/dashboard.js?v={{ config.runtime_version | escape }}" type="text/javascript"></script>
+
+  <script type="text/javascript">
+    window.onload = function() {
+      {% if failure %}
+        ToastManager.error("Account not saved.", "Your account settings could not be saved. Check the data you provided.");
+      {% elif neutral %}
+        ToastManager.warning("All good.", "You did not change any settings. No field has been updated.");
+      {% elif success %}
+        ToastManager.success("Account saved.", "Your account settings have been successfully saved.");
+      {% endif %}
+    };
+  </script>
+{% endblock javascripts %}
+
 {% block body %}
   {{ dashboard_header::header(config=config) }}
 
-  <main>
-    {{ dashboard_menu::menu(config=config, common=common, sidebar="", selected="account", infobox_title="Manage your account.", infobox_label="Configure your bank account and legal information for payouts.") }}
+  <main data-pending="false">
+    <div class="main-inner">
+      {{ dashboard_menu::menu(config=config, common=common, sidebar="", selected="account", infobox_title="Manage your account.", infobox_label="Configure your bank account and legal information for payouts.") }}
 
-    <section>
-      <form class="section-wrap" method="post" action="/dashboard/account/">
-        <div class="section-title">
-          <div class="section-title-main">
-            <h2 class="font-sans-bold">Account</h2>
-          </div>
-
-          <div class="clear"></div>
-        </div>
-
-        <div class="section-box">
-          <div class="section-box-inner">
-            <label class="font-sans-semibold">
-              <span class="label">Account email</span>
-              <input type="email" name="email" placeholder="john.doe@example.com" value="{{ account.email | escape }}" class="font-sans-regular">
-
-              <div class="clear"></div>
-            </label>
-
-            <label class="font-sans-semibold">
-              <span class="label">Account password</span>
-              <a href="#" class="link underlined color-blue font-sans-semibold">Change my account password...</a>
-
-              <div class="clear"></div>
-            </label>
-          </div>
-        </div>
-
-        <div class="section-actions">
-          <button type="submit" class="button button-medium font-sans-semibold">Save account settings</button>
-
-          <div class="clear"></div>
-        </div>
-      </form>
-
-      <hr>
-
-      <form class="section-wrap" method="post" action="/dashboard/account/">
-        <div class="section-title">
-          <div class="section-title-main">
-            <h3 class="font-sans-semibold">Payout recipient</h3>
-          </div>
-
-          <div class="clear"></div>
-        </div>
-
-        <div class="section-box">
-          <div class="section-box-notice">
-            <h4 class="font-sans-bold">As every affiliate country is different, we don’t have a strict way to collect recipient account details.</h4>
-
-            <p class="font-sans-regular">Thus, we ask you to select the recipient account type (eg. PayPal) and manually write the account details (eg. PayPal email).</p>
-            <p class="font-sans-regular">We also ask you to enter your country, address and full name for invoicing purposes.</p>
-          </div>
-
-          <div class="section-box-inner">
-            <label class="font-sans-semibold">
-              <span class="label">Full name</span>
-              <input type="text" name="full_name" placeholder="John Doe" value="{{ payout.full_name | escape }}" class="font-sans-regular">
-
-              <div class="clear"></div>
-            </label>
-
-            <label class="font-sans-semibold">
-              <span class="label">Address</span>
-              <input type="text" name="address" placeholder="42 2nd Street New York City USA" value="{{ payout.address | escape }}" class="font-sans-regular">
-
-              <div class="clear"></div>
-            </label>
-
-            <label class="font-sans-semibold">
-              <span class="label">Country</span>
-
-              <div class="select-wrap">
-                <select name="country" class="font-sans-semibold">
-                  <option value="">Select a country...</option>
-
-                  {% for country in countries %}
-                    <option value="{{ country.0 | escape }}" {% if payout.country == country.0 %}selected{% endif %}>{{ country.1 | escape }}</option>
-                  {% endfor %}
-                </select>
+      <section>
+        <div class="section-inner">
+          <form class="section-wrap" method="post" action="/dashboard/account/form/account/" onsubmit="FormManager.submit()">
+            <div class="section-title">
+              <div class="section-title-main">
+                <h2 class="font-sans-bold">Account</h2>
               </div>
 
               <div class="clear"></div>
-            </label>
+            </div>
 
-            <label class="font-sans-semibold">
-              <span class="label">Payout method</span>
+            <div class="section-box">
+              <div class="section-box-inner">
+                <label class="font-sans-semibold">
+                  <span class="label">Account email</span>
+                  <input type="email" name="email" placeholder="john.doe@example.com" value="{{ account.email | escape }}" class="font-sans-regular">
 
-              <div class="select-wrap">
-                <select name="payout_method" class="font-sans-semibold">
-                  <option value="">Select a method...</option>
+                  <div class="clear"></div>
+                </label>
 
-                  {% for payout_method in payout_methods %}
-                    <option value="{{ payout_method.0 | escape }}" {% if payout.method == payout_method.0 %}selected{% endif %}>{{ payout_method.1 | escape }}</option>
-                  {% endfor %}
-                </select>
+                <label class="font-sans-semibold">
+                  <span class="label">Account password</span>
+                  <a href="#" class="link underlined color-blue font-sans-semibold">Change my account password...</a>
+
+                  <div class="clear"></div>
+                </label>
+              </div>
+            </div>
+
+            <div class="section-actions">
+              <button type="submit" class="button button-medium font-sans-semibold">Save account settings</button>
+
+              <div class="clear"></div>
+            </div>
+          </form>
+
+          <hr>
+
+          <form class="section-wrap" method="post" action="/dashboard/account/form/payout/" onsubmit="FormManager.submit()">
+            <div class="section-title">
+              <div class="section-title-main">
+                <h3 class="font-sans-semibold">Payout recipient</h3>
               </div>
 
               <div class="clear"></div>
-            </label>
+            </div>
 
-            <label class="font-sans-semibold">
-              <span class="label">Payout instructions</span>
-              <textarea name="payout_instructions" placeholder="Enter payout account details (eg. bank details or PayPal email or Bitcoin address)..." value="{{ payout.instructions | escape }}" class="font-sans-regular"></textarea>
+            <div class="section-box">
+              <div class="section-box-notice">
+                <h4 class="font-sans-bold">As every affiliate country is different, we don’t have a strict way to collect recipient account details.</h4>
+
+                <p class="font-sans-regular">Thus, we ask you to select the recipient account type (eg. PayPal) and manually write the account details (eg. PayPal email).</p>
+                <p class="font-sans-regular">We also ask you to enter your country, address and full name for invoicing purposes.</p>
+              </div>
+
+              <div class="section-box-inner">
+                <label class="font-sans-semibold">
+                  <span class="label">Full name</span>
+                  <input type="text" name="full_name" placeholder="John Doe" value="{{ payout.full_name | escape }}" class="font-sans-regular">
+
+                  <div class="clear"></div>
+                </label>
+
+                <label class="font-sans-semibold">
+                  <span class="label">Address</span>
+                  <input type="text" name="address" placeholder="42 2nd Street New York City USA" value="{{ payout.address | escape }}" class="font-sans-regular">
+
+                  <div class="clear"></div>
+                </label>
+
+                <label class="font-sans-semibold">
+                  <span class="label">Country</span>
+
+                  <div class="select-wrap">
+                    <select name="country" class="font-sans-semibold">
+                      <option value="">Select a country...</option>
+
+                      {% for country in countries %}
+                        <option value="{{ country.0 | escape }}" {% if payout.country == country.0 %}selected{% endif %}>{{ country.1 | escape }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
+                  <div class="clear"></div>
+                </label>
+
+                <label class="font-sans-semibold">
+                  <span class="label">Payout method</span>
+
+                  <div class="select-wrap">
+                    <select name="payout_method" class="font-sans-semibold">
+                      <option value="">Select a method...</option>
+
+                      {% for payout_method in payout_methods %}
+                        <option value="{{ payout_method.0 | escape }}" {% if payout.method == payout_method.0 %}selected{% endif %}>{{ payout_method.1 | escape }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
+                  <div class="clear"></div>
+                </label>
+
+                <label class="font-sans-semibold">
+                  <span class="label">Payout instructions</span>
+                  <textarea name="payout_instructions" placeholder="Enter payout account details (eg. bank details or PayPal email or Bitcoin address)..." class="font-sans-regular">{{ payout.instructions | escape }}</textarea>
+
+                  <div class="clear"></div>
+                </label>
+              </div>
+            </div>
+
+            <div class="section-actions">
+              <button type="submit" class="button button-medium font-sans-semibold">Save payout settings</button>
 
               <div class="clear"></div>
-            </label>
-          </div>
+            </div>
+          </form>
         </div>
-
-        <div class="section-actions">
-          <button type="submit" class="button button-medium font-sans-semibold">Save payout settings</button>
-
-          <div class="clear"></div>
-        </div>
-      </form>
-    </section>
+      </section>
+    </div>
   </main>
+
+  {{ dashboard_toast::toast() }}
 {% endblock body %}

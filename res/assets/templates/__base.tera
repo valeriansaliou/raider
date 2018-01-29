@@ -17,6 +17,8 @@
     {% block stylesheets %}
       <link rel="stylesheet" href="/assets/stylesheets/common.css?v={{ config.runtime_version | escape }}" type="text/css" />
     {% endblock stylesheets %}
+
+    {% block javascripts %}{% endblock javascripts %}
   </head>
 
   <body>

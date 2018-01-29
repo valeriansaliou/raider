@@ -123,6 +123,7 @@ a:hover {
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 100;
   animation-duration: 0.25s;
   animation-name: lock-fade;
 }
@@ -437,18 +438,11 @@ button.button.button-tiny {
   transform: translate(-50%, -50%);
 }
 
-.toast-wrap {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
 .toast {
   width: 100%;
   position: relative;
   z-index: 90;
-  margin-bottom: -46px;
+  margin-bottom: -47px;
   visibility: hidden;
   transition: margin-bottom 0.25s linear;
 }

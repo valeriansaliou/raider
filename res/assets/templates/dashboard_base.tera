@@ -1,5 +1,6 @@
 {% extends "__base" %}
 
+{% import "_dashboard_toast" as dashboard_toast %}
 {% import "_dashboard_header" as dashboard_header %}
 {% import "_dashboard_menu" as dashboard_menu %}
 
@@ -11,10 +12,20 @@
   <link rel="stylesheet" href="/assets/stylesheets/dashboard.css?v={{ config.runtime_version | escape }}" type="text/css" />
 {% endblock stylesheets %}
 
+{% block javascripts %}
+  {{ super() }}
+
+  <script src="/assets/javascripts/dashboard.js?v={{ config.runtime_version | escape }}" type="text/javascript"></script>
+{% endblock javascripts %}
+
 {% block body %}
   {{ dashboard_header::header(config=config) }}
 
-  <main>
-    {{ dashboard_menu::menu(config=config, common=common, sidebar="animated", selected="", infobox_title="This is your affiliates dashboard.", infobox_label="Manage your trackers, payouts &amp; account. Pick a category below.") }}
+  <main data-pending="false">
+    <div class="main-inner">
+      {{ dashboard_menu::menu(config=config, common=common, sidebar="animated", selected="", infobox_title="This is your affiliates dashboard.", infobox_label="Manage your trackers, payouts &amp; account. Pick a category below.") }}
+    </div>
   </main>
+
+  {{ dashboard_toast::toast() }}
 {% endblock body %}

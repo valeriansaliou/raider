@@ -62,14 +62,19 @@ pub fn run() {
                 routes::get_dashboard_trackers,
                 routes::get_dashboard_payouts,
                 routes::get_dashboard_account,
+                routes::get_dashboard_account_args,
 
                 routes::get_assets_fonts,
                 routes::get_assets_images,
                 routes::get_assets_stylesheets,
+                routes::get_assets_javascripts,
 
                 routes::post_initiate_login,
                 routes::post_initiate_signup,
                 routes::post_initiate_recover,
+
+                routes::post_dashboard_account_form_account,
+                routes::post_dashboard_account_form_payout,
             ],
         )
         .catch(errors![

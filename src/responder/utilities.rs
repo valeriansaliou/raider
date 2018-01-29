@@ -44,3 +44,11 @@ pub fn get_balance(db: &DbConn, user_id: i32, status: Option<&'static str>) -> S
 
     balance_count.unwrap_or(0.0).separated_string_with_fixed_place(2)
 }
+
+pub fn check_argument_value(argument: &Option<String>, against: &str) -> bool {
+    if let &Some(ref value) = argument {
+        value == against
+    } else {
+        false
+    }
+}

@@ -1,5 +1,6 @@
 {% extends "__base" %}
 
+{% import "_dashboard_toast" as dashboard_toast %}
 {% import "_dashboard_header" as dashboard_header %}
 {% import "_dashboard_menu" as dashboard_menu %}
 
@@ -11,114 +12,126 @@
   <link rel="stylesheet" href="/assets/stylesheets/dashboard.css?v={{ config.runtime_version | escape }}" type="text/css" />
 {% endblock stylesheets %}
 
+{% block javascripts %}
+  {{ super() }}
+
+  <script src="/assets/javascripts/dashboard.js?v={{ config.runtime_version | escape }}" type="text/javascript"></script>
+{% endblock javascripts %}
+
 {% block body %}
   {{ dashboard_header::header(config=config) }}
 
-  <main>
-    {{ dashboard_menu::menu(config=config, common=common, sidebar="", selected="payouts", infobox_title="Manage your payouts.", infobox_label="Get the money you earned wired to your bank and retrieve invoices.") }}
+  <main data-pending="false">
+    <div class="main-inner">
+      {{ dashboard_menu::menu(config=config, common=common, sidebar="", selected="payouts", infobox_title="Manage your payouts.", infobox_label="Get the money you earned wired to your bank and retrieve invoices.") }}
 
-    <section>
-      <div class="section-wrap">
-        <div class="section-title">
-          <div class="section-title-main">
-            <h2 class="font-sans-bold">Payouts</h2>
-          </div>
-
-          <div class="clear"></div>
-        </div>
-
-        <div class="section-box">
-          <div class="section-box-inner">
-            <div class="payout-balances">
-              <div class="payout-balance payout-balance-unpaid">
-                <div class="payout-balance-inner">
-                  <h6 class="font-sans-regular">Your unpaid balance:</h6>
-                  <p class="payout-balance-amount color-blue font-sans-semibold">{{ config.payout_currency | escape }} {{ common.balance_pending | escape }}</p>
-                </div>
-
-                <a href="#" class="button button-medium font-sans-semibold {% if common.balance_pending == "0.00" %}disabled{% endif %}">Request payout of {{ config.payout_currency | escape }} {{ common.balance_pending | escape }}</a>
-              </div>
-
-              <div class="payout-balance payout-balance-all">
-                <div class="payout-balance-inner">
-                  <h6 class="font-sans-regular">You earned in total:</h6>
-                  <p class="payout-balance-amount color-grey font-sans-semibold">{{ config.payout_currency | escape }} {{ balance_total | escape }}</p>
-
-                  <p class="payout-balance-notice font-sans-regular">This includes your paid and unpaid balance.</p>
-                </div>
+      <section>
+        <div class="section-inner">
+          <div class="section-wrap">
+            <div class="section-title">
+              <div class="section-title-main">
+                <h2 class="font-sans-bold">Payouts</h2>
               </div>
 
               <div class="clear"></div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <hr>
-
-      <div class="section-wrap">
-        <div class="section-title">
-          <div class="section-title-main">
-            <h3 class="font-sans-semibold">Payout history</h3>
-
-            <div class="section-title-status font-sans-semibold">({{ payouts | length }} payout{{ payouts | length | pluralize }})</div>
-          </div>
-
-          <div class="clear"></div>
-        </div>
-
-        <div class="section-box">
-          <div class="section-box-inner">
-            <ul class="section-list">
-              {% for payout in payouts %}
-                <li class="selected">
-                  <div class="section-list-content section-list-content-payouts">
-                    <div class="item-identity">
-                      <h6 class="font-sans-bold">Payout #{{ payout.number }}</h6>
-                      <p class="font-sans-regular">{{ payout.date | escape }}</p>
+            <div class="section-box">
+              <div class="section-box-inner">
+                <div class="payout-balances">
+                  <div class="payout-balance payout-balance-unpaid">
+                    <div class="payout-balance-inner">
+                      <h6 class="font-sans-regular">Your unpaid balance:</h6>
+                      <p class="payout-balance-amount color-blue font-sans-semibold">{{ config.payout_currency | escape }} {{ common.balance_pending | escape }}</p>
                     </div>
 
-                    <div class="item-metrics">
-                      <div class="item-metrics-one">
-                        <p class="font-sans-regular">Status</p>
-                        <h5 class="color-green capitalize font-sans-semibold">{{ payout.status | escape }}</h5>
-                      </div>
-
-                      <div class="item-metrics-one">
-                        <p class="font-sans-regular">Payout amount</p>
-                        <h5 class="color-blue font-sans-regular">{{ payout.currency | escape }} {{ payout.amount | escape }}</h5>
-                      </div>
-
-                      <div class="item-metrics-one">
-                        <p class="font-sans-regular">Payout account</p>
-                        <h5 class="color-grey uppercase font-sans-regular">{{ payout.account | escape }}</h5>
-                      </div>
-
-                      <div class="clear"></div>
-                    </div>
-
-                    <div class="clear"></div>
+                    <a href="#" class="button button-medium font-sans-semibold {% if common.balance_pending == "0.00" %}disabled{% endif %}">Request payout of {{ config.payout_currency | escape }} {{ common.balance_pending | escape }}</a>
                   </div>
 
-                  <div class="section-list-actions">
-                    <a href="{{ payout.invoice_url | escape }}" class="button button-tiny font-sans-semibold {% if not payout.invoice_url %}disabled{% endif %}">Download invoice</a>
+                  <div class="payout-balance payout-balance-all">
+                    <div class="payout-balance-inner">
+                      <h6 class="font-sans-regular">You earned in total:</h6>
+                      <p class="payout-balance-amount color-grey font-sans-semibold">{{ config.payout_currency | escape }} {{ balance_total | escape }}</p>
 
-                    <div class="clear"></div>
+                      <p class="payout-balance-notice font-sans-regular">This includes your paid and unpaid balance.</p>
+                    </div>
                   </div>
 
                   <div class="clear"></div>
-                </li>
-              {% endfor %}
-            </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="section-wrap">
+            <div class="section-title">
+              <div class="section-title-main">
+                <h3 class="font-sans-semibold">Payout history</h3>
+
+                <div class="section-title-status font-sans-semibold">({{ payouts | length }} payout{{ payouts | length | pluralize }})</div>
+              </div>
+
+              <div class="clear"></div>
+            </div>
+
+            <div class="section-box">
+              <div class="section-box-inner">
+                <ul class="section-list">
+                  {% for payout in payouts %}
+                    <li class="selected">
+                      <div class="section-list-content section-list-content-payouts">
+                        <div class="item-identity">
+                          <h6 class="font-sans-bold">Payout #{{ payout.number }}</h6>
+                          <p class="font-sans-regular">{{ payout.date | escape }}</p>
+                        </div>
+
+                        <div class="item-metrics">
+                          <div class="item-metrics-one">
+                            <p class="font-sans-regular">Status</p>
+                            <h5 class="color-green capitalize font-sans-semibold">{{ payout.status | escape }}</h5>
+                          </div>
+
+                          <div class="item-metrics-one">
+                            <p class="font-sans-regular">Payout amount</p>
+                            <h5 class="color-blue font-sans-regular">{{ payout.currency | escape }} {{ payout.amount | escape }}</h5>
+                          </div>
+
+                          <div class="item-metrics-one">
+                            <p class="font-sans-regular">Payout account</p>
+                            <h5 class="color-grey uppercase font-sans-regular">{{ payout.account | escape }}</h5>
+                          </div>
+
+                          <div class="clear"></div>
+                        </div>
+
+                        <div class="clear"></div>
+                      </div>
+
+                      <div class="section-list-actions">
+                        <a href="{{ payout.invoice_url | escape }}" class="button button-tiny font-sans-semibold {% if not payout.invoice_url %}disabled{% endif %}">Download invoice</a>
+
+                        <div class="clear"></div>
+                      </div>
+
+                      <div class="clear"></div>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+
+            {% if has_more %}
+              <div class="section-box-more-wrap">
+                <a class="section-box-more font-sans-semibold" href="#">Load older payouts</a>
+              </div>
+            {% endif %}
           </div>
         </div>
-
-        {% if has_more %}
-          <div class="section-box-more-wrap">
-            <a class="section-box-more font-sans-semibold" href="#">Load older payouts</a>
-          </div>
-        {% endif %}
-      </div>
-    </section>
+      </section>
+    </div>
   </main>
+
+  {{ dashboard_toast::toast() }}
 {% endblock body %}

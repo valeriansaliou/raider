@@ -31,7 +31,7 @@ use super::auth_guard::{
     password_encode as auth_password_encode,
     recovery_generate as auth_recovery_generate
 };
-use super::utilities::get_balance;
+use super::utilities::{get_balance, check_argument_value};
 use notifier::email::EmailNotifier;
 use storage::db::DbConn;
 use storage::schemas::account::dsl::{
@@ -41,6 +41,11 @@ use storage::schemas::account::dsl::{
     password as account_password,
     recovery as account_recovery,
     commission as account_commission,
+    full_name as account_full_name,
+    address as account_address,
+    country as account_country,
+    payout_method as account_payout_method,
+    payout_instructions as account_payout_instructions,
     created_at as account_created_at,
     updated_at as account_updated_at
 };
@@ -66,7 +71,12 @@ const PAYOUTS_LIMIT_PER_PAGE: i64 = 50;
 
 #[derive(FromForm)]
 pub struct InitiateArgs {
-    result: String,
+    result: Option<String>,
+}
+
+#[derive(FromForm)]
+pub struct DashboardArgs {
+    result: Option<String>,
 }
 
 #[derive(FromForm)]
@@ -85,6 +95,20 @@ pub struct SignupData {
 #[derive(FromForm)]
 pub struct RecoverData {
     email: String,
+}
+
+#[derive(FromForm)]
+pub struct DashboardAccountData {
+    email: String,
+}
+
+#[derive(FromForm)]
+pub struct DashboardPayoutData {
+    full_name: String,
+    address: String,
+    country: String,
+    payout_method: String,
+    payout_instructions: String,
 }
 
 #[derive(Serialize)]
@@ -155,6 +179,9 @@ pub struct DashboardPayoutsContextPayout {
 
 #[derive(Serialize)]
 pub struct DashboardAccountContext<'a, 'b> {
+    pub success: bool,
+    pub neutral: bool,
+    pub failure: bool,
     pub common: DashboardCommonContext,
     pub config: &'a ConfigContext,
     pub payout_methods: &'static [(&'static str, &'static str)],
@@ -196,17 +223,16 @@ fn get_initiate_base(_anon: AuthAnonymousGuard) -> Redirect {
 }
 
 #[get("/initiate/login")]
-fn get_initiate_login(_anon: AuthAnonymousGuard) -> Template {
-    Template::render("initiate_login", &LoginContext {
-        failure: false,
-        config: &CONFIG_CONTEXT
+fn get_initiate_login(anon: AuthAnonymousGuard) -> Template {
+    get_initiate_login_args(anon, InitiateArgs {
+        result: None
     })
 }
 
 #[get("/initiate/login?<args>")]
 fn get_initiate_login_args(_anon: AuthAnonymousGuard, args: InitiateArgs) -> Template {
     Template::render("initiate_login", &LoginContext {
-        failure: args.result == "failure",
+        failure: check_argument_value(&args.result, "failure"),
         config: &CONFIG_CONTEXT
     })
 }
@@ -273,17 +299,16 @@ fn post_initiate_login(
 }
 
 #[get("/initiate/signup")]
-fn get_initiate_signup(_anon: AuthAnonymousGuard) -> Template {
-    Template::render("initiate_signup", &SignupContext {
-        failure: false,
-        config: &CONFIG_CONTEXT
+fn get_initiate_signup(anon: AuthAnonymousGuard) -> Template {
+    get_initiate_signup_args(anon, InitiateArgs {
+        result: None
     })
 }
 
 #[get("/initiate/signup?<args>")]
 fn get_initiate_signup_args(_anon: AuthAnonymousGuard, args: InitiateArgs) -> Template {
     Template::render("initiate_signup", &SignupContext {
-        failure: args.result == "failure",
+        failure: check_argument_value(&args.result, "failure"),
         config: &CONFIG_CONTEXT
     })
 }
@@ -335,19 +360,17 @@ fn post_initiate_signup(
 }
 
 #[get("/initiate/recover")]
-fn get_initiate_recover(_anon: AuthAnonymousGuard) -> Template {
-    Template::render("initiate_recover", &RecoverContext {
-        failure: false,
-        success: false,
-        config: &CONFIG_CONTEXT
+fn get_initiate_recover(anon: AuthAnonymousGuard) -> Template {
+    get_initiate_recover_args(anon, InitiateArgs {
+        result: None
     })
 }
 
 #[get("/initiate/recover?<args>")]
 fn get_initiate_recover_args(_anon: AuthAnonymousGuard, args: InitiateArgs) -> Template {
     Template::render("initiate_recover", &RecoverContext {
-        failure: args.result == "failure",
-        success: args.result == "success",
+        failure: check_argument_value(&args.result, "failure"),
+        success: check_argument_value(&args.result, "success"),
         config: &CONFIG_CONTEXT
     })
 }
@@ -516,6 +539,17 @@ fn get_dashboard_payouts(auth: AuthGuard, db: DbConn) -> Template {
 
 #[get("/dashboard/account")]
 fn get_dashboard_account(auth: AuthGuard, db: DbConn) -> Result<Template, Failure> {
+    get_dashboard_account_args(auth, db, DashboardArgs {
+        result: None
+    })
+}
+
+#[get("/dashboard/account?<args>")]
+fn get_dashboard_account_args(
+    auth: AuthGuard,
+    db: DbConn,
+    args: DashboardArgs
+) -> Result<Template, Failure> {
     let account_result = account
         .filter(account_id.eq(auth.0))
         .first::<Account>(&*db);
@@ -527,6 +561,9 @@ fn get_dashboard_account(auth: AuthGuard, db: DbConn) -> Result<Template, Failur
             .collect();
 
         Ok(Template::render("dashboard_account", &DashboardAccountContext {
+            failure: check_argument_value(&args.result, "failure"),
+            neutral: check_argument_value(&args.result, "neutral"),
+            success: check_argument_value(&args.result, "success"),
             common: DashboardCommonContext::build(&db, auth.0),
             config: &CONFIG_CONTEXT,
             account: DashboardAccountContextAccount {
@@ -547,6 +584,64 @@ fn get_dashboard_account(auth: AuthGuard, db: DbConn) -> Result<Template, Failur
     }
 }
 
+#[post("/dashboard/account/form/account", data = "<data>")]
+fn post_dashboard_account_form_account(
+    auth: AuthGuard,
+    db: DbConn,
+    data: Form<DashboardAccountData>
+) -> Redirect {
+    let data_inner = data.get();
+
+    let update_result = diesel::update(account.filter(account_id.eq(auth.0)))
+        .set(account_email.eq(&data_inner.email))
+        .execute(&*db);
+
+    // TODO: update password? (optional field)
+
+    let count_updated = update_result.as_ref().unwrap_or(&0);
+
+    log::debug!("updated {} account base fields for user_id: {}", count_updated, auth.0);
+
+    Redirect::to(&format!("/dashboard/account/?result={}", if count_updated > &0 {
+        "success"
+    } else if update_result.is_ok() == true {
+        "neutral"
+    } else {
+        "failure"
+    }))
+}
+
+#[post("/dashboard/account/form/payout", data = "<data>")]
+fn post_dashboard_account_form_payout(
+    auth: AuthGuard,
+    db: DbConn,
+    data: Form<DashboardPayoutData>
+) -> Redirect {
+    let data_inner = data.get();
+
+    let update_result = diesel::update(account.filter(account_id.eq(auth.0)))
+        .set((
+            account_full_name.eq(&data_inner.full_name),
+            account_address.eq(&data_inner.address),
+            account_country.eq(&data_inner.country),
+            account_payout_method.eq(&data_inner.payout_method),
+            account_payout_instructions.eq(&data_inner.payout_instructions)
+        ))
+        .execute(&*db);
+
+    let count_updated = update_result.as_ref().unwrap_or(&0);
+
+    log::debug!("updated {} account payout fields for user_id: {}", count_updated, auth.0);
+
+    Redirect::to(&format!("/dashboard/account/?result={}", if count_updated > &0 {
+        "success"
+    } else if update_result.is_ok() == true {
+        "neutral"
+    } else {
+        "failure"
+    }))
+}
+
 #[get("/robots.txt")]
 fn get_robots() -> Option<AssetFile> {
     AssetFile::open(APP_CONF.assets.path.join("./public/robots.txt")).ok()
@@ -565,4 +660,9 @@ fn get_assets_images(file: PathBuf) -> Option<AssetFile> {
 #[get("/assets/stylesheets/<file..>")]
 fn get_assets_stylesheets(file: PathBuf) -> Option<AssetFile> {
     AssetFile::open(APP_CONF.assets.path.join("./stylesheets").join(file)).ok()
+}
+
+#[get("/assets/javascripts/<file..>")]
+fn get_assets_javascripts(file: PathBuf) -> Option<AssetFile> {
+    AssetFile::open(APP_CONF.assets.path.join("./javascripts").join(file)).ok()
 }

@@ -1,0 +1,18 @@
+{% macro toast() %}
+  <div class="toast" data-active="false" data-level="none">
+    <div class="toast-view" onmouseover="ToastManager._mouse_over()" onmouseleave="ToastManager._mouse_leave()">
+      <div class="toast-view-wrapped">
+        <div class="toast-view-wrapped-icon"></div>
+
+        <div class="toast-view-wrapped-message">
+          <span class="toast-view-wrapped-message-main font-sans-semibold"></span>
+          <span class="toast-view-wrapped-message-sub font-sans-regular"></span>
+        </div>
+
+        <a href="javascript:ToastManager.close()" class="toast-view-wrapped-close"></a>
+      </div>
+
+      <div class="toast-view-progress"></div>
+    </div>
+  </div>
+{% endmacro toast %}
