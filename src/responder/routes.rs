@@ -100,6 +100,7 @@ pub struct RecoverData {
 #[derive(FromForm)]
 pub struct DashboardAccountData {
     email: String,
+    password: String,
 }
 
 #[derive(FromForm)]
@@ -592,11 +593,18 @@ fn post_dashboard_account_form_account(
 ) -> Redirect {
     let data_inner = data.get();
 
-    let update_result = diesel::update(account.filter(account_id.eq(auth.0)))
-        .set(account_email.eq(&data_inner.email))
-        .execute(&*db);
-
-    // TODO: update password? (optional field)
+    let update_result = if data_inner.password.is_empty() == false {
+        diesel::update(account.filter(account_id.eq(auth.0)))
+            .set((
+                account_email.eq(&data_inner.email),
+                account_password.eq(&auth_password_encode(&data_inner.password))
+            ))
+            .execute(&*db)
+    } else {
+        diesel::update(account.filter(account_id.eq(auth.0)))
+            .set(account_email.eq(&data_inner.email))
+            .execute(&*db)
+    };
 
     let count_updated = update_result.as_ref().unwrap_or(&0);
 

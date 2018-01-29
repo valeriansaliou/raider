@@ -16,6 +16,7 @@
   {{ super() }}
 
   <script src="/assets/javascripts/dashboard.js?v={{ config.runtime_version | escape }}" type="text/javascript"></script>
+  <script src="/assets/javascripts/dashboard_account.js?v={{ config.runtime_version | escape }}" type="text/javascript"></script>
 
   <script type="text/javascript">
     window.onload = function() {
@@ -59,7 +60,10 @@
 
                 <label class="font-sans-semibold">
                   <span class="label">Account password</span>
-                  <a href="#" class="link underlined color-blue font-sans-semibold">Change my account password...</a>
+
+                  <a href="javascript:PasswordAccountManager.change()" id="account-password-link" class="link underlined color-blue font-sans-semibold">Change my account password...</a>
+
+                  <input type="password" name="password" placeholder="Enter new password..." id="account-password-field" class="font-sans-regular" style="display: none;">
 
                   <div class="clear"></div>
                 </label>
