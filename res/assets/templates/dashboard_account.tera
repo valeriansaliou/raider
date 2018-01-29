@@ -31,7 +31,7 @@
           <div class="section-box-inner">
             <label class="font-sans-semibold">
               <span class="label">Account email</span>
-              <input type="email" name="email" placeholder="john.doe@example.com" class="font-sans-regular">
+              <input type="email" name="email" placeholder="john.doe@example.com" value="{{ account.email | escape }}" class="font-sans-regular">
 
               <div class="clear"></div>
             </label>
@@ -67,21 +67,21 @@
           <div class="section-box-notice">
             <h4 class="font-sans-bold">As every affiliate country is different, we don’t have a strict way to collect recipient account details.</h4>
 
-            <p class="font-sans-regular">Thus, we ask you to select the recipient account type (eg. PayPal) and write manually the account details (eg. PayPal email).</p>
+            <p class="font-sans-regular">Thus, we ask you to select the recipient account type (eg. PayPal) and manually write the account details (eg. PayPal email).</p>
             <p class="font-sans-regular">We also ask you to enter your country, address and full name for invoicing purposes.</p>
           </div>
 
           <div class="section-box-inner">
             <label class="font-sans-semibold">
               <span class="label">Full name</span>
-              <input type="text" name="full_name" placeholder="John Doe" class="font-sans-regular">
+              <input type="text" name="full_name" placeholder="John Doe" value="{{ payout.full_name | escape }}" class="font-sans-regular">
 
               <div class="clear"></div>
             </label>
 
             <label class="font-sans-semibold">
               <span class="label">Address</span>
-              <input type="text" name="address" placeholder="42 2nd Street New York City USA" class="font-sans-regular">
+              <input type="text" name="address" placeholder="42 2nd Street New York City USA" value="{{ payout.address | escape }}" class="font-sans-regular">
 
               <div class="clear"></div>
             </label>
@@ -91,8 +91,11 @@
 
               <div class="select-wrap">
                 <select name="country" class="font-sans-semibold">
-                  <option value="fr">France</option>
-                  <option value="gb">United Kingdom</option>
+                  <option value="">Select a country...</option>
+
+                  {% for country in countries %}
+                    <option value="{{ country.0 | escape }}" {% if payout.country == country.0 %}selected{% endif %}>{{ country.1 | escape }}</option>
+                  {% endfor %}
                 </select>
               </div>
 
@@ -104,8 +107,11 @@
 
               <div class="select-wrap">
                 <select name="payout_method" class="font-sans-semibold">
-                  <option value="bank">Bank wire</option>
-                  <option value="paypal">PayPal</option>
+                  <option value="">Select a method...</option>
+
+                  {% for payout_method in payout_methods %}
+                    <option value="{{ payout_method.0 | escape }}" {% if payout.method == payout_method.0 %}selected{% endif %}>{{ payout_method.1 | escape }}</option>
+                  {% endfor %}
                 </select>
               </div>
 
@@ -114,7 +120,7 @@
 
             <label class="font-sans-semibold">
               <span class="label">Payout instructions</span>
-              <textarea name="payout_instructions" placeholder="Enter payout account details (eg. bank details)..." class="font-sans-regular"></textarea>
+              <textarea name="payout_instructions" placeholder="Enter payout account details (eg. bank details or PayPal email or Bitcoin address)..." value="{{ payout.instructions | escape }}" class="font-sans-regular"></textarea>
 
               <div class="clear"></div>
             </label>

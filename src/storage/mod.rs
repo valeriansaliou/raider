@@ -7,3 +7,4 @@
 pub mod db;
 pub mod models;
 pub mod schemas;
+pub mod choices;

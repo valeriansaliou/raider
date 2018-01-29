@@ -35,6 +35,7 @@ extern crate rocket_contrib;
 extern crate bigdecimal;
 extern crate num_traits;
 extern crate separator;
+extern crate iso_country;
 
 mod config;
 mod notifier;

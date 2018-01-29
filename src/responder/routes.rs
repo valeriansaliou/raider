@@ -6,15 +6,15 @@
 
 use std::path::PathBuf;
 use log;
-use time;
-use chrono::naive::NaiveDateTime;
+use chrono::offset::Utc;
 use validate::rules::{email as validate_email};
 use separator::{Separatable, FixedPlaceSeparatable};
 use bigdecimal::BigDecimal;
 use num_traits::cast::ToPrimitive;
-use rocket::response::Redirect;
+use iso_country::data::{all as countries};
+use rocket::response::{Redirect, Failure};
 use rocket::request::Form;
-use rocket::http::Cookies;
+use rocket::http::{Cookies, Status};
 use rocket_contrib::Template;
 use diesel;
 use diesel::prelude::*;
@@ -59,6 +59,7 @@ use storage::schemas::balance::dsl::{
     amount as balance_amount
 };
 use storage::models::{Account, Payout, Tracker, AccountRecoveryUpdate};
+use storage::choices::ACCOUNT_PAYOUT_METHODS;
 use APP_CONF;
 
 const PAYOUTS_LIMIT_PER_PAGE: i64 = 50;
@@ -149,13 +150,31 @@ pub struct DashboardPayoutsContextPayout {
     pub currency: String,
     pub account: String,
     pub invoice_url: String,
-    pub date: String,
+    pub date: String
 }
 
 #[derive(Serialize)]
-pub struct DashboardAccountContext<'a> {
+pub struct DashboardAccountContext<'a, 'b> {
     pub common: DashboardCommonContext,
-    pub config: &'a ConfigContext
+    pub config: &'a ConfigContext,
+    pub payout_methods: &'static [(&'static str, &'static str)],
+    pub countries: Vec<(&'b str, &'b str)>,
+    pub account: DashboardAccountContextAccount,
+    pub payout: DashboardAccountContextPayout
+}
+
+#[derive(Serialize)]
+pub struct DashboardAccountContextAccount {
+    pub email: String
+}
+
+#[derive(Serialize)]
+pub struct DashboardAccountContextPayout {
+    pub full_name: String,
+    pub address: String,
+    pub country: String,
+    pub method: String,
+    pub instructions: String
 }
 
 impl DashboardCommonContext {
@@ -281,7 +300,7 @@ fn post_initiate_signup(
     if data_inner.email.is_empty() == false && data_inner.password.is_empty() == false &&
         validate_email().validate(&data_inner.email).is_ok() == true &&
         data_inner.password == data_inner.password_repeat {
-        let now_date = NaiveDateTime::from_timestamp(time::now().tm_sec as i64, 0);
+        let now_date = Utc::now().naive_utc();
 
         let insert_result = diesel::insert_into(account)
             .values((
@@ -496,13 +515,36 @@ fn get_dashboard_payouts(auth: AuthGuard, db: DbConn) -> Template {
 }
 
 #[get("/dashboard/account")]
-fn get_dashboard_account(auth: AuthGuard, db: DbConn) -> Template {
-    // TODO
+fn get_dashboard_account(auth: AuthGuard, db: DbConn) -> Result<Template, Failure> {
+    let account_result = account
+        .filter(account_id.eq(auth.0))
+        .first::<Account>(&*db);
 
-    Template::render("dashboard_account", &DashboardAccountContext {
-        common: DashboardCommonContext::build(&db, auth.0),
-        config: &CONFIG_CONTEXT
-    })
+    if let Ok(account_inner) = account_result {
+        let country_list = countries()
+            .into_iter()
+            .map(|country| (country.alpha2, country.name))
+            .collect();
+
+        Ok(Template::render("dashboard_account", &DashboardAccountContext {
+            common: DashboardCommonContext::build(&db, auth.0),
+            config: &CONFIG_CONTEXT,
+            account: DashboardAccountContextAccount {
+                email: account_inner.email
+            },
+            payout_methods: ACCOUNT_PAYOUT_METHODS,
+            countries: country_list,
+            payout: DashboardAccountContextPayout {
+                full_name: account_inner.full_name.unwrap_or("".to_string()),
+                address: account_inner.address.unwrap_or("".to_string()),
+                country: account_inner.country.unwrap_or("".to_string()),
+                method: account_inner.payout_method.unwrap_or("".to_string()),
+                instructions: account_inner.payout_instructions.unwrap_or("".to_string())
+            }
+        }))
+    } else {
+        Err(Failure(Status::PreconditionFailed))
+    }
 }
 
 #[get("/robots.txt")]
