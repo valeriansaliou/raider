@@ -15,7 +15,7 @@
   {{ dashboard_header::header(config=config) }}
 
   <main>
-    {{ dashboard_menu::menu(config=config, sidebar="", selected="trackers") }}
+    {{ dashboard_menu::menu(config=config, common=common, sidebar="", selected="trackers", infobox_title="Manage your trackers.", infobox_label="Send those tracker links to people and start earning money.") }}
 
     <section>
       <div class="section-wrap">
@@ -23,7 +23,9 @@
           <div class="section-title-main">
             <h2 class="font-sans-bold">Trackers</h2>
 
-            <div class="section-title-status font-sans-semibold">(2 trackers)</div>
+            {% if trackers | length > 0 %}
+              <div class="section-title-status font-sans-semibold">({{ trackers | length }} tracker{{ trackers | length | pluralize }})</div>
+            {% endif %}
           </div>
 
           <ul>
@@ -42,52 +44,54 @@
         <div class="section-box">
           <div class="section-box-inner">
             <ul class="section-list">
-              <li class="selected">
-                <div class="section-list-selection">
-                  <input id="select_item" class="checkbox" type="checkbox" checked>
+              {% for tracker in trackers %}
+                <li>
+                  <div class="section-list-selection">
+                    <input id="select_item" class="checkbox" type="checkbox">
 
-                  <label class="checkbox-label" for="select_item">
-                    <span class="checkbox-image"></span>
-                  </label>
-                </div>
-
-                <div class="section-list-content section-list-content-trackers">
-                  <div class="item-identity">
-                    <h6 class="font-sans-bold">Blog Article #1</h6>
-                    <p class="underlined font-sans-regular">https://crisp.chat/?t=xVdpf1dfM</p>
+                    <label class="checkbox-label" for="select_item">
+                      <span class="checkbox-image"></span>
+                    </label>
                   </div>
 
-                  <div class="item-metrics">
-                    <div class="item-metrics-one">
-                      <p class="font-sans-regular">Signups</p>
-                      <h5 class="font-sans-semibold">10,230</h5>
+                  <div class="section-list-content section-list-content-trackers">
+                    <div class="item-identity">
+                      <h6 class="font-sans-bold">{{ tracker.label | escape }}</h6>
+                      <p class="underlined font-sans-regular">{{ config.track_url | escape }}?{{ config.track_parameter | escape }}={{ tracker.tracking_id | escape }}</p>
                     </div>
 
-                    <div class="item-metrics-one">
-                      <p class="font-sans-regular">Paying now</p>
-                      <h5 class="font-sans-semibold">5,129</h5>
-                    </div>
+                    <div class="item-metrics">
+                      <div class="item-metrics-one">
+                        <p class="font-sans-regular">Signups</p>
+                        <h5 class="font-sans-semibold">{{ tracker.statistics_signups | escape }}</h5>
+                      </div>
 
-                    <div class="item-metrics-one">
-                      <p class="font-sans-regular">Earned so far</p>
-                      <h5 class="font-sans-semibold">$20,431 (USD)</h5>
+                      <div class="item-metrics-one">
+                        <p class="font-sans-regular">Paying now</p>
+                        <h5 class="font-sans-semibold">{{ tracker.statistics_paying | escape }}</h5>
+                      </div>
+
+                      <div class="item-metrics-one">
+                        <p class="font-sans-regular">Earned so far</p>
+                        <h5 class="font-sans-semibold">{{ config.payout_currency | escape }} {{ tracker.total_earned | escape }}</h5>
+                      </div>
+
+                      <div class="clear"></div>
                     </div>
 
                     <div class="clear"></div>
                   </div>
 
+                  <div class="section-list-actions">
+                    <a href="#" class="button button-tiny button-dark font-sans-semibold">View banners</a>
+                    <a href="#" class="button button-tiny font-sans-semibold">Copy tracker link</a>
+
+                    <div class="clear"></div>
+                  </div>
+
                   <div class="clear"></div>
-                </div>
-
-                <div class="section-list-actions">
-                  <a href="#" class="button button-tiny button-dark font-sans-semibold">View banners</a>
-                  <a href="#" class="button button-tiny font-sans-semibold">Copy tracker link</a>
-
-                  <div class="clear"></div>
-                </div>
-
-                <div class="clear"></div>
-              </li>
+                </li>
+              {% endfor %}
             </ul>
           </div>
         </div>

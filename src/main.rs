@@ -32,6 +32,9 @@ extern crate r2d2;
 extern crate r2d2_diesel;
 extern crate rocket;
 extern crate rocket_contrib;
+extern crate bigdecimal;
+extern crate num_traits;
+extern crate separator;
 
 mod config;
 mod notifier;

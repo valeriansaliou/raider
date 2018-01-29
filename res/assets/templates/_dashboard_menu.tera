@@ -1,19 +1,21 @@
-{% macro menu(config, sidebar, selected) %}
+{% macro menu(config, common, sidebar, selected, infobox_title, infobox_label) %}
   <aside class="{{ sidebar | escape }}">
     <div class="infobox">
-      <h6 class="font-sans-bold">This is your affiliates dashboard.</h6>
-      <p class="font-sans-regular">Manage your trackers, payouts &amp; account. Pick a category below.</p>
+      <h6 class="font-sans-bold">{{ infobox_title | escape }}</h6>
+      <p class="font-sans-regular">{{ infobox_label | escape }}</p>
     </div>
 
     <div class="side">
-      <div class="payout">
-        <div class="payout-inner">
-          <h6 class="font-sans-regular">You have money on your balance:</h6>
-          <p class="payout-amount font-sans-semibold">$1,200 (USD)</p>
-        </div>
+      {% if common.balance_pending != "0.00" %}
+        <div class="payout">
+          <div class="payout-inner">
+            <h6 class="font-sans-regular">You have money on your balance:</h6>
+            <p class="payout-amount font-sans-semibold">{{ config.payout_currency | escape }} {{ common.balance_pending | escape }}</p>
+          </div>
 
-        <a href="/dashboard/payouts/" class="button button-medium font-sans-semibold">Go to payout manager</a>
-      </div>
+          <a href="/dashboard/payouts/" class="button button-medium font-sans-semibold">Go to payout manager</a>
+        </div>
+      {% endif %}
 
       <nav class="navigate">
         <ul>

@@ -18,6 +18,8 @@ pub struct Config {
     pub email: ConfigEmail,
     pub assets: ConfigAssets,
     pub branding: ConfigBranding,
+    pub tracker: ConfigTracker,
+    pub payout: ConfigPayout,
 }
 
 #[derive(Deserialize)]
@@ -85,4 +87,21 @@ pub struct ConfigBranding {
     pub icon_url: SerdeUrl,
     pub logo_white_url: SerdeUrl,
     pub logo_dark_url: SerdeUrl,
+}
+
+#[derive(Deserialize)]
+pub struct ConfigTracker {
+    pub track_url: String,
+
+    #[serde(default = "defaults::tracker_track_parameter")]
+    pub track_parameter: String,
+
+    #[serde(default = "defaults::tracker_commission_default")]
+    pub commission_default: f32,
+}
+
+#[derive(Deserialize)]
+pub struct ConfigPayout {
+    #[serde(default = "defaults::payout_currency")]
+    pub currency: String,
 }

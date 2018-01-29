@@ -21,6 +21,9 @@ lazy_static! {
         icon_mime: ImageMime::guess_from(APP_CONF.branding.icon_url.as_str()),
         logo_white_url: APP_CONF.branding.logo_white_url.to_owned(),
         logo_dark_url: APP_CONF.branding.logo_dark_url.to_owned(),
+        payout_currency: APP_CONF.payout.currency.to_owned(),
+        track_url: APP_CONF.tracker.track_url.to_owned(),
+        track_parameter: APP_CONF.tracker.track_parameter.to_owned(),
     };
 }
 
@@ -68,4 +71,7 @@ pub struct ConfigContext {
     pub icon_mime: ImageMime,
     pub logo_white_url: SerdeUrl,
     pub logo_dark_url: SerdeUrl,
+    pub payout_currency: String,
+    pub track_url: String,
+    pub track_parameter: String,
 }

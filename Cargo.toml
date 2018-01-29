@@ -40,9 +40,12 @@ lettre_email = "0.7"
 rocket = { version = "0.3", default-features = false }
 rocket_codegen = "0.3"
 rocket_contrib = { version = "0.3", features = ["tera_templates"] }
-diesel = { version = "1.1", features = ["mysql", "chrono"] }
+diesel = { version = "1.1", features = ["mysql", "chrono", "numeric"] }
 r2d2 = "0.8"
 r2d2-diesel = "1.0"
+bigdecimal = "0.0"
+num-traits = "0.1"
+separator = "0.3"
 
 [profile.dev]
 opt-level = 0

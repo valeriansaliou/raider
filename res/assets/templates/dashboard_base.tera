@@ -15,6 +15,6 @@
   {{ dashboard_header::header(config=config) }}
 
   <main>
-    {{ dashboard_menu::menu(config=config, sidebar="animated", selected="") }}
+    {{ dashboard_menu::menu(config=config, common=common, sidebar="animated", selected="", infobox_title="This is your affiliates dashboard.", infobox_label="Manage your trackers, payouts &amp; account. Pick a category below.") }}
   </main>
 {% endblock body %}

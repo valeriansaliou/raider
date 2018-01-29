@@ -13,7 +13,7 @@ use sha2::{Sha256, Digest};
 
 use APP_CONF;
 
-pub struct AuthGuard;
+pub struct AuthGuard(pub i32);
 pub struct AuthAnonymousGuard;
 
 pub static AUTH_USER_COOKIE_NAME: &'static str = "user_id";
@@ -23,10 +23,12 @@ impl<'a, 'r> FromRequest<'a, 'r> for AuthGuard {
 
     fn from_request(request: &'a Request<'r>) -> request::Outcome<AuthGuard, ()> {
         if let Outcome::Success(cookies) = request.guard::<Cookies>() {
-            if let Some(user_id) = read(cookies) {
-                log::debug!("got user_id from cookies: {}", &user_id);
+            if let Some(user_id_cookie) = read(cookies) {
+                if let Ok(user_id) = user_id_cookie.value().parse::<i32>() {
+                    log::debug!("got user_id from cookies: {}", &user_id);
 
-                return Outcome::Success(AuthGuard);
+                    return Outcome::Success(AuthGuard(user_id));
+                }
             }
         }
 

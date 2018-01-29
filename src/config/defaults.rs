@@ -50,3 +50,15 @@ pub fn assets_path() -> PathBuf {
 pub fn branding_page_title() -> String {
     "Enrich Affiliates".to_string()
 }
+
+pub fn tracker_track_parameter() -> String {
+    "t".to_string()
+}
+
+pub fn tracker_commission_default() -> f32 {
+    0.20
+}
+
+pub fn payout_currency() -> String {
+    "USD".to_string()
+}

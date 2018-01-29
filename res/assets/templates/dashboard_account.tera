@@ -15,7 +15,7 @@
   {{ dashboard_header::header(config=config) }}
 
   <main>
-    {{ dashboard_menu::menu(config=config, sidebar="", selected="account") }}
+    {{ dashboard_menu::menu(config=config, common=common, sidebar="", selected="account", infobox_title="Manage your account.", infobox_label="Configure your bank account and legal information for payouts.") }}
 
     <section>
       <form class="section-wrap" method="post" action="/dashboard/account/">

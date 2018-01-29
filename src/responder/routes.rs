@@ -9,12 +9,16 @@ use log;
 use time;
 use chrono::naive::NaiveDateTime;
 use validate::rules::{email as validate_email};
+use separator::{Separatable, FixedPlaceSeparatable};
+use bigdecimal::BigDecimal;
+use num_traits::cast::ToPrimitive;
 use rocket::response::Redirect;
 use rocket::request::Form;
 use rocket::http::Cookies;
 use rocket_contrib::Template;
 use diesel;
 use diesel::prelude::*;
+use diesel::dsl::sum;
 
 use super::context::{CONFIG_CONTEXT, ConfigContext};
 use super::asset_file::AssetFile;
@@ -27,6 +31,7 @@ use super::auth_guard::{
     password_encode as auth_password_encode,
     recovery_generate as auth_recovery_generate
 };
+use super::utilities::get_balance;
 use notifier::email::EmailNotifier;
 use storage::db::DbConn;
 use storage::schemas::account::dsl::{
@@ -35,11 +40,28 @@ use storage::schemas::account::dsl::{
     email as account_email,
     password as account_password,
     recovery as account_recovery,
+    commission as account_commission,
     created_at as account_created_at,
     updated_at as account_updated_at
 };
-use storage::models::{Account, AccountRecoveryUpdate};
+use storage::schemas::payout::dsl::{
+    payout,
+    account_id as payout_account_id
+};
+use storage::schemas::tracker::dsl::{
+    tracker,
+    account_id as tracker_account_id
+};
+use storage::schemas::balance::dsl::{
+    balance,
+    account_id as balance_account_id,
+    tracker_id as balance_tracker_id,
+    amount as balance_amount
+};
+use storage::models::{Account, Payout, Tracker, AccountRecoveryUpdate};
 use APP_CONF;
+
+const PAYOUTS_LIMIT_PER_PAGE: i64 = 50;
 
 #[derive(FromForm)]
 pub struct InitiateArgs {
@@ -84,23 +106,64 @@ pub struct RecoverContext<'a> {
 }
 
 #[derive(Serialize)]
+pub struct DashboardCommonContext {
+    pub balance_pending: String
+}
+
+#[derive(Serialize)]
 pub struct DashboardBaseContext<'a> {
+    pub common: DashboardCommonContext,
     pub config: &'a ConfigContext
 }
 
 #[derive(Serialize)]
 pub struct DashboardTrackersContext<'a> {
+    pub trackers: Vec<DashboardTrackersContextTracker>,
+    pub common: DashboardCommonContext,
     pub config: &'a ConfigContext
+}
+
+#[derive(Serialize)]
+pub struct DashboardTrackersContextTracker {
+    pub tracking_id: String,
+    pub label: String,
+    pub statistics_signups: String,
+    pub statistics_paying: String,
+    pub total_earned: String
 }
 
 #[derive(Serialize)]
 pub struct DashboardPayoutsContext<'a> {
-    pub config: &'a ConfigContext
+    pub common: DashboardCommonContext,
+    pub config: &'a ConfigContext,
+    pub balance_total: String,
+    pub payouts: Vec<DashboardPayoutsContextPayout>,
+    pub has_more: bool
+}
+
+#[derive(Serialize)]
+pub struct DashboardPayoutsContextPayout {
+    pub number: i32,
+    pub status: String,
+    pub amount: String,
+    pub currency: String,
+    pub account: String,
+    pub invoice_url: String,
+    pub date: String,
 }
 
 #[derive(Serialize)]
 pub struct DashboardAccountContext<'a> {
+    pub common: DashboardCommonContext,
     pub config: &'a ConfigContext
+}
+
+impl DashboardCommonContext {
+    fn build(db: &DbConn, user_id: i32) -> DashboardCommonContext {
+        DashboardCommonContext {
+            balance_pending: get_balance(db, user_id, Some("unpaid"))
+        }
+    }
 }
 
 #[get("/")]
@@ -224,6 +287,7 @@ fn post_initiate_signup(
             .values((
                 &account_email.eq(&data_inner.email),
                 &account_password.eq(&auth_password_encode(&data_inner.password)),
+                &account_commission.eq(BigDecimal::from(APP_CONF.tracker.commission_default)),
                 &account_created_at.eq(&now_date),
                 &account_updated_at.eq(&now_date)
             ))
@@ -337,29 +401,106 @@ fn get_initiate_logout(_auth: AuthGuard, cookies: Cookies) -> Redirect {
 }
 
 #[get("/dashboard")]
-fn get_dashboard_base(_auth: AuthGuard) -> Template {
+fn get_dashboard_base(auth: AuthGuard, db: DbConn) -> Template {
     Template::render("dashboard_base", &DashboardBaseContext {
+        common: DashboardCommonContext::build(&db, auth.0),
         config: &CONFIG_CONTEXT
     })
 }
 
 #[get("/dashboard/trackers")]
-fn get_dashboard_trackers(_auth: AuthGuard) -> Template {
+fn get_dashboard_trackers(auth: AuthGuard, db: DbConn) -> Template {
+    let mut trackers = Vec::new();
+
+    tracker
+        .filter(tracker_account_id.eq(auth.0))
+        .load::<Tracker>(&*db)
+        .map(|results| {
+            for result in results {
+                log::debug!("got tracker: {:?}", result);
+
+                let total_earned: Option<f32> = balance
+                    .filter(balance_account_id.eq(auth.0))
+                    .filter(balance_tracker_id.eq(&result.id))
+                    .select(sum(balance_amount))
+                    .first(&*db)
+                    .ok()
+                    .and_then(|value: Option<BigDecimal>| {
+                        if let Some(value_inner) = value {
+                            value_inner.to_f32()
+                        } else {
+                            None
+                        }
+                    });
+
+                trackers.push(DashboardTrackersContextTracker {
+                    tracking_id: result.id,
+                    label: result.label,
+                    statistics_signups: result.statistics_signups.separated_string(),
+                    statistics_paying: result.statistics_paying.separated_string(),
+                    total_earned: total_earned.unwrap_or(0.0).separated_string_with_fixed_place(2)
+                });
+            }
+        })
+        .ok();
+
     Template::render("dashboard_trackers", &DashboardTrackersContext {
+        trackers: trackers,
+        common: DashboardCommonContext::build(&db, auth.0),
         config: &CONFIG_CONTEXT
     })
 }
 
 #[get("/dashboard/payouts")]
-fn get_dashboard_payouts(_auth: AuthGuard) -> Template {
+fn get_dashboard_payouts(auth: AuthGuard, db: DbConn) -> Template {
+    let mut payouts = Vec::new();
+    let mut has_more = false;
+
+    payout
+        .filter(payout_account_id.eq(auth.0))
+        .limit(PAYOUTS_LIMIT_PER_PAGE + 1)
+        .load::<Payout>(&*db)
+        .map(|results| {
+            for (index, result) in results.into_iter().enumerate() {
+                if (index as i64) < PAYOUTS_LIMIT_PER_PAGE {
+                    log::debug!("got payout #{}: {:?}", index, result);
+
+                    let amount_value = result.amount
+                        .to_f32()
+                        .unwrap_or(0.0)
+                        .separated_string_with_fixed_place(2);
+
+                    payouts.push(DashboardPayoutsContextPayout {
+                        number: result.number,
+                        status: result.status,
+                        amount: amount_value,
+                        currency: result.currency,
+                        account: result.account.unwrap_or("".to_string()),
+                        invoice_url: result.invoice_url.unwrap_or("".to_string()),
+                        date: result.created_at.date().format("%d/%m/%Y").to_string(),
+                    });
+                } else {
+                    has_more = true;
+                }
+            }
+        })
+        .ok();
+
     Template::render("dashboard_payouts", &DashboardPayoutsContext {
-        config: &CONFIG_CONTEXT
+        common: DashboardCommonContext::build(&db, auth.0),
+        config: &CONFIG_CONTEXT,
+        balance_total: get_balance(&db, auth.0, None),
+        payouts: payouts,
+        has_more: has_more
     })
 }
 
 #[get("/dashboard/account")]
-fn get_dashboard_account(_auth: AuthGuard) -> Template {
+fn get_dashboard_account(auth: AuthGuard, db: DbConn) -> Template {
+    // TODO
+
     Template::render("dashboard_account", &DashboardAccountContext {
+        common: DashboardCommonContext::build(&db, auth.0),
         config: &CONFIG_CONTEXT
     })
 }

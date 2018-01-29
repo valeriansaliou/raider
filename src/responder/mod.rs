@@ -7,6 +7,7 @@
 mod context;
 mod routes;
 mod catchers;
+mod utilities;
 mod asset_file;
 mod auth_guard;
 
