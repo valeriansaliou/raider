@@ -47,9 +47,9 @@
               {% for tracker in trackers %}
                 <li>
                   <div class="section-list-selection">
-                    <input id="select_item" class="checkbox" type="checkbox">
+                    <input id="select_{{ tracker.tracking_id | escape }}" class="checkbox" type="checkbox">
 
-                    <label class="checkbox-label" for="select_item">
+                    <label class="checkbox-label" for="select_{{ tracker.tracking_id | escape }}">
                       <span class="checkbox-image"></span>
                     </label>
                   </div>

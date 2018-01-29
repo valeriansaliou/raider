@@ -92,6 +92,14 @@ a:hover {
   text-decoration: underline !important;
 }
 
+.capitalize {
+  text-transform: capitalize !important;
+}
+
+.uppercase {
+  text-transform: uppercase !important;
+}
+
 .color-green {
   color: #37C234 !important;
 }

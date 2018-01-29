@@ -81,7 +81,7 @@
                     <div class="item-metrics">
                       <div class="item-metrics-one">
                         <p class="font-sans-regular">Status</p>
-                        <h5 class="color-green font-sans-semibold">{{ payout.status | escape }}</h5>
+                        <h5 class="color-green capitalize font-sans-semibold">{{ payout.status | escape }}</h5>
                       </div>
 
                       <div class="item-metrics-one">
@@ -91,7 +91,7 @@
 
                       <div class="item-metrics-one">
                         <p class="font-sans-regular">Payout account</p>
-                        <h5 class="color-grey font-sans-regular">{{ payout.account | escape }}</h5>
+                        <h5 class="color-grey uppercase font-sans-regular">{{ payout.account | escape }}</h5>
                       </div>
 
                       <div class="clear"></div>
