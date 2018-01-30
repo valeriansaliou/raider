@@ -77,7 +77,7 @@ Use the sample [config.cfg](https://github.com/valeriansaliou/raider/blob/master
 
 ---
 
-**⚠️ Important: Make sure to change the default `server.secret_key` configuration value with a secret key you generated. Failing to do so will make your Raider instance insecure.**
+**⚠️ Important: Make sure to change the default `server.secret_key` configuration value with a secret key you generated. Also, generate a random arbitrary length string for `database.password_salt`. Failing to change any of those values will make your Raider instance insecure.**
 
 ---
 
@@ -89,6 +89,56 @@ Use the sample [config.cfg](https://github.com/valeriansaliou/raider/blob/master
 * `inet` (type: _string_, allowed: IPv4 / IPv6 + port, default: `[::1]:8080`) — Host and TCP port the Raider service should listen on
 * `workers` (type: _integer_, allowed: any number, default: `4`) — Number of workers for the Raider service to run on
 * `secret_key` (type: _string_, allowed: 192-bit base64 encoded secret key, default: no default) — Secret key for cookie encryption (see [Rocket docs](https://api.rocket.rs/rocket/struct.Config.html#method.set_secret_key) for details)
+
+**[database]**
+
+* `url` (type: _string_, allowed: MySQL URL, no default) — URL of the MySQL database to connect to
+* `pool_size` (type: _integer_, allowed: any number, default: `4`) — Number of connections to maintain to MySQL
+* `idle_timeout` (type: _integer_, allowed: seconds, default: `300`) — Idle timeout in seconds to MySQL
+* `connection_timeout` (type: _integer_, allowed: seconds, default: `10`) — Connection timeout in seconds to MySQL
+* `password_salt` (type: _string_, allowed: any string, no default) — Password salt (preferably strong and long; do not change this after accounts got created as it will make them unusable)
+
+**[email]**
+
+* `from` (type: _string_, allowed: email address, no default) — Email address from which to send emails
+* `smtp_host` (type: _string_, allowed: hostname, IPv4, IPv6, default: `localhost`) — SMTP host to connect to
+* `smtp_port` (type: _integer_, allowed: TCP port, default: `587`) — SMTP TCP port to connect to
+* `smtp_username` (type: _string_, allowed: any string, no default) — SMTP username to use for authentication (if any)
+* `smtp_password` (type: _string_, allowed: any string, no default) — SMTP password to use for authentication (if any)
+* `smtp_encrypt` (type: _boolean_, allowed: `true`, `false`, default: `true`) — Whether to encrypt SMTP connection with `STARTTLS` or not
+
+**[assets]**
+
+* `path` (type: _string_, allowed: UNIX path, default: `./res/assets/`) — Path to Raider assets directory
+
+**[branding]**
+
+* `page_title` (type: _string_, allowed: any string, default: `Affiliates`) — Affiliates system title
+* `page_url` (type: _string_, allowed: URL, no default) — Affiliates system URL
+* `help_url` (type: _string_, allowed: URL, no default) — Help URL to be used in dashboard (ie. knowledge base where users can search for help)
+* `support_url` (type: _string_, allowed: URL, no default) — Support URL to be used in dashboard (ie. where users can contact you if something is wrong)
+* `icon_color` (type: _string_, allowed: hexadecimal color code, no default) — Icon color (ie. your icon background color)
+* `icon_url` (type: _string_, allowed: URL, no default) — Icon URL, the icon should be your squared logo, used as favicon (PNG format recommended)
+* `logo_white_url` (type: _string_, allowed: URL, no default) — Logo URL, the logo should be your full-width logo, used as login, signup & account recover form logo (whiter logo, SVG format recommended)
+* `logo_dark_url` (type: _string_, allowed: URL, no default) — Logo URL, the logo should be your full-width logo, used as dashboard header logo (darker logo, SVG format recommended)
+* `custom_html` (type: _string_, allowed: HTML, default: empty) — Custom HTML to include in affiliates system `head` (optional)
+
+**[tracker]**
+
+* `track_url` (type: _string_, allowed: tracker URL, no default) — Tracker URL, to which tracker links will point to
+* `track_parameter` (type: _string_, allowed: tracker query parameter, default: `t`) — Tracker query parameter used in URL (eg. `?t=xDJSas10`)
+* `commission_default` (type: _float_, allowed: percentage from `0.00` to `1.00`, default: `0.20`) — Default commission percentage (for new accounts)
+
+**[[tracker.banner]]**
+
+* `banner_url` (type: _string_, allowed: image URL, no default) — URL to the banner image
+* `size_width` (type: _integer_, allowed: image size in pixels, no default) — Width of the banner (in pixels)
+* `size_height` (type: _integer_, allowed: image size in pixels, no default) — Height of the banner (in pixels)
+
+**[payout]**
+
+* `currency` (type: _string_, allowed: currency code, default: `USD`) — Currency to be used for payouts (and balances in general)
+* `administrator_email` (type: _string_, allowed: email address, no default) — Email address of the affiliates system administrator (payout request emails will be sent there)
 
 ### Run Raider
 

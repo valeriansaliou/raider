@@ -50,7 +50,7 @@ pub fn assets_path() -> PathBuf {
 }
 
 pub fn branding_page_title() -> String {
-    "Enrich Affiliates".to_string()
+    "Affiliates".to_string()
 }
 
 pub fn tracker_track_parameter() -> String {
