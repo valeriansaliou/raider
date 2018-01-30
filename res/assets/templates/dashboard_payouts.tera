@@ -110,7 +110,7 @@
                       </div>
 
                       <div class="section-list-actions">
-                        <a href="{{ payout.invoice_url | escape }}" class="button button-tiny font-sans-semibold {% if not payout.invoice_url %}disabled{% endif %}">Download invoice</a>
+                        <a href="{{ payout.invoice_url | escape }}" class="button button-tiny font-sans-semibold {% if not payout.invoice_url %}disabled{% endif %}">{% if payout.invoice_url %}Download invoice{% else %}No invoice available{% endif %}</a>
 
                         <div class="clear"></div>
                       </div>
