@@ -5,7 +5,7 @@ Raider
 
 **Affiliates dashboard. Used by affiliates to generate tracking codes and review their balance.**
 
-Raider is easy to integrate in your existing system. You can also customize the dashboard look & feel with templates and styles.
+Raider is easy to integrate in your existing system. You can also customize the dashboard look & feel with templates and styles. It can be used as a self-service affiliates system, for your affiliate users to manage their account, create tracking URLs, review their balance and request for payouts.
 
 ![Raider](https://valeriansaliou.github.io/raider/images/raider.png)
 
@@ -26,8 +26,8 @@ _👋 You use Raider and you want to be listed there? [Contact me](https://valer
 
 * **Self-service affiliates dashboard**
 * **Users can generate affiliates tracking codes**
-* **Users can see their affiliates statistics** (eg. how much they made)
-* **Users can request for payouts** (you receive a request email)
+* **Users can see their affiliates statistics** (eg. how much money they made)
+* **Users can request for payouts** (you then receive a notification email)
 * **Your backend reports referred customer payments to Raider**
 
 ## How does it work?
@@ -37,7 +37,7 @@ Raider provides a self-service affiliates dashboard on which users can sign up, 
 **Raider provides two services:**
 
 * **Self-service dashboard**: Used by your affiliates users
-* **Payment reporting API**: Called by your backend once a payment is made (ie. credit commission money to an affiliates users)
+* **Payment reporting API**: Called by your backend once a payment is made (ie. to credit due commission money to an affiliate)
 
 ## How to use it?
 
@@ -84,7 +84,7 @@ Use the sample [config.cfg](https://github.com/valeriansaliou/raider/blob/master
 * `log_level` (type: _string_, allowed: `debug`, `info`, `warn`, `error`, default: `warn`) — Verbosity of logging, set it to `error` in production
 * `inet` (type: _string_, allowed: IPv4 / IPv6 + port, default: `[::1]:8080`) — Host and TCP port the Raider service should listen on
 * `workers` (type: _integer_, allowed: any number, default: `4`) — Number of workers for the Raider service to run on
-* `secret_key` (type: _string_, allowed: 192-bit base64 encoded secret key, default: no default) — Secret key for cookie encryption (see [Rocket docs](https://api.rocket.rs/rocket/struct.Config.html#method.set_secret_key))
+* `secret_key` (type: _string_, allowed: 192-bit base64 encoded secret key, default: no default) — Secret key for cookie encryption (see [Rocket docs](https://api.rocket.rs/rocket/struct.Config.html#method.set_secret_key) for details)
 
 ### Run Raider
 
