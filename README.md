@@ -71,6 +71,12 @@ You can find the built binaries in the `./target/release` directory.
 
 _Install the `libssl-dev` (ie. OpenSSL headers) before you compile Raider. SSL dependencies are required for email notifications._
 
+### Database
+
+Raider requires a MySQL database server to be running (it is unfortunately not compatible with PostgreSQL and others, _at the moment_).
+
+The Raider SQL schema should be imported, which you can find at [raider.sql](https://github.com/valeriansaliou/raider/blob/master/doc/fixtures/raider.sql).
+
 ### Configuration
 
 Use the sample [config.cfg](https://github.com/valeriansaliou/raider/blob/master/config.cfg) configuration file and adjust it to your own environment.
