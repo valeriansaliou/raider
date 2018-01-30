@@ -329,7 +329,7 @@ main section hr {
   display: inline-block;
 }
 
-.section-title ul li.icon a:before {
+.section-title ul li.icon .button:before {
   content: "";
   background-size: contain;
   background-repeat: no-repeat;
@@ -341,7 +341,7 @@ main section hr {
   opacity: 0.35;
 }
 
-.section-title ul li.remove a:before {
+.section-title ul li.remove .button:before {
   background-image: url("/assets/images/dashboard/action_remove.svg");
   width: 15px;
   height: 15px;

@@ -5,6 +5,7 @@
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
 use std::path::PathBuf;
+use std::collections::HashSet;
 use log;
 use chrono::offset::Utc;
 use validate::rules::{email as validate_email};
@@ -12,8 +13,9 @@ use separator::{Separatable, FixedPlaceSeparatable};
 use bigdecimal::BigDecimal;
 use num_traits::cast::ToPrimitive;
 use iso_country::data::{all as countries};
+use rocket::error::{Error as RocketError};
 use rocket::response::{Redirect, Failure};
-use rocket::request::Form;
+use rocket::request::{Form, FromForm, FormItems, FromFormValue};
 use rocket::http::{Cookies, Status};
 use rocket_contrib::Template;
 use diesel;
@@ -55,6 +57,7 @@ use storage::schemas::payout::dsl::{
 };
 use storage::schemas::tracker::dsl::{
     tracker,
+    id as tracker_id,
     account_id as tracker_account_id
 };
 use storage::schemas::balance::dsl::{
@@ -97,14 +100,18 @@ pub struct RecoverData {
     email: String,
 }
 
+pub struct DashboardTrackersFormRemoveData {
+    trackers: HashSet<String>
+}
+
 #[derive(FromForm)]
-pub struct DashboardAccountData {
+pub struct DashboardAccountFormAccountData {
     email: String,
     password: String,
 }
 
 #[derive(FromForm)]
-pub struct DashboardPayoutData {
+pub struct DashboardAccountFormPayoutData {
     full_name: String,
     address: String,
     country: String,
@@ -144,6 +151,9 @@ pub struct DashboardBaseContext<'a> {
 
 #[derive(Serialize)]
 pub struct DashboardTrackersContext<'a> {
+    pub remove_failure: bool,
+    pub remove_neutral: bool,
+    pub remove_success: bool,
     pub trackers: Vec<DashboardTrackersContextTracker>,
     pub common: DashboardCommonContext,
     pub config: &'a ConfigContext
@@ -213,6 +223,31 @@ impl DashboardCommonContext {
     }
 }
 
+impl<'f> FromForm<'f> for DashboardTrackersFormRemoveData {
+    type Error = RocketError;
+
+    fn from_form(form_items: &mut FormItems<'f>, _: bool) -> Result<Self, Self::Error> {
+        let mut update = DashboardTrackersFormRemoveData {
+            trackers: HashSet::new()
+        };
+
+        for (k, v) in form_items {
+            let key: &str = &*k;
+            let value = String::from_form_value(v)
+                .or(Err(RocketError::BadParse))?;
+
+            match key {
+                "tracker" => update.trackers.insert(value),
+                _ => {
+                    return Err(RocketError::BadParse);
+                }
+            };
+        }
+
+        Ok(update)
+    }
+}
+
 #[get("/")]
 fn get_index(_anon: AuthAnonymousGuard) -> Redirect {
     Redirect::found("/initiate/")
@@ -238,8 +273,8 @@ fn get_initiate_login_args(_anon: AuthAnonymousGuard, args: InitiateArgs) -> Tem
     })
 }
 
-#[post("/initiate/login", data = "<data>")]
-fn post_initiate_login(
+#[post("/initiate/login/form/login", data = "<data>")]
+fn post_initiate_login_form_login(
     _anon: AuthAnonymousGuard,
     cookies: Cookies,
     db: DbConn,
@@ -314,8 +349,8 @@ fn get_initiate_signup_args(_anon: AuthAnonymousGuard, args: InitiateArgs) -> Te
     })
 }
 
-#[post("/initiate/signup", data = "<data>")]
-fn post_initiate_signup(
+#[post("/initiate/signup/form/signup", data = "<data>")]
+fn post_initiate_signup_form_signup(
     _anon: AuthAnonymousGuard,
     cookies: Cookies,
     db: DbConn,
@@ -376,8 +411,8 @@ fn get_initiate_recover_args(_anon: AuthAnonymousGuard, args: InitiateArgs) -> T
     })
 }
 
-#[post("/initiate/recover", data = "<data>")]
-fn post_initiate_recover(
+#[post("/initiate/recover/form/recover", data = "<data>")]
+fn post_initiate_recover_form_recover(
     _anon: AuthAnonymousGuard,
     db: DbConn,
     data: Form<RecoverData>
@@ -453,6 +488,13 @@ fn get_dashboard_base(auth: AuthGuard, db: DbConn) -> Template {
 
 #[get("/dashboard/trackers")]
 fn get_dashboard_trackers(auth: AuthGuard, db: DbConn) -> Template {
+    get_dashboard_trackers_args(auth, db, DashboardArgs {
+        result: None
+    })
+}
+
+#[get("/dashboard/trackers?<args>")]
+fn get_dashboard_trackers_args(auth: AuthGuard, db: DbConn, args: DashboardArgs) -> Template {
     let mut trackers = Vec::new();
 
     tracker
@@ -488,10 +530,41 @@ fn get_dashboard_trackers(auth: AuthGuard, db: DbConn) -> Template {
         .ok();
 
     Template::render("dashboard_trackers", &DashboardTrackersContext {
+        remove_failure: check_argument_value(&args.result, "remove_failure"),
+        remove_neutral: check_argument_value(&args.result, "remove_neutral"),
+        remove_success: check_argument_value(&args.result, "remove_success"),
         trackers: trackers,
         common: DashboardCommonContext::build(&db, auth.0),
         config: &CONFIG_CONTEXT
     })
+}
+
+#[post("/dashboard/trackers/form/remove", data = "<data>")]
+fn post_dashboard_trackers_form_account(
+    auth: AuthGuard,
+    db: DbConn,
+    data: Form<DashboardTrackersFormRemoveData>
+) -> Redirect {
+    let data_inner = data.get();
+
+    let delete_result = diesel::delete(
+        tracker
+            .filter(tracker_account_id.eq(auth.0))
+            .filter(tracker_id.eq_any(&data_inner.trackers))
+    )
+        .execute(&*db);
+
+    let count_updated = delete_result.as_ref().unwrap_or(&0);
+
+    log::debug!("removed {} tracker fields for user_id: {}", count_updated, auth.0);
+
+    Redirect::to(&format!("/dashboard/trackers/?result={}", if count_updated > &0 {
+        "remove_success"
+    } else if delete_result.is_ok() == true {
+        "remove_neutral"
+    } else {
+        "remove_failure"
+    }))
 }
 
 #[get("/dashboard/payouts")]
@@ -589,7 +662,7 @@ fn get_dashboard_account_args(
 fn post_dashboard_account_form_account(
     auth: AuthGuard,
     db: DbConn,
-    data: Form<DashboardAccountData>
+    data: Form<DashboardAccountFormAccountData>
 ) -> Redirect {
     let data_inner = data.get();
 
@@ -623,7 +696,7 @@ fn post_dashboard_account_form_account(
 fn post_dashboard_account_form_payout(
     auth: AuthGuard,
     db: DbConn,
-    data: Form<DashboardPayoutData>
+    data: Form<DashboardAccountFormPayoutData>
 ) -> Redirect {
     let data_inner = data.get();
 

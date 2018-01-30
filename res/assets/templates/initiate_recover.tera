@@ -30,7 +30,7 @@
       <p class="error font-sans-semibold">Could not recover account (not found).</p>
     {% endif %}
 
-    <form action="/initiate/recover/" method="post" name="recover">
+    <form action="/initiate/recover/form/recover/" method="post">
       <label>
         <input type="email" name="email" placeholder="Email address" class="font-sans-regular" autofocus>
       </label>

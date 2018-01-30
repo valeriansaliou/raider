@@ -28,7 +28,7 @@
       <p class="error font-sans-semibold">Invalid credentials. Try again.</p>
     {% endif %}
 
-    <form action="/initiate/login/" method="post" name="login">
+    <form action="/initiate/login/form/login/" method="post">
       <label>
         <input type="email" name="email" placeholder="Email address" class="font-sans-regular" autofocus>
       </label>

@@ -28,7 +28,7 @@
       <p class="error font-sans-semibold">Could not create account with this email.</p>
     {% endif %}
 
-    <form action="/initiate/signup/" method="post" name="signup">
+    <form action="/initiate/signup/form/signup/" method="post">
       <label>
         <input type="email" name="email" placeholder="Email address" class="font-sans-regular" autofocus>
       </label>

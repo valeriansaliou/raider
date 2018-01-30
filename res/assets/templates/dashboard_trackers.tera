@@ -16,6 +16,18 @@
   {{ super() }}
 
   <script src="/assets/javascripts/dashboard.js?v={{ config.runtime_version | escape }}" type="text/javascript"></script>
+
+  <script type="text/javascript">
+    window.onload = function() {
+      {% if remove_failure %}
+        ToastManager.error("Trackers not removed.", "The selected trackers could not be removed.");
+      {% elif remove_neutral %}
+        ToastManager.warning("No tracker was removed.", "No tracker was removed from selected trackers.");
+      {% elif remove_success %}
+        ToastManager.success("Trackers removed.", "The selected trackers have been removed.");
+      {% endif %}
+    };
+  </script>
 {% endblock javascripts %}
 
 {% block body %}
@@ -28,82 +40,84 @@
       <section>
         <div class="section-inner">
           <div class="section-wrap">
-            <div class="section-title">
-              <div class="section-title-main">
-                <h2 class="font-sans-bold">Trackers</h2>
+            <form action="/dashboard/trackers/form/remove/" method="post">
+              <div class="section-title">
+                <div class="section-title-main">
+                  <h2 class="font-sans-bold">Trackers</h2>
 
-                {% if trackers | length > 0 %}
-                  <div class="section-title-status font-sans-semibold">({{ trackers | length }} tracker{{ trackers | length | pluralize }})</div>
-                {% endif %}
+                  {% if trackers | length > 0 %}
+                    <div class="section-title-status font-sans-semibold">({{ trackers | length }} tracker{{ trackers | length | pluralize }})</div>
+                  {% endif %}
+                </div>
+
+                <ul>
+                  <li class="icon remove">
+                    <button type="submit" class="button button-small button-action font-sans-semibold">Remove selection</button>
+                  </li>
+
+                  <li>
+                    <a href="#" class="button button-small font-sans-semibold">Add a new tracker</a>
+                  </li>
+                </ul>
+
+                <div class="clear"></div>
               </div>
 
-              <ul>
-                <li class="icon remove">
-                  <a href="#" class="button button-small button-action font-sans-semibold">Remove selection</a>
-                </li>
+              <div class="section-box">
+                <div class="section-box-inner">
+                  <ul class="section-list">
+                    {% for tracker in trackers %}
+                      <li>
+                        <div class="section-list-selection">
+                          <input id="select_{{ tracker.tracking_id | escape }}" class="checkbox" type="checkbox" name="tracker" value="{{ tracker.tracking_id | escape }}">
 
-                <li>
-                  <a href="#" class="button button-small font-sans-semibold">Add a new tracker</a>
-                </li>
-              </ul>
-
-              <div class="clear"></div>
-            </div>
-
-            <div class="section-box">
-              <div class="section-box-inner">
-                <ul class="section-list">
-                  {% for tracker in trackers %}
-                    <li>
-                      <div class="section-list-selection">
-                        <input id="select_{{ tracker.tracking_id | escape }}" class="checkbox" type="checkbox">
-
-                        <label class="checkbox-label" for="select_{{ tracker.tracking_id | escape }}">
-                          <span class="checkbox-image"></span>
-                        </label>
-                      </div>
-
-                      <div class="section-list-content section-list-content-trackers">
-                        <div class="item-identity">
-                          <h6 class="font-sans-bold">{{ tracker.label | escape }}</h6>
-                          <p class="underlined font-sans-regular">{{ config.track_url | escape }}?{{ config.track_parameter | escape }}={{ tracker.tracking_id | escape }}</p>
+                          <label class="checkbox-label" for="select_{{ tracker.tracking_id | escape }}">
+                            <span class="checkbox-image"></span>
+                          </label>
                         </div>
 
-                        <div class="item-metrics">
-                          <div class="item-metrics-one">
-                            <p class="font-sans-regular">Signups</p>
-                            <h5 class="font-sans-semibold">{{ tracker.statistics_signups | escape }}</h5>
+                        <div class="section-list-content section-list-content-trackers">
+                          <div class="item-identity">
+                            <h6 class="font-sans-bold">{{ tracker.label | escape }}</h6>
+                            <p class="underlined font-sans-regular">{{ config.track_url | escape }}?{{ config.track_parameter | escape }}={{ tracker.tracking_id | escape }}</p>
                           </div>
 
-                          <div class="item-metrics-one">
-                            <p class="font-sans-regular">Paying now</p>
-                            <h5 class="font-sans-semibold">{{ tracker.statistics_paying | escape }}</h5>
-                          </div>
+                          <div class="item-metrics">
+                            <div class="item-metrics-one">
+                              <p class="font-sans-regular">Signups</p>
+                              <h5 class="font-sans-semibold">{{ tracker.statistics_signups | escape }}</h5>
+                            </div>
 
-                          <div class="item-metrics-one">
-                            <p class="font-sans-regular">Earned so far</p>
-                            <h5 class="font-sans-semibold">{{ config.payout_currency | escape }} {{ tracker.total_earned | escape }}</h5>
+                            <div class="item-metrics-one">
+                              <p class="font-sans-regular">Paying now</p>
+                              <h5 class="font-sans-semibold">{{ tracker.statistics_paying | escape }}</h5>
+                            </div>
+
+                            <div class="item-metrics-one">
+                              <p class="font-sans-regular">Earned so far</p>
+                              <h5 class="font-sans-semibold">{{ config.payout_currency | escape }} {{ tracker.total_earned | escape }}</h5>
+                            </div>
+
+                            <div class="clear"></div>
                           </div>
 
                           <div class="clear"></div>
                         </div>
 
+                        <div class="section-list-actions">
+                          <a href="#" class="button button-tiny button-dark font-sans-semibold">View banners</a>
+                          <a href="#" class="button button-tiny font-sans-semibold">Copy tracker link</a>
+
+                          <div class="clear"></div>
+                        </div>
+
                         <div class="clear"></div>
-                      </div>
-
-                      <div class="section-list-actions">
-                        <a href="#" class="button button-tiny button-dark font-sans-semibold">View banners</a>
-                        <a href="#" class="button button-tiny font-sans-semibold">Copy tracker link</a>
-
-                        <div class="clear"></div>
-                      </div>
-
-                      <div class="clear"></div>
-                    </li>
-                  {% endfor %}
-                </ul>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </section>
