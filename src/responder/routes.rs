@@ -21,7 +21,7 @@ use rocket::http::{Cookies, Status};
 use rocket_contrib::Template;
 use diesel;
 use diesel::prelude::*;
-use diesel::dsl::{sum, count};
+use diesel::dsl::{sum, count, max};
 
 use super::context::{CONFIG_CONTEXT, ConfigContext};
 use super::asset_file::AssetFile;
@@ -29,7 +29,7 @@ use super::auth_guard::{AuthGuard, AuthAnonymousGuard, cleanup as auth_cleanup,
                         insert as auth_insert, password_verify as auth_password_verify,
                         password_encode as auth_password_encode,
                         recovery_generate as auth_recovery_generate};
-use super::utilities::{get_balance, get_balance_string, check_argument_value};
+use super::utilities::{get_balance, get_balance_string, check_argument_value, send_payout_emails};
 use notifier::email::EmailNotifier;
 use storage::db::DbConn;
 use storage::schemas::account::dsl::{account, id as account_id, email as account_email,
@@ -740,9 +740,16 @@ fn post_dashboard_payouts_form_request(auth: AuthGuard, db: DbConn) -> Result<Re
                         ))
                             .execute(&*db);
 
-                    // TODO: query max, or fallback to "0" if no existing payout
-                    match (update_result, Ok::<i32, ()>(0)) {
-                        (Ok(_), Ok(maximum_number)) => {
+                    // Acquire latest payout number
+                    let maximum_result =
+                        payout
+                            .filter(payout_account_id.eq(auth.0))
+                            .select(max(payout_number))
+                            .first::<Option<i32>>(&*db)
+                            .map(|value| if value.is_none() { Some(0) } else { value });
+
+                    match (update_result, maximum_result) {
+                        (Ok(_), Ok(Some(maximum_number))) => {
                             // Create payout
                             let insert_result = diesel::insert_into(payout)
                                 .values((
@@ -756,7 +763,12 @@ fn post_dashboard_payouts_form_request(auth: AuthGuard, db: DbConn) -> Result<Re
                                 .execute(&*db);
 
                             if insert_result.is_ok() == true {
-                                // TODO: send email notification to both user & admins
+                                send_payout_emails(
+                                    auth.0,
+                                    &account_inner.email,
+                                    balance_due,
+                                    &APP_CONF.payout.currency,
+                                );
 
                                 "success"
                             } else {

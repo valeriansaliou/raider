@@ -115,4 +115,6 @@ pub struct ConfigTrackerBanner {
 pub struct ConfigPayout {
     #[serde(default = "defaults::payout_currency")]
     pub currency: String,
+
+    pub administrator_email: String,
 }
