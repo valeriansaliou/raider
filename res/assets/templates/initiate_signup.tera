@@ -25,7 +25,7 @@
     </a>
 
     {% if failure %}
-      <p class="error font-sans-semibold">Could not create account with this email.</p>
+      <p class="error font-sans-semibold">Could not create an account with this email.</p>
     {% endif %}
 
     <form action="/initiate/signup/form/signup/" method="post">

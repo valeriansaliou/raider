@@ -27,7 +27,7 @@
     </a>
 
     {% if failure %}
-      <p class="error font-sans-semibold">Could not recover account (not found).</p>
+      <p class="error font-sans-semibold">Could not recover account (email not found).</p>
     {% endif %}
 
     <form action="/initiate/recover/form/recover/" method="post">

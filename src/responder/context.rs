@@ -6,6 +6,7 @@
 
 use url_serde::SerdeUrl;
 
+use config::config::ConfigTrackerBanner;
 use APP_CONF;
 
 const LOGO_EXTENSION_SPLIT_SPAN: usize = 4;
@@ -21,9 +22,11 @@ lazy_static! {
         icon_mime: ImageMime::guess_from(APP_CONF.branding.icon_url.as_str()),
         logo_white_url: APP_CONF.branding.logo_white_url.to_owned(),
         logo_dark_url: APP_CONF.branding.logo_dark_url.to_owned(),
+        custom_html: APP_CONF.branding.custom_html.to_owned(),
         payout_currency: APP_CONF.payout.currency.to_owned(),
         track_url: APP_CONF.tracker.track_url.to_owned(),
         track_parameter: APP_CONF.tracker.track_parameter.to_owned(),
+        banners: ConfigContext::map_banners(&APP_CONF.tracker.banner)
     };
 }
 
@@ -71,7 +74,24 @@ pub struct ConfigContext {
     pub icon_mime: ImageMime,
     pub logo_white_url: SerdeUrl,
     pub logo_dark_url: SerdeUrl,
+    pub custom_html: Option<String>,
     pub payout_currency: String,
     pub track_url: String,
     pub track_parameter: String,
+    pub banners: Vec<(SerdeUrl, u16, u16)>,
+}
+
+impl ConfigContext {
+    fn map_banners(banners: &Vec<ConfigTrackerBanner>) -> Vec<(SerdeUrl, u16, u16)> {
+        banners
+            .into_iter()
+            .map(|banner| {
+                (
+                    banner.banner_url.to_owned(),
+                    banner.size_width,
+                    banner.size_height,
+                )
+            })
+            .collect::<Vec<(SerdeUrl, u16, u16)>>()
+    }
 }

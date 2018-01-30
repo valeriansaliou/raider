@@ -7,6 +7,8 @@
 use std::net::SocketAddr;
 use std::path::PathBuf;
 
+use super::config::ConfigTrackerBanner;
+
 pub fn server_log_level() -> String {
     "warn".to_string()
 }
@@ -57,6 +59,10 @@ pub fn tracker_track_parameter() -> String {
 
 pub fn tracker_commission_default() -> f32 {
     0.20
+}
+
+pub fn tracker_banner() -> Vec<ConfigTrackerBanner> {
+    Vec::new()
 }
 
 pub fn payout_currency() -> String {

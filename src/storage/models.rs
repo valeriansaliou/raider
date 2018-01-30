@@ -70,5 +70,5 @@ pub struct Tracker {
 #[derive(AsChangeset)]
 #[table_name = "account"]
 pub struct AccountRecoveryUpdate {
-    pub recovery: Vec<u8>
+    pub recovery: Vec<u8>,
 }

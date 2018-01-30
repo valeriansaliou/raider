@@ -16,6 +16,18 @@
   {{ super() }}
 
   <script src="/assets/javascripts/dashboard.js?v={{ config.runtime_version | escape }}" type="text/javascript"></script>
+
+  <script type="text/javascript">
+    window.onload = function() {
+      {% if failure %}
+        ToastManager.error("Payout not requested.", "The payout could not be requested. Please check your payout recipient settings are complete (go to the account page).");
+      {% elif neutral %}
+        ToastManager.warning("No money available.", "You have no money available on your account. The payout could not be requested.");
+      {% elif success %}
+        ToastManager.success("Payout requested.", "The payout has been requested. We will process it shortly and email you about it.");
+      {% endif %}
+    };
+  </script>
 {% endblock javascripts %}
 
 {% block body %}
@@ -42,7 +54,7 @@
                   <div class="payout-balance payout-balance-unpaid">
                     <div class="payout-balance-inner">
                       <h6 class="font-sans-regular">Your unpaid balance:</h6>
-                      <p class="payout-balance-amount color-blue font-sans-semibold">{{ config.payout_currency | escape }} {{ common.balance_pending | escape }}</p>
+                      <p class="payout-balance-amount color-{% if common.balance_pending != "0.00" %}blue{% else %}grey{% endif %} font-sans-semibold">{{ config.payout_currency | escape }} {{ common.balance_pending | escape }}</p>
                     </div>
 
                     <a href="javascript:IntentManager.show('modal', 'request')" class="button button-medium font-sans-semibold {% if common.balance_pending == "0.00" %}disabled{% endif %}">Request payout of {{ config.payout_currency | escape }} {{ common.balance_pending | escape }}</a>
@@ -147,14 +159,16 @@
           <div class="clear"></div>
         </div>
 
-        <p class="modal-main font-sans-semibold"><mark class="font-sans-bold">CURRENCY AMOUNT</mark> from your balance will be wired to your bank.</p>
+        <p class="modal-main font-sans-semibold"><mark class="font-sans-bold">{{ config.payout_currency | escape }} {{ common.balance_pending | escape }}</mark> from your balance will be wired to your bank.</p>
         <p class="font-sans-regular">Payouts are manually processed by our team. The wire will take a few days to be accepted, and then a few days to be received at your bank.</p>
 
-        <div class="modal-actions">
-          <a href="#" class="button button-medium button-next font-sans-semibold">Request payout now</a>
+        <form method="post" action="/dashboard/payouts/form/request/">
+          <div class="modal-actions">
+            <button type="submit" class="button button-medium button-next font-sans-semibold">Request payout now</button>
 
-          <div class="clear"></div>
-        </div>
+            <div class="clear"></div>
+          </div>
+        </form>
       </div>
     </div>
   </div>

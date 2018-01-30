@@ -61,7 +61,7 @@
                   </li>
 
                   <li>
-                    <a href="javascript:IntentManager.show('modal', 'create')" class="button button-small font-sans-semibold">Add a new tracker</a>
+                    <a href="javascript:FormTrackersManager.create_tracker()" class="button button-small font-sans-semibold">Add a new tracker</a>
                   </li>
                 </ul>
 
@@ -85,7 +85,7 @@
                           <div class="section-list-content section-list-content-trackers">
                             <div class="item-identity">
                               <h6 class="font-sans-bold">{{ tracker.label | escape }}</h6>
-                              <p class="underlined font-sans-regular">{{ config.track_url | escape }}?{{ config.track_parameter | escape }}={{ tracker.tracking_id | escape }}</p>
+                              <input class="item-identity-sub underlined font-sans-regular" type="text" value="{{ config.track_url | escape }}?{{ config.track_parameter | escape }}={{ tracker.tracking_id | escape }}" readonly>
                             </div>
 
                             <div class="item-metrics">
@@ -111,8 +111,11 @@
                           </div>
 
                           <div class="section-list-actions">
-                            <a href="javascript:IntentManager.show('popup', 'banner')" class="button button-tiny button-dark font-sans-semibold">View banners</a>
-                            <a href="#" class="button button-tiny font-sans-semibold">Copy tracker link</a>
+                            {% if config.banners | length > 0 %}
+                              <a href="#" onclick="FormBannersManager.open(this); return false;" class="button button-tiny button-dark font-sans-semibold">View banners</a>
+                            {% endif %}
+
+                            <a href="#" class="button button-tiny font-sans-semibold" onclick="FormTrackersManager.copy_tracker_link(this); return false;">Copy tracker link</a>
 
                             <div class="clear"></div>
                           </div>
@@ -169,10 +172,22 @@
 
             <div class="clear"></div>
           </div>
+
+          <ul class="popup-banner-picker">
+            {% for banner in config.banners %}
+              <li data-selected="false">
+                <a href="#" onclick="FormBannersManager.pick_banner(this); return false;">
+                  <img src="{{ banner.0 | escape }}" alt="" data-width="{{ banner.1 }}" data-height="{{ banner.2 }}">
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
         </div>
 
-        <div class="popup-actions">
-          <button type="submit" class="button button-medium button-next font-sans-semibold">Copy this banner HTML</button>
+        <div class="popup-actions popup-banner-actions">
+          <input id="trackers-banner-code" value="" readonly>
+
+          <a href="javascript:FormBannersManager.copy_selected_banner()" class="button button-medium button-next font-sans-semibold" data-locked="true">Copy this banner HTML</a>
 
           <div class="clear"></div>
         </div>

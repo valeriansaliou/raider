@@ -180,10 +180,10 @@ var IntentManager = (function() {
           "data-visible", ((is_visible === true) ? "true" : "false")
         );
 
-        return true;
+        return target_selector;
       }
 
-      return false;
+      return null;
     },
   };
 })();

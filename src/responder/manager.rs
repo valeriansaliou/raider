@@ -59,9 +59,11 @@ pub fn run() {
                 routes::get_initiate_logout,
 
                 routes::get_dashboard_base,
+                routes::get_dashboard_welcome,
                 routes::get_dashboard_trackers,
                 routes::get_dashboard_trackers_args,
                 routes::get_dashboard_payouts,
+                routes::get_dashboard_payouts_args,
                 routes::get_dashboard_account,
                 routes::get_dashboard_account_args,
 
@@ -76,6 +78,7 @@ pub fn run() {
 
                 routes::post_dashboard_trackers_form_create,
                 routes::post_dashboard_trackers_form_remove,
+                routes::post_dashboard_payouts_form_request,
                 routes::post_dashboard_account_form_account,
                 routes::post_dashboard_account_form_payout,
             ],

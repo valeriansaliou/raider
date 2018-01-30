@@ -87,6 +87,7 @@ pub struct ConfigBranding {
     pub icon_url: SerdeUrl,
     pub logo_white_url: SerdeUrl,
     pub logo_dark_url: SerdeUrl,
+    pub custom_html: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -98,6 +99,16 @@ pub struct ConfigTracker {
 
     #[serde(default = "defaults::tracker_commission_default")]
     pub commission_default: f32,
+
+    #[serde(default = "defaults::tracker_banner")]
+    pub banner: Vec<ConfigTrackerBanner>,
+}
+
+#[derive(Deserialize)]
+pub struct ConfigTrackerBanner {
+    pub banner_url: SerdeUrl,
+    pub size_width: u16,
+    pub size_height: u16,
 }
 
 #[derive(Deserialize)]

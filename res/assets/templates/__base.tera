@@ -19,6 +19,10 @@
     {% endblock stylesheets %}
 
     {% block javascripts %}{% endblock javascripts %}
+
+    {% if config.custom_html %}
+      {{ config.custom_html | safe }}
+    {% endif %}
   </head>
 
   <body>

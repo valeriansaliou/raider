@@ -283,7 +283,7 @@ a:hover {
   box-shadow: 0 -1px 3px 0 rgba(15, 31, 64, 0.025);
 }
 
-.popup-actions button {
+.popup-actions .button {
   float: right;
 }
 
@@ -333,11 +333,11 @@ a:hover {
 }
 
 .button.button-dark {
-  background: #3D3E3E;
+  background: #383838;
 }
 
 .button.button-dark:active {
-  background: #1F1F1F;
+  background: #191919;
 }
 
 .button.button-large {
@@ -611,7 +611,7 @@ button.button.button-tiny {
 
   50% {
     opacity: 0;
-    transform: scale3d(0.9, 0.9, 0.9);
+    transform: scale3d(0.925, 0.925, 0.925);
   }
 
   100% {

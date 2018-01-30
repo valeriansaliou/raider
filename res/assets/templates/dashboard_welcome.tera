@@ -40,7 +40,6 @@
       <div class="modal-inner">
         <div class="modal-title">
           <h1 class="font-sans-bold">Welcome! Create your first link…</h1>
-          <a href="javascript:IntentManager.hide('modal', 'initialize')" class="close"></a>
 
           <div class="clear"></div>
         </div>
@@ -49,7 +48,7 @@
         <p class="font-sans-regular">Once people signup using your link and pay for the service, you will earn a {{ commission_percent }}% commission. You will then be able to request a payout.</p>
 
         <div class="modal-actions">
-          <a href="/dashboard/trackers/" class="button button-medium button-next button-important font-sans-semibold">Create an affiliates link</a>
+          <a href="/dashboard/trackers/" class="button button-medium button-next button-important font-sans-semibold">Create an affiliates tracker</a>
 
           <div class="clear"></div>
         </div>

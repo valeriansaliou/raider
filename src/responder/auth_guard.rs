@@ -62,7 +62,11 @@ fn read(mut cookies: Cookies) -> Option<Cookie> {
 pub fn password_encode(password: &str) -> Vec<u8> {
     let password_salted = [password, APP_CONF.database.password_salt.as_str()].join("");
 
-    log::debug!("salted password: {} and got result: {}", password, &password_salted);
+    log::debug!(
+        "salted password: {} and got result: {}",
+        password,
+        &password_salted
+    );
 
     let mut hasher = Sha256::default();
 
