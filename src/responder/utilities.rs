@@ -14,15 +14,15 @@ use storage::schemas::balance::dsl::{
     balance,
     account_id as balance_account_id,
     amount as balance_amount,
-    status as balance_status
+    released as balance_released
 };
 use storage::db::DbConn;
 
-pub fn get_balance(db: &DbConn, user_id: i32, status: Option<&'static str>) -> String {
-    let balance_result = if let Some(status_inner) = status {
+pub fn get_balance(db: &DbConn, user_id: i32, released: Option<bool>) -> String {
+    let balance_result = if let Some(released_inner) = released {
         balance
             .filter(balance_account_id.eq(user_id))
-            .filter(balance_status.eq(status_inner))
+            .filter(balance_released.eq(released_inner))
             .select(sum(balance_amount))
             .first(&**db)
     } else {

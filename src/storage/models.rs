@@ -32,7 +32,7 @@ pub struct Balance {
     pub id: i32,
     pub amount: BigDecimal,
     pub currency: String,
-    pub status: String,
+    pub released: bool,
     pub trace: Option<String>,
     pub account_id: i32,
     pub tracker_id: Option<String>,

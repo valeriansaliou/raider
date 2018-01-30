@@ -446,6 +446,14 @@ form.section-wrap label .select-wrap:after {
   display: block;
 }
 
+.section-list-empty {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 13px;
+  font-style: italic;
+  text-align: center;
+  padding-top: 5px;
+}
+
 .section-list li {
   background: #F7F8FA;
   list-style-type: none;

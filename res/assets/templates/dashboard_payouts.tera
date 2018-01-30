@@ -79,45 +79,49 @@
             <div class="section-box">
               <div class="section-box-inner">
                 <ul class="section-list">
-                  {% for payout in payouts %}
-                    <li class="selected">
-                      <div class="section-list-content section-list-content-payouts">
-                        <div class="item-identity">
-                          <h6 class="font-sans-bold">Payout #{{ payout.number }}</h6>
-                          <p class="font-sans-regular">{{ payout.date | escape }}</p>
-                        </div>
-
-                        <div class="item-metrics">
-                          <div class="item-metrics-one">
-                            <p class="font-sans-regular">Status</p>
-                            <h5 class="color-green capitalize font-sans-semibold">{{ payout.status | escape }}</h5>
+                  {% if payouts | length > 0 %}
+                    {% for payout in payouts %}
+                      <li class="selected">
+                        <div class="section-list-content section-list-content-payouts">
+                          <div class="item-identity">
+                            <h6 class="font-sans-bold">Payout #{{ payout.number }}</h6>
+                            <p class="font-sans-regular">{{ payout.date | escape }}</p>
                           </div>
 
-                          <div class="item-metrics-one">
-                            <p class="font-sans-regular">Payout amount</p>
-                            <h5 class="color-blue font-sans-regular">{{ payout.currency | escape }} {{ payout.amount | escape }}</h5>
-                          </div>
+                          <div class="item-metrics">
+                            <div class="item-metrics-one">
+                              <p class="font-sans-regular">Status</p>
+                              <h5 class="color-green capitalize font-sans-semibold">{{ payout.status | escape }}</h5>
+                            </div>
 
-                          <div class="item-metrics-one">
-                            <p class="font-sans-regular">Payout account</p>
-                            <h5 class="color-grey uppercase font-sans-regular">{{ payout.account | escape }}</h5>
+                            <div class="item-metrics-one">
+                              <p class="font-sans-regular">Payout amount</p>
+                              <h5 class="color-blue font-sans-regular">{{ payout.currency | escape }} {{ payout.amount | escape }}</h5>
+                            </div>
+
+                            <div class="item-metrics-one">
+                              <p class="font-sans-regular">Payout account</p>
+                              <h5 class="color-grey uppercase font-sans-regular">{{ payout.account | escape }}</h5>
+                            </div>
+
+                            <div class="clear"></div>
                           </div>
 
                           <div class="clear"></div>
                         </div>
 
+                        <div class="section-list-actions">
+                          <a href="{{ payout.invoice_url | escape }}" class="button button-tiny font-sans-semibold {% if not payout.invoice_url %}disabled{% endif %}">{% if payout.invoice_url %}Download invoice{% else %}No invoice available{% endif %}</a>
+
+                          <div class="clear"></div>
+                        </div>
+
                         <div class="clear"></div>
-                      </div>
-
-                      <div class="section-list-actions">
-                        <a href="{{ payout.invoice_url | escape }}" class="button button-tiny font-sans-semibold {% if not payout.invoice_url %}disabled{% endif %}">{% if payout.invoice_url %}Download invoice{% else %}No invoice available{% endif %}</a>
-
-                        <div class="clear"></div>
-                      </div>
-
-                      <div class="clear"></div>
-                    </li>
-                  {% endfor %}
+                      </li>
+                    {% endfor %}
+                  {% else %}
+                    <h4 class="section-list-empty font-sans-semibold">No payout was found. Request your first payout now!</h4>
+                  {% endif %}
                 </ul>
               </div>
             </div>

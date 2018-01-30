@@ -218,7 +218,7 @@ pub struct DashboardAccountContextPayout {
 impl DashboardCommonContext {
     fn build(db: &DbConn, user_id: i32) -> DashboardCommonContext {
         DashboardCommonContext {
-            balance_pending: get_balance(db, user_id, Some("unpaid"))
+            balance_pending: get_balance(db, user_id, Some(false))
         }
     }
 }

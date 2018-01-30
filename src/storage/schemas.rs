@@ -26,7 +26,7 @@ table! {
         id -> Integer,
         amount -> Numeric,
         currency -> VarChar,
-        status -> VarChar,
+        released -> Bool,
         trace -> Nullable<Text>,
         account_id -> Integer,
         tracker_id -> Nullable<VarChar>,
