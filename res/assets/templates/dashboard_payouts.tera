@@ -111,10 +111,12 @@
                               <h5 class="color-blue font-sans-regular">{{ payout.currency | escape }} {{ payout.amount | escape }}</h5>
                             </div>
 
-                            <div class="item-metrics-one">
-                              <p class="font-sans-regular">Payout account</p>
-                              <h5 class="color-grey uppercase font-sans-regular">{{ payout.account | escape }}</h5>
-                            </div>
+                            {% if payout.account %}
+                              <div class="item-metrics-one">
+                                <p class="font-sans-regular">Payout account</p>
+                                <h5 class="color-grey uppercase font-sans-regular">{{ payout.account | escape }}</h5>
+                              </div>
+                            {% endif %}
 
                             <div class="clear"></div>
                           </div>
