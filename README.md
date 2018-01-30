@@ -73,9 +73,9 @@ _Install the `libssl-dev` (ie. OpenSSL headers) before you compile Raider. SSL d
 
 ### Database
 
-Raider requires a MySQL database server to be running (it is unfortunately not compatible with PostgreSQL and others, _at the moment_).
+Raider requires a MySQL to be running on your host (it is unfortunately not compatible with PostgreSQL and others, _at the moment_).
 
-The Raider SQL schema should be imported, which you can find at [raider.sql](https://github.com/valeriansaliou/raider/blob/master/doc/fixtures/raider.sql).
+The Raider SQL schema should be imported in the Raider database you created, which you can find at [raider.sql](https://github.com/valeriansaliou/raider/blob/master/doc/fixtures/raider.sql).
 
 ### Configuration
 
