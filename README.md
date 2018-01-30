@@ -75,7 +75,11 @@ _Install the `libssl-dev` (ie. OpenSSL headers) before you compile Raider. SSL d
 
 Use the sample [config.cfg](https://github.com/valeriansaliou/raider/blob/master/config.cfg) configuration file and adjust it to your own environment.
 
+---
+
 **⚠️ Important: Make sure to change the default `server.secret_key` configuration value with a secret key you generated. Failing to do so will make your Raider instance insecure.**
+
+---
 
 **Available configuration options are commented below, with allowed values:**
 
