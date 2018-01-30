@@ -16,6 +16,14 @@
   {{ super() }}
 
   <script src="/assets/javascripts/dashboard.js?v={{ config.runtime_version | escape }}" type="text/javascript"></script>
+
+  <script type="text/javascript">
+    window.onload = function() {
+      {% if not has_trackers %}
+        IntentManager.show("modal", "initialize");
+      {% endif %}
+    };
+  </script>
 {% endblock javascripts %}
 
 {% block body %}
@@ -26,6 +34,28 @@
       {{ dashboard_menu::menu(config=config, common=common, sidebar="animated", selected="", infobox_title="This is your affiliates dashboard.", infobox_label="Manage your trackers, payouts &amp; account. Pick a category below.") }}
     </div>
   </main>
+
+  <div class="lock modal-lock" data-name="initialize" data-visible="false">
+    <div class="modal">
+      <div class="modal-inner">
+        <div class="modal-title">
+          <h1 class="font-sans-bold">Welcome! Create your first link…</h1>
+          <a href="javascript:IntentManager.hide('modal', 'initialize')" class="close"></a>
+
+          <div class="clear"></div>
+        </div>
+
+        <p class="modal-main font-sans-semibold">To start earning money, create a tracker link and share it.</p>
+        <p class="font-sans-regular">Once people signup using your link and pay for the service, you will earn a {{ commission_percent }}% commission. You will then be able to request a payout.</p>
+
+        <div class="modal-actions">
+          <a href="/dashboard/trackers/" class="button button-medium button-next button-important font-sans-semibold">Create an affiliates link</a>
+
+          <div class="clear"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   {{ dashboard_toast::toast() }}
 {% endblock body %}

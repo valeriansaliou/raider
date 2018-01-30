@@ -74,7 +74,8 @@ pub fn run() {
                 routes::post_initiate_signup_form_signup,
                 routes::post_initiate_recover_form_recover,
 
-                routes::post_dashboard_trackers_form_account,
+                routes::post_dashboard_trackers_form_create,
+                routes::post_dashboard_trackers_form_remove,
                 routes::post_dashboard_account_form_account,
                 routes::post_dashboard_account_form_payout,
             ],

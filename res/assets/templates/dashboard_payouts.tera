@@ -45,7 +45,7 @@
                       <p class="payout-balance-amount color-blue font-sans-semibold">{{ config.payout_currency | escape }} {{ common.balance_pending | escape }}</p>
                     </div>
 
-                    <a href="#" class="button button-medium font-sans-semibold {% if common.balance_pending == "0.00" %}disabled{% endif %}">Request payout of {{ config.payout_currency | escape }} {{ common.balance_pending | escape }}</a>
+                    <a href="javascript:IntentManager.show('modal', 'request')" class="button button-medium font-sans-semibold {% if common.balance_pending == "0.00" %}disabled{% endif %}">Request payout of {{ config.payout_currency | escape }} {{ common.balance_pending | escape }}</a>
                   </div>
 
                   <div class="payout-balance payout-balance-all">
@@ -91,7 +91,7 @@
                           <div class="item-metrics">
                             <div class="item-metrics-one">
                               <p class="font-sans-regular">Status</p>
-                              <h5 class="color-green capitalize font-sans-semibold">{{ payout.status | escape }}</h5>
+                              <h5 class="color-{% if payout.status == "pending" %}orange{% elif payout.status == "rejected" %}red{% elif payout.status == "processed" %}green{% else %}blue{% endif %} capitalize font-sans-semibold">{{ payout.status | escape }}</h5>
                             </div>
 
                             <div class="item-metrics-one">
@@ -136,6 +136,28 @@
       </section>
     </div>
   </main>
+
+  <div class="lock modal-lock" data-name="request" data-visible="false">
+    <div class="modal">
+      <div class="modal-inner">
+        <div class="modal-title">
+          <h1 class="font-sans-bold">Request a payout…</h1>
+          <a href="javascript:IntentManager.hide('modal', 'request')" class="close"></a>
+
+          <div class="clear"></div>
+        </div>
+
+        <p class="modal-main font-sans-semibold"><mark class="font-sans-bold">CURRENCY AMOUNT</mark> from your balance will be wired to your bank.</p>
+        <p class="font-sans-regular">Payouts are manually processed by our team. The wire will take a few days to be accepted, and then a few days to be received at your bank.</p>
+
+        <div class="modal-actions">
+          <a href="#" class="button button-medium button-next font-sans-semibold">Request payout now</a>
+
+          <div class="clear"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   {{ dashboard_toast::toast() }}
 {% endblock body %}

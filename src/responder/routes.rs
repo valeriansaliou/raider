@@ -13,6 +13,7 @@ use separator::{Separatable, FixedPlaceSeparatable};
 use bigdecimal::BigDecimal;
 use num_traits::cast::ToPrimitive;
 use iso_country::data::{all as countries};
+use rand::{self, Rng};
 use rocket::error::{Error as RocketError};
 use rocket::response::{Redirect, Failure};
 use rocket::request::{Form, FromForm, FormItems, FromFormValue};
@@ -20,7 +21,7 @@ use rocket::http::{Cookies, Status};
 use rocket_contrib::Template;
 use diesel;
 use diesel::prelude::*;
-use diesel::dsl::sum;
+use diesel::dsl::{sum, count};
 
 use super::context::{CONFIG_CONTEXT, ConfigContext};
 use super::asset_file::AssetFile;
@@ -53,12 +54,16 @@ use storage::schemas::account::dsl::{
 };
 use storage::schemas::payout::dsl::{
     payout,
-    account_id as payout_account_id
+    account_id as payout_account_id,
+    created_at as payout_created_at
 };
 use storage::schemas::tracker::dsl::{
     tracker,
     id as tracker_id,
-    account_id as tracker_account_id
+    label as tracker_label,
+    account_id as tracker_account_id,
+    created_at as tracker_created_at,
+    updated_at as tracker_updated_at
 };
 use storage::schemas::balance::dsl::{
     balance,
@@ -98,6 +103,11 @@ pub struct SignupData {
 #[derive(FromForm)]
 pub struct RecoverData {
     email: String,
+}
+
+#[derive(FromForm)]
+pub struct DashboardTrackersFormCreateData {
+    name: String
 }
 
 pub struct DashboardTrackersFormRemoveData {
@@ -146,11 +156,15 @@ pub struct DashboardCommonContext {
 #[derive(Serialize)]
 pub struct DashboardBaseContext<'a> {
     pub common: DashboardCommonContext,
-    pub config: &'a ConfigContext
+    pub config: &'a ConfigContext,
+    pub has_trackers: bool,
+    pub commission_percent: u8
 }
 
 #[derive(Serialize)]
 pub struct DashboardTrackersContext<'a> {
+    pub create_failure: bool,
+    pub create_success: bool,
     pub remove_failure: bool,
     pub remove_neutral: bool,
     pub remove_success: bool,
@@ -480,9 +494,26 @@ fn get_initiate_logout(_auth: AuthGuard, cookies: Cookies) -> Redirect {
 
 #[get("/dashboard")]
 fn get_dashboard_base(auth: AuthGuard, db: DbConn) -> Template {
+    let account_result = account
+        .filter(account_id.eq(auth.0))
+        .first::<Account>(&*db);
+
+    let tracker_count_result = tracker
+        .filter(tracker_account_id.eq(auth.0))
+        .select(count(tracker_id))
+        .first(&*db);
+
+    let commission_value = if let Ok(account_inner) = account_result {
+        account_inner.commission.to_f32().unwrap_or(0.00)
+    } else {
+        0.00
+    };
+
     Template::render("dashboard_base", &DashboardBaseContext {
         common: DashboardCommonContext::build(&db, auth.0),
-        config: &CONFIG_CONTEXT
+        config: &CONFIG_CONTEXT,
+        has_trackers: tracker_count_result.unwrap_or(0) > 0,
+        commission_percent: (commission_value * 100.0) as u8
     })
 }
 
@@ -499,6 +530,7 @@ fn get_dashboard_trackers_args(auth: AuthGuard, db: DbConn, args: DashboardArgs)
 
     tracker
         .filter(tracker_account_id.eq(auth.0))
+        .order(tracker_label.asc())
         .load::<Tracker>(&*db)
         .map(|results| {
             for result in results {
@@ -530,6 +562,8 @@ fn get_dashboard_trackers_args(auth: AuthGuard, db: DbConn, args: DashboardArgs)
         .ok();
 
     Template::render("dashboard_trackers", &DashboardTrackersContext {
+        create_failure: check_argument_value(&args.result, "create_failure"),
+        create_success: check_argument_value(&args.result, "create_success"),
         remove_failure: check_argument_value(&args.result, "remove_failure"),
         remove_neutral: check_argument_value(&args.result, "remove_neutral"),
         remove_success: check_argument_value(&args.result, "remove_success"),
@@ -539,8 +573,43 @@ fn get_dashboard_trackers_args(auth: AuthGuard, db: DbConn, args: DashboardArgs)
     })
 }
 
+#[post("/dashboard/trackers/form/create", data = "<data>")]
+fn post_dashboard_trackers_form_create(
+    auth: AuthGuard,
+    db: DbConn,
+    data: Form<DashboardTrackersFormCreateData>
+) -> Redirect {
+    let data_inner = data.get();
+
+    let now_date = Utc::now().naive_utc();
+    let new_tracker_id = rand::thread_rng()
+        .gen_ascii_chars()
+        .take(10)
+        .collect::<String>();
+
+    let insert_result = diesel::insert_into(tracker)
+        .values((
+            &tracker_id.eq(&new_tracker_id),
+            &tracker_label.eq(&data_inner.name),
+            &tracker_account_id.eq(&auth.0),
+            &tracker_created_at.eq(&now_date),
+            &tracker_updated_at.eq(&now_date)
+        ))
+        .execute(&*db);
+
+    log::debug!(
+        "created tracker: {} named: {} for user_id: {}", new_tracker_id, data_inner.name, auth.0
+    );
+
+    Redirect::to(&format!("/dashboard/trackers/?result={}", if insert_result.is_ok() == true {
+        "create_success"
+    } else {
+        "create_failure"
+    }))
+}
+
 #[post("/dashboard/trackers/form/remove", data = "<data>")]
-fn post_dashboard_trackers_form_account(
+fn post_dashboard_trackers_form_remove(
     auth: AuthGuard,
     db: DbConn,
     data: Form<DashboardTrackersFormRemoveData>
@@ -574,6 +643,7 @@ fn get_dashboard_payouts(auth: AuthGuard, db: DbConn) -> Template {
 
     payout
         .filter(payout_account_id.eq(auth.0))
+        .order(payout_created_at.asc())
         .limit(PAYOUTS_LIMIT_PER_PAGE + 1)
         .load::<Payout>(&*db)
         .map(|results| {

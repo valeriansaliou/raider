@@ -112,6 +112,10 @@ a:hover {
   color: #FF8C25 !important;
 }
 
+.color-red {
+  color: #F14040 !important;
+}
+
 .color-grey {
   color: #878889 !important;
 }
@@ -140,6 +144,16 @@ a:hover {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+}
+
+.modal-lock,
+.popup-lock {
+  display: none;
+}
+
+.modal-lock[data-visible="true"],
+.popup-lock[data-visible="true"] {
+  display: block;
 }
 
 .modal-inner {
@@ -188,13 +202,21 @@ a:hover {
   font-size: 13px;
   color: rgba(0, 0, 0, 0.5);
   line-height: 18px;
+  text-align: justify;
+}
+
+.modal-field {
+  text-indent: 20px;
+  width: 100%;
+  margin-top: 18px;
+  padding-left: 0 !important;
 }
 
 .modal-actions {
   margin-top: 24px;
 }
 
-.modal-actions button {
+.modal-actions .button {
   float: right;
 }
 
@@ -294,6 +316,12 @@ a:hover {
   pointer-events: none !important;
   user-select: none !important;
   box-shadow: none !important;
+}
+
+.button[data-locked="true"] {
+  opacity: 0.6 !important;
+  pointer-events: none !important;
+  user-select: none !important;
 }
 
 .button.button-important {

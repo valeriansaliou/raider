@@ -160,16 +160,31 @@ var ToastManager = (function() {
 })();
 
 
-var ModalManager = (function() {
+var IntentManager = (function() {
   return {
-    // TODO
-  };
-})();
+    show : function(type, name) {
+      return this.__visibility(type, name, true);
+    },
 
+    hide : function(type, name) {
+      return this.__visibility(type, name, false);
+    },
 
-var PopupManager = (function() {
-  return {
-    // TODO
+    __visibility : function(type, name, is_visible) {
+      var target_selector = (
+        document.querySelector("." + type + "-lock[data-name=\"" + name + "\"]")
+      );
+
+      if (target_selector) {
+        target_selector.setAttribute(
+          "data-visible", ((is_visible === true) ? "true" : "false")
+        );
+
+        return true;
+      }
+
+      return false;
+    },
   };
 })();
 

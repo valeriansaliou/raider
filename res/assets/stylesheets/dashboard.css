@@ -10,6 +10,11 @@ body {
   bottom: 0;
 }
 
+mark {
+  background: rgba(252, 234, 2, 0.3);
+  padding: 5px 6px;
+}
+
 header {
   background: #FFFFFF;
   height: 50px;
@@ -458,7 +463,7 @@ form.section-wrap label .select-wrap:after {
   background: #F7F8FA;
   list-style-type: none;
   height: 56px;
-  margin-bottom: 8px;
+  margin-bottom: 9px;
   display: block;
   overflow: hidden;
   border-radius: 2px;
@@ -534,6 +539,7 @@ form.section-wrap label .link {
   font-size: 12.5px;
 }
 
+.modal-field,
 form.section-wrap label input,
 form.section-wrap label select,
 form.section-wrap label textarea {
@@ -546,11 +552,13 @@ form.section-wrap label textarea {
   -moz-appearance: none;
 }
 
+.modal-field,
 form.section-wrap label input,
 form.section-wrap label select {
   height: 40px;
 }
 
+.modal-field,
 form.section-wrap label input,
 form.section-wrap label textarea {
   background: #FFFFFF;
@@ -559,6 +567,7 @@ form.section-wrap label textarea {
   box-shadow: inset 0 1px 3px 0 rgba(15, 31, 64, 0.03);
 }
 
+.modal-field:focus,
 form.section-wrap label input:focus,
 form.section-wrap label textarea:focus {
   border-color: rgba(0, 0, 0, 0.4);

@@ -20,7 +20,11 @@
 
   <script type="text/javascript">
     window.onload = function() {
-      {% if remove_failure %}
+      {% if create_failure %}
+        ToastManager.error("Tracker not created.", "The tracker could not be created. Try again.");
+      {% elif create_success %}
+        ToastManager.success("Tracker created.", "The tracker has been created and is now available for use.");
+      {% elif remove_failure %}
         ToastManager.error("Trackers not removed.", "The selected trackers could not be removed.");
       {% elif remove_neutral %}
         ToastManager.warning("No tracker was removed.", "No tracker was removed from selected trackers.");
@@ -53,11 +57,11 @@
 
                 <ul>
                   <li class="icon remove">
-                    <button type="submit" class="button button-small button-action font-sans-semibold">Remove selection</button>
+                    <button type="submit" data-locked="true" id="trackers-remove" class="button button-small button-action font-sans-semibold">Remove selection</button>
                   </li>
 
                   <li>
-                    <a href="#" class="button button-small font-sans-semibold">Add a new tracker</a>
+                    <a href="javascript:IntentManager.show('modal', 'create')" class="button button-small font-sans-semibold">Add a new tracker</a>
                   </li>
                 </ul>
 
@@ -107,7 +111,7 @@
                           </div>
 
                           <div class="section-list-actions">
-                            <a href="#" class="button button-tiny button-dark font-sans-semibold">View banners</a>
+                            <a href="javascript:IntentManager.show('popup', 'banner')" class="button button-tiny button-dark font-sans-semibold">View banners</a>
                             <a href="#" class="button button-tiny font-sans-semibold">Copy tracker link</a>
 
                             <div class="clear"></div>
@@ -128,6 +132,53 @@
       </section>
     </div>
   </main>
+
+  <div class="lock modal-lock" data-name="create" data-visible="false">
+    <div class="modal">
+      <div class="modal-inner">
+        <div class="modal-title">
+          <h1 class="font-sans-bold">Create a new tracker…</h1>
+          <a href="javascript:IntentManager.hide('modal', 'create')" class="close"></a>
+
+          <div class="clear"></div>
+        </div>
+
+        <p class="modal-main font-sans-semibold">Name your tracker and start making money.</p>
+        <p class="font-sans-regular">Please enter a name for your tracker. This lets you recognize trackers if you use multiple ones at once, eg. if you run multiple campaigns.</p>
+
+        <form method="post" action="/dashboard/trackers/form/create/">
+          <input class="modal-field" type="text" name="name" placeholder="Enter tracker name (eg. Website Footer)..." required>
+
+          <div class="modal-actions">
+            <button type="submit" class="button button-medium button-next font-sans-semibold">Create tracker</button>
+
+            <div class="clear"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="lock popup-lock" data-name="banner" data-visible="false">
+    <div class="popup">
+      <div class="popup-inner">
+        <div class="popup-scroll">
+          <div class="popup-title">
+            <h1 class="font-sans-bold">Pick a tracker banner…</h1>
+            <a href="javascript:IntentManager.hide('popup', 'banner')" class="close"></a>
+
+            <div class="clear"></div>
+          </div>
+        </div>
+
+        <div class="popup-actions">
+          <button type="submit" class="button button-medium button-next font-sans-semibold">Copy this banner HTML</button>
+
+          <div class="clear"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   {{ dashboard_toast::toast() }}
 {% endblock body %}
