@@ -160,6 +160,20 @@ var ToastManager = (function() {
 })();
 
 
+var ModalManager = (function() {
+  return {
+    // TODO
+  };
+})();
+
+
+var PopupManager = (function() {
+  return {
+    // TODO
+  };
+})();
+
+
 var FormManager = (function() {
   return {
     submit : function() {

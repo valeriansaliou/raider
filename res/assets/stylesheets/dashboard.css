@@ -456,8 +456,8 @@ form.section-wrap label .select-wrap:after {
   border-radius: 2px;
 }
 
-.section-list li.selected .section-list-selection:before {
-  background-color: #3C82E7;
+.section-list li[data-selected="true"] .section-list-selection:before {
+  width: 3px;
 }
 
 .section-list-selection {
@@ -467,9 +467,11 @@ form.section-wrap label .select-wrap:after {
 
 .section-list-selection:before {
   content: "";
-  width: 3px;
+  background-color: #3C82E7;
+  width: 0;
   height: 100%;
   float: left;
+  transition: width 0.1s linear;
 }
 
 .section-list-selection .checkbox-label {

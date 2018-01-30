@@ -16,6 +16,7 @@
   {{ super() }}
 
   <script src="/assets/javascripts/dashboard.js?v={{ config.runtime_version | escape }}" type="text/javascript"></script>
+  <script src="/assets/javascripts/dashboard_trackers.js?v={{ config.runtime_version | escape }}" type="text/javascript"></script>
 
   <script type="text/javascript">
     window.onload = function() {
@@ -67,9 +68,9 @@
                 <div class="section-box-inner">
                   <ul class="section-list">
                     {% for tracker in trackers %}
-                      <li>
+                      <li data-selected="false">
                         <div class="section-list-selection">
-                          <input id="select_{{ tracker.tracking_id | escape }}" class="checkbox" type="checkbox" name="tracker" value="{{ tracker.tracking_id | escape }}">
+                          <input id="select_{{ tracker.tracking_id | escape }}" class="checkbox" type="checkbox" name="tracker" value="{{ tracker.tracking_id | escape }}" onchange="FormTrackersManager.checkbox_change(this)">
 
                           <label class="checkbox-label" for="select_{{ tracker.tracking_id | escape }}">
                             <span class="checkbox-image"></span>
