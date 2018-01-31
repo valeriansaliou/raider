@@ -14,6 +14,7 @@ use num_traits::ToPrimitive;
 use bigdecimal::BigDecimal;
 
 use notifier::email::EmailNotifier;
+use exchange::manager::normalize as exchange_normalize;
 use storage::schemas::tracker::dsl::{tracker, id as tracker_id};
 use storage::schemas::account::dsl::account;
 use storage::schemas::balance::dsl::{balance, amount as balance_amount,
@@ -28,76 +29,92 @@ use APP_CONF;
 
 pub enum HandlePaymentError {
     InvalidAmount,
+    BadCurrency,
     NotFound,
 }
 
 pub fn handle_payment(
     db: &DbConn,
     tracking_id: &str,
-    amount: f32,
+    amount_real: f32,
     currency: &str,
     trace: &Option<String>,
-) -> Result<(bool, String, String, f32, String), HandlePaymentError> {
+) -> Result<Option<(bool, String, String, f32, String)>, HandlePaymentError> {
     log::debug!(
-        "payment handle: {} of amount: {} {}",
+        "payment handle: {} of real amount: {} {}",
         tracking_id,
         currency,
-        amount
+        amount_real
     );
 
-    // Validate amount
-    if amount <= 0.00 {
-        return Err(HandlePaymentError::InvalidAmount);
-    }
+    // Normalize amount
+    if let Ok(amount) = exchange_normalize(amount_real, currency) {
+        log::debug!(
+            "normalized real amount: {} {} to: {} {}",
+            currency,
+            amount_real,
+            &APP_CONF.payout.currency,
+            amount
+        );
 
-    // Resolve user for tracking code
-    let track_result = tracker
-        .filter(tracker_id.eq(tracking_id))
-        .inner_join(account)
-        .first::<(Tracker, Account)>(&**db);
+        // Validate amount
+        if amount < 0.00 {
+            return Err(HandlePaymentError::InvalidAmount);
+        }
 
-    if let Ok(track_inner) = track_result {
-        // TODO: proceed currency normalization of amount in source currency to default currency \
-        //   from configuration
+        // Ignore zero amount
+        if amount == 0.00 {
+            return Ok(None);
+        }
 
-        // Apply user commission percentage to amount
-        let commission_amount = amount * track_inner.1.commission.to_f32().unwrap_or(0.0);
+        // Resolve user for tracking code
+        let track_result = tracker
+            .filter(tracker_id.eq(tracking_id))
+            .inner_join(account)
+            .first::<(Tracker, Account)>(&**db);
 
-        if commission_amount > 0.0 {
-            let now_date = Utc::now().naive_utc();
+        if let Ok(track_inner) = track_result {
+            // Apply user commission percentage to amount
+            let commission_amount = amount * track_inner.1.commission.to_f32().unwrap_or(0.0);
 
-            let insert_result = diesel::insert_into(balance)
-                .values((
-                    &balance_amount.eq(BigDecimal::from(commission_amount)),
-                    &balance_currency.eq(&APP_CONF.payout.currency),
-                    &balance_trace.eq(trace),
-                    &balance_account_id.eq(&track_inner.1.id),
-                    &balance_tracker_id.eq(&track_inner.0.id),
-                    &balance_created_at.eq(&now_date),
-                    &balance_updated_at.eq(&now_date),
-                ))
-                .execute(&**db);
+            if commission_amount > 0.0 {
+                let now_date = Utc::now().naive_utc();
 
-            if insert_result.is_ok() == true {
-                return Ok((
-                    track_inner.1.notify_balance,
-                    track_inner.1.email.to_owned(),
-                    track_inner.0.id.to_owned(),
-                    commission_amount,
-                    APP_CONF.payout.currency.to_owned(),
-                ));
+                let insert_result = diesel::insert_into(balance)
+                    .values((
+                        &balance_amount.eq(BigDecimal::from(commission_amount)),
+                        &balance_currency.eq(&APP_CONF.payout.currency),
+                        &balance_trace.eq(trace),
+                        &balance_account_id.eq(&track_inner.1.id),
+                        &balance_tracker_id.eq(&track_inner.0.id),
+                        &balance_created_at.eq(&now_date),
+                        &balance_updated_at.eq(&now_date),
+                    ))
+                    .execute(&**db);
+
+                if insert_result.is_ok() == true {
+                    return Ok(Some((
+                        track_inner.1.notify_balance,
+                        track_inner.1.email.to_owned(),
+                        track_inner.0.id.to_owned(),
+                        commission_amount,
+                        APP_CONF.payout.currency.to_owned(),
+                    )));
+                }
             }
         }
+
+        log::warn!(
+            "payment: {} could not be stored to balance for amount: {} {}",
+            tracking_id,
+            currency,
+            amount
+        );
+
+        Err(HandlePaymentError::NotFound)
+    } else {
+        Err(HandlePaymentError::BadCurrency)
     }
-
-    log::warn!(
-        "payment: {} could not be stored to balance for amount: {} {}",
-        tracking_id,
-        currency,
-        amount
-    );
-
-    Err(HandlePaymentError::NotFound)
 }
 
 pub fn run_notify_payment(

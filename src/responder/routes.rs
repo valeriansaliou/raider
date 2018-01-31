@@ -31,11 +31,9 @@ use super::auth_guard::{AuthGuard, AuthAnonymousGuard, cleanup as auth_cleanup,
                         recovery_generate as auth_recovery_generate};
 use super::track_guard::TrackGuard;
 use super::utilities::{get_balance, get_balance_string, check_argument_value, send_payout_emails};
-use track::payment::{
-    handle_payment as track_handle_payment,
-    run_notify_payment as track_run_notify_payment,
-    HandlePaymentError as TrackHandlePaymentError
-};
+use track::payment::{handle_payment as track_handle_payment,
+                     run_notify_payment as track_run_notify_payment,
+                     HandlePaymentError as TrackHandlePaymentError};
 use notifier::email::EmailNotifier;
 use storage::db::DbConn;
 use storage::schemas::account::dsl::{account, id as account_id, email as account_email,
@@ -836,7 +834,7 @@ fn get_dashboard_account_args(
                 config: &CONFIG_CONTEXT,
                 account: DashboardAccountContextAccount {
                     email: account_inner.email,
-                    notify_balance: account_inner.notify_balance
+                    notify_balance: account_inner.notify_balance,
                 },
                 payout_methods: ACCOUNT_PAYOUT_METHODS,
                 countries: country_list,
@@ -871,14 +869,14 @@ fn post_dashboard_account_form_account(
                 account_password.eq(
                     &auth_password_encode(&data_inner.password),
                 ),
-                account_notify_balance.eq(&notify_balance_value)
+                account_notify_balance.eq(&notify_balance_value),
             ))
             .execute(&*db)
     } else {
         diesel::update(account.filter(account_id.eq(auth.0)))
             .set((
                 account_email.eq(&data_inner.email),
-                account_notify_balance.eq(&notify_balance_value)
+                account_notify_balance.eq(&notify_balance_value),
             ))
             .execute(&*db)
     };
@@ -954,20 +952,31 @@ fn post_track_payment(
         &db,
         &tracking_id,
         data.amount,
-        &data.currency,
+        &data.currency.to_uppercase(),
         &data.trace,
     ) {
-        Ok((should_notify, email, source_tracker_id, commission_amount, commission_currency)) => {
-            // Notify user about received commission
-            if should_notify == true {
-                track_run_notify_payment(
-                    email, source_tracker_id, commission_amount, commission_currency
-                );
+        Ok(results) => {
+            if let Some((should_notify,
+                         email,
+                         source_tracker_id,
+                         commission_amount,
+                         commission_currency)) = results
+            {
+                // Notify user about received commission
+                if should_notify == true {
+                    track_run_notify_payment(
+                        email,
+                        source_tracker_id,
+                        commission_amount,
+                        commission_currency,
+                    );
+                }
             }
 
             Ok(())
         }
         Err(TrackHandlePaymentError::InvalidAmount) => Err(Failure(Status::BadRequest)),
+        Err(TrackHandlePaymentError::BadCurrency) => Err(Failure(Status::PreconditionFailed)),
         Err(TrackHandlePaymentError::NotFound) => Err(Failure(Status::NotFound)),
     }
 }
