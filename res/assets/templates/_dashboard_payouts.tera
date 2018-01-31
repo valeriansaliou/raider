@@ -7,8 +7,8 @@
             <li class="selected">
               <div class="section-list-content section-list-content-payouts">
                 <div class="item-identity">
-                  <h6 class="font-sans-bold">Payout #{{ payout.number }}</h6>
-                  <p class="font-sans-regular">{{ payout.date | escape }}</p>
+                  <h6 class="text-overflow-ellipsis font-sans-bold">Payout #{{ payout.number }}</h6>
+                  <p class="text-overflow-ellipsis font-sans-regular">{{ payout.date | escape }}</p>
                 </div>
 
                 <div class="item-metrics">

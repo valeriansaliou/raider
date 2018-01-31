@@ -1,7 +1,6 @@
 body {
   display: flex;
   flex-direction: column;
-  min-width: 1020px;
   overflow: hidden;
   position: absolute;
   left: 0;
@@ -283,6 +282,7 @@ main section hr {
 }
 
 .section-inner {
+  min-width: 740px;
   margin-left: auto;
   margin-right: auto;
   padding-bottom: 24px;
@@ -785,6 +785,12 @@ form.section-wrap label textarea {
   }
 }
 
+@media (max-width: 1200px) {
+  .section-list-actions a:nth-child(2) {
+    display: none;
+  }
+}
+
 @media (max-width: 1140px) {
   .payout-balances {
     padding-left: 22px;
@@ -792,5 +798,19 @@ form.section-wrap label textarea {
 
   .payout-balance-all {
     margin-left: 40px;
+  }
+
+  .item-metrics-one:nth-child(3) {
+    display: none;
+  }
+
+  form.section-wrap label textarea {
+    max-width: 340px;
+  }
+}
+
+@media (max-width: 1020px) {
+  .item-metrics-one:nth-child(2) {
+    display: none;
   }
 }

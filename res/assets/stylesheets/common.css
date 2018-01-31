@@ -100,6 +100,12 @@ a:hover {
   text-transform: uppercase !important;
 }
 
+.text-overflow-ellipsis {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
 .color-green {
   color: #37C234 !important;
 }

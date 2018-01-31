@@ -84,8 +84,8 @@
 
                           <div class="section-list-content section-list-content-trackers">
                             <div class="item-identity">
-                              <h6 class="font-sans-bold">{{ tracker.label | escape }}</h6>
-                              <input class="item-identity-sub underlined font-sans-regular" type="text" value="{{ config.track_url | escape }}?{{ config.track_parameter | escape }}={{ tracker.tracking_id | escape }}" readonly>
+                              <h6 class="text-overflow-ellipsis font-sans-bold">{{ tracker.label | escape }}</h6>
+                              <input class="item-identity-sub underlined text-overflow-ellipsis font-sans-regular" type="text" value="{{ config.track_url | escape }}?{{ config.track_parameter | escape }}={{ tracker.tracking_id | escape }}" readonly>
                             </div>
 
                             <div class="item-metrics">
@@ -106,11 +106,11 @@
                           </div>
 
                           <div class="section-list-actions">
+                            <a href="#" class="button button-tiny font-sans-semibold" onclick="FormTrackersManager.copy_tracker_link(this); return false;">Copy tracker link</a>
+
                             {% if config.banners | length > 0 %}
                               <a href="#" onclick="FormBannersManager.open(this); return false;" class="button button-tiny button-dark font-sans-semibold">View banners</a>
                             {% endif %}
-
-                            <a href="#" class="button button-tiny font-sans-semibold" onclick="FormTrackersManager.copy_tracker_link(this); return false;">Copy tracker link</a>
 
                             <div class="clear"></div>
                           </div>
