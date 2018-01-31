@@ -81,6 +81,8 @@ pub fn run() {
                 routes::post_dashboard_payouts_form_request,
                 routes::post_dashboard_account_form_account,
                 routes::post_dashboard_account_form_payout,
+
+                routes::post_track_payment,
             ],
         )
         .catch(errors![

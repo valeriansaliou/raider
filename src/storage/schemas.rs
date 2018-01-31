@@ -16,6 +16,7 @@ table! {
         country -> Nullable<Varchar>,
         payout_method -> Nullable<Varchar>,
         payout_instructions -> Nullable<Text>,
+        notify_balance -> Bool,
         created_at -> Timestamp,
         updated_at -> Timestamp,
     }
@@ -66,3 +67,5 @@ joinable!(balance -> account(account_id));
 joinable!(balance -> tracker(tracker_id));
 joinable!(payout -> account(account_id));
 joinable!(tracker -> account(account_id));
+
+allow_tables_to_appear_in_same_query!(account, tracker);

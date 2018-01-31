@@ -33,6 +33,7 @@ pub struct ConfigServer {
     #[serde(default = "defaults::server_workers")]
     pub workers: u16,
 
+    pub track_token: String,
     pub secret_key: String,
 }
 

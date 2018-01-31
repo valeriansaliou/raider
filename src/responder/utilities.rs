@@ -63,7 +63,7 @@ pub fn send_payout_emails(user_id: i32, user_email: &str, balance_due: f32, curr
         message.push_str(&format!(
             "A payout of {} {} has been requested by user #{} with email: {}\n\n",
             currency,
-            balance_due,
+            balance_due.separated_string_with_fixed_place(2),
             user_id,
             user_email
         ));
@@ -110,7 +110,7 @@ pub fn send_payout_emails(user_id: i32, user_email: &str, balance_due: f32, curr
         message.push_str(&format!(
             "Your payout request of {} {} has been submitted for processing.\n\n",
             currency,
-            balance_due
+            balance_due.separated_string_with_fixed_place(2)
         ));
 
         message.push_str(

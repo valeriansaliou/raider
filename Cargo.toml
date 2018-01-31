@@ -30,6 +30,7 @@ rand = "0.4"
 serde = "1.0"
 serde_derive = "1.0"
 toml = "0.4"
+base64 = "0.6"
 validate = "0.6"
 url_serde = { version = "0.2", default-features = false }
 chrono = { version = "0.4", default-features = false }

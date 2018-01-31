@@ -94,6 +94,7 @@ Use the sample [config.cfg](https://github.com/valeriansaliou/raider/blob/master
 * `log_level` (type: _string_, allowed: `debug`, `info`, `warn`, `error`, default: `warn`) — Verbosity of logging, set it to `error` in production
 * `inet` (type: _string_, allowed: IPv4 / IPv6 + port, default: `[::1]:8080`) — Host and TCP port the Raider service should listen on
 * `workers` (type: _integer_, allowed: any number, default: `4`) — Number of workers for the Raider service to run on
+* `track_token` (type: _string_, allowed: secret token, default: no default) — Track API secret token (ie. secret password)
 * `secret_key` (type: _string_, allowed: 192-bit base64 encoded secret key, default: no default) — Secret key for cookie encryption (see [Rocket docs](https://api.rocket.rs/rocket/struct.Config.html#method.set_secret_key) for details)
 
 **[database]**

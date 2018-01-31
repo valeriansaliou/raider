@@ -9,7 +9,7 @@ use bigdecimal::BigDecimal;
 
 use super::schemas::{account, balance, payout, tracker};
 
-#[derive(Identifiable, Queryable, Debug)]
+#[derive(Identifiable, Queryable, Associations, Debug)]
 #[table_name = "account"]
 pub struct Account {
     pub id: i32,
@@ -22,11 +22,12 @@ pub struct Account {
     pub country: Option<String>,
     pub payout_method: Option<String>,
     pub payout_instructions: Option<String>,
+    pub notify_balance: bool,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
 }
 
-#[derive(Identifiable, Queryable, Debug)]
+#[derive(Identifiable, Queryable, Associations, Debug)]
 #[table_name = "balance"]
 pub struct Balance {
     pub id: i32,
@@ -40,7 +41,7 @@ pub struct Balance {
     pub updated_at: NaiveDateTime,
 }
 
-#[derive(Identifiable, Queryable, Debug)]
+#[derive(Identifiable, Queryable, Associations, Debug)]
 #[table_name = "payout"]
 pub struct Payout {
     pub id: i32,
@@ -55,7 +56,7 @@ pub struct Payout {
     pub updated_at: NaiveDateTime,
 }
 
-#[derive(Identifiable, Queryable, Debug)]
+#[derive(Identifiable, Queryable, Associations, Debug)]
 #[table_name = "tracker"]
 pub struct Tracker {
     pub id: String,

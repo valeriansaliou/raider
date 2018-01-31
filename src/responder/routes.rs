@@ -18,7 +18,7 @@ use rocket::error::Error as RocketError;
 use rocket::response::{Redirect, Failure};
 use rocket::request::{Form, FromForm, FormItems, FromFormValue};
 use rocket::http::{Cookies, Status};
-use rocket_contrib::Template;
+use rocket_contrib::{Template, Json};
 use diesel;
 use diesel::prelude::*;
 use diesel::dsl::{sum, count, max};
@@ -29,7 +29,11 @@ use super::auth_guard::{AuthGuard, AuthAnonymousGuard, cleanup as auth_cleanup,
                         insert as auth_insert, password_verify as auth_password_verify,
                         password_encode as auth_password_encode,
                         recovery_generate as auth_recovery_generate};
+use super::track_guard::TrackGuard;
 use super::utilities::{get_balance, get_balance_string, check_argument_value, send_payout_emails};
+use track::payment::{handle_payment as track_handle_payment,
+                     run_notify_payment as track_run_notify_payment,
+                     HandlePaymentError as TrackHandlePaymentError};
 use notifier::email::EmailNotifier;
 use storage::db::DbConn;
 use storage::schemas::account::dsl::{account, id as account_id, email as account_email,
@@ -68,6 +72,13 @@ pub struct InitiateArgs {
 #[derive(FromForm)]
 pub struct DashboardArgs {
     result: Option<String>,
+}
+
+#[derive(Deserialize)]
+pub struct TrackPaymentData {
+    amount: f32,
+    currency: String,
+    trace: Option<String>,
 }
 
 #[derive(FromForm)]
@@ -916,6 +927,32 @@ fn post_dashboard_account_form_payout(
             "failure"
         }
     ))
+}
+
+#[post("/track/payment/<tracking_id>", data = "<data>", format = "application/json")]
+fn post_track_payment(
+    _auth: TrackGuard,
+    db: DbConn,
+    tracking_id: String,
+    data: Json<TrackPaymentData>,
+) -> Result<(), Failure> {
+    match track_handle_payment(&db, &tracking_id, data.amount, &data.currency, &data.trace) {
+        Ok((should_notify, email, source_tracker_id, commission_amount, commission_currency)) => {
+            // Notify user about received commission
+            if should_notify == true {
+                track_run_notify_payment(
+                    email,
+                    source_tracker_id,
+                    commission_amount,
+                    commission_currency,
+                );
+            }
+
+            Ok(())
+        }
+        Err(TrackHandlePaymentError::InvalidAmount) => Err(Failure(Status::BadRequest)),
+        Err(TrackHandlePaymentError::NotFound) => Err(Failure(Status::NotFound)),
+    }
 }
 
 #[get("/robots.txt")]

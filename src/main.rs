@@ -22,6 +22,7 @@ extern crate time;
 extern crate rand;
 extern crate validate;
 extern crate toml;
+extern crate base64;
 extern crate url_serde;
 extern crate chrono;
 extern crate native_tls;
@@ -41,6 +42,7 @@ mod config;
 mod notifier;
 mod responder;
 mod storage;
+mod track;
 
 use std::thread;
 use std::ops::Deref;
