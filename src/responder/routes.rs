@@ -31,9 +31,11 @@ use super::auth_guard::{AuthGuard, AuthAnonymousGuard, cleanup as auth_cleanup,
                         recovery_generate as auth_recovery_generate};
 use super::track_guard::TrackGuard;
 use super::utilities::{get_balance, get_balance_string, check_argument_value, send_payout_emails};
-use track::payment::{handle_payment as track_handle_payment,
-                     run_notify_payment as track_run_notify_payment,
-                     HandlePaymentError as TrackHandlePaymentError};
+use track::payment::{
+    handle_payment as track_handle_payment,
+    run_notify_payment as track_run_notify_payment,
+    HandlePaymentError as TrackHandlePaymentError
+};
 use notifier::email::EmailNotifier;
 use storage::db::DbConn;
 use storage::schemas::account::dsl::{account, id as account_id, email as account_email,
@@ -43,6 +45,7 @@ use storage::schemas::account::dsl::{account, id as account_id, email as account
                                      country as account_country,
                                      payout_method as account_payout_method,
                                      payout_instructions as account_payout_instructions,
+                                     notify_balance as account_notify_balance,
                                      created_at as account_created_at,
                                      updated_at as account_updated_at};
 use storage::schemas::payout::dsl::{payout, amount as payout_amount, number as payout_number,
@@ -112,6 +115,7 @@ pub struct DashboardTrackersFormRemoveData {
 pub struct DashboardAccountFormAccountData {
     email: String,
     password: String,
+    notify_balance: Option<String>,
 }
 
 #[derive(FromForm)]
@@ -215,6 +219,7 @@ pub struct DashboardAccountContext<'a, 'b> {
 #[derive(Serialize)]
 pub struct DashboardAccountContextAccount {
     pub email: String,
+    pub notify_balance: bool,
 }
 
 #[derive(Serialize)]
@@ -829,7 +834,10 @@ fn get_dashboard_account_args(
                 success: check_argument_value(&args.result, "success"),
                 common: DashboardCommonContext::build(&db, auth.0),
                 config: &CONFIG_CONTEXT,
-                account: DashboardAccountContextAccount { email: account_inner.email },
+                account: DashboardAccountContextAccount {
+                    email: account_inner.email,
+                    notify_balance: account_inner.notify_balance
+                },
                 payout_methods: ACCOUNT_PAYOUT_METHODS,
                 countries: country_list,
                 payout: DashboardAccountContextPayout {
@@ -854,6 +862,8 @@ fn post_dashboard_account_form_account(
 ) -> Redirect {
     let data_inner = data.get();
 
+    let notify_balance_value = data_inner.notify_balance == Some("1".to_string());
+
     let update_result = if data_inner.password.is_empty() == false {
         diesel::update(account.filter(account_id.eq(auth.0)))
             .set((
@@ -861,11 +871,15 @@ fn post_dashboard_account_form_account(
                 account_password.eq(
                     &auth_password_encode(&data_inner.password),
                 ),
+                account_notify_balance.eq(&notify_balance_value)
             ))
             .execute(&*db)
     } else {
         diesel::update(account.filter(account_id.eq(auth.0)))
-            .set(account_email.eq(&data_inner.email))
+            .set((
+                account_email.eq(&data_inner.email),
+                account_notify_balance.eq(&notify_balance_value)
+            ))
             .execute(&*db)
     };
 
@@ -936,15 +950,18 @@ fn post_track_payment(
     tracking_id: String,
     data: Json<TrackPaymentData>,
 ) -> Result<(), Failure> {
-    match track_handle_payment(&db, &tracking_id, data.amount, &data.currency, &data.trace) {
+    match track_handle_payment(
+        &db,
+        &tracking_id,
+        data.amount,
+        &data.currency,
+        &data.trace,
+    ) {
         Ok((should_notify, email, source_tracker_id, commission_amount, commission_currency)) => {
             // Notify user about received commission
             if should_notify == true {
                 track_run_notify_payment(
-                    email,
-                    source_tracker_id,
-                    commission_amount,
-                    commission_currency,
+                    email, source_tracker_id, commission_amount, commission_currency
                 );
             }
 

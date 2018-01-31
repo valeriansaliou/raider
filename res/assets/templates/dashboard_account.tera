@@ -67,6 +67,18 @@
 
                   <div class="clear"></div>
                 </label>
+
+                <label class="font-sans-semibold">
+                  <span class="label">Notify me of money earned</span>
+
+                  <input id="notify_balance" class="checkbox" type="checkbox" name="notify_balance" value="1" {% if account.notify_balance %}checked{% endif %}>
+
+                  <label class="checkbox-label" for="notify_balance">
+                    <span class="checkbox-image"></span>
+                  </label>
+
+                  <div class="clear"></div>
+                </label>
               </div>
             </div>
 

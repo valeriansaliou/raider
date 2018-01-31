@@ -530,12 +530,17 @@ form.section-wrap label .link {
 form.section-wrap label .label {
   color: #000000;
   font-size: 12px;
-  width: 180px;
+  width: 190px;
   float: left;
 }
 
 form.section-wrap label .link {
   font-size: 12.5px;
+}
+
+form.section-wrap label .checkbox-label {
+  margin-top: 9px;
+  padding-left: 1px;
 }
 
 .modal-field,
