@@ -980,7 +980,7 @@ fn post_track_payment(
 #[post("/track/signup/<tracking_id>")]
 fn post_track_signup(_auth: TrackGuard, db: DbConn, tracking_id: String) -> Result<(), Failure> {
     match track_handle_signup(&db, &tracking_id) {
-        Ok(results) => Ok(()),
+        Ok(_) => Ok(()),
         Err(TrackHandleSignupError::NotFound) => Err(Failure(Status::NotFound)),
     }
 }
