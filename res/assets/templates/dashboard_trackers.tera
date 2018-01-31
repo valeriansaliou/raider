@@ -95,11 +95,6 @@
                               </div>
 
                               <div class="item-metrics-one">
-                                <p class="font-sans-regular">Paying now</p>
-                                <h5 class="font-sans-semibold">{{ tracker.statistics_paying | escape }}</h5>
-                              </div>
-
-                              <div class="item-metrics-one">
                                 <p class="font-sans-regular">Earned so far</p>
                                 <h5 class="font-sans-semibold">{{ config.payout_currency | escape }} {{ tracker.total_earned | escape }}</h5>
                               </div>

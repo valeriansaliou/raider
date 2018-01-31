@@ -82,7 +82,7 @@ main[data-pending="true"] {
 }
 
 main[data-pending="true"]:after {
-  content: "Submitting. Please wait...";
+  content: "Working. Please wait...";
   font-family: "Raider Open Sans Semibold", sans-serif;
   background: rgba(0, 0, 0, 0.95);
   color: #FFFFFF;

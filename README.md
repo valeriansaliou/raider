@@ -153,7 +153,7 @@ Raider can be run as such:
 
 `./raider -c /path/to/config.cfg`
 
-## How can I integrate Raider payment reporting in my code?
+## How can I integrate Raider reporting in my code?
 
 When a payment for which you have a `tracking_id` is made on your platform (ie. a payment for a customer that was referred by an affiliate); your backend needs to submit this payment to the Raider tracking API. The full payment amount needs to be submitted, as the commission percentage is applied by Raider itself.
 
@@ -163,7 +163,9 @@ When a payment for which you have a `tracking_id` is made on your platform (ie. 
 
 ### Manual reporting
 
-In case you need to manually report payments to the Raider endpoint, use the following HTTP configuration (adjust it to yours):
+#### Payment reporting
+
+In case you need to manually report tracked payments to the Raider endpoint, use the following HTTP configuration (adjust it to yours):
 
 **Endpoint URL:**
 
@@ -194,6 +196,22 @@ Where:
 * `amount`: The full amount of the payment (Raider process the commission amount itself, eg. with `20%` commission you send `100.00` and Raider processes it as `20.00`)
 * `currency`: The payment currency code (if the currency is different than the default currency configured with `payout.currency`, a conversion is applied using current day market rates)
 * `trace`: An optional trace value which is logged in the database (may be used for your own records; this is never visible to your affiliate users)
+
+#### Signup reporting
+
+In case you need to manually report tracked signups to the Raider endpoint, use the following HTTP configuration (adjust it to yours):
+
+**Endpoint URL:**
+
+`HTTP POST https://affiliates.example.com/track/signup/<tracking_id>/`
+
+Where:
+
+* `tracking_id`: The tracking identifier associated to customer who signed up
+
+**Request headers:**
+
+* Add an `Authorization` header with a `Basic` authentication where the password is your configured `server.track_token`.
 
 ## :fire: Report A Vulnerability
 

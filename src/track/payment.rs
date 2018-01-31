@@ -15,7 +15,9 @@ use bigdecimal::BigDecimal;
 
 use notifier::email::EmailNotifier;
 use exchange::manager::normalize as exchange_normalize;
-use storage::schemas::tracker::dsl::{tracker, id as tracker_id};
+use storage::schemas::tracker::dsl::{tracker, id as tracker_id,
+                                     statistics_signups as tracker_statistics_signups,
+                                     updated_at as tracker_updated_at};
 use storage::schemas::account::dsl::account;
 use storage::schemas::balance::dsl::{balance, amount as balance_amount,
                                      currency as balance_currency, trace as balance_trace,
@@ -30,6 +32,10 @@ use APP_CONF;
 pub enum HandlePaymentError {
     InvalidAmount,
     BadCurrency,
+    NotFound,
+}
+
+pub enum HandleSignupError {
     NotFound,
 }
 
@@ -115,6 +121,37 @@ pub fn handle_payment(
     } else {
         Err(HandlePaymentError::BadCurrency)
     }
+}
+
+pub fn handle_signup(db: &DbConn, tracking_id: &str) -> Result<(), HandleSignupError> {
+    log::debug!("signup handle: {}", tracking_id);
+
+    // Resolve tracking code
+    let tracker_result = tracker
+        .filter(tracker_id.eq(tracking_id))
+        .first::<Tracker>(&**db);
+
+    if let Ok(tracker_inner) = tracker_result {
+        // Notice: this increment is not atomic; thus it is not 100% safe. We do this for \
+        //   simplicity as Diesel doesnt seem to provide a way to do an increment in the query.
+        let update_result = diesel::update(tracker.filter(tracker_id.eq(tracking_id)))
+            .set((
+                tracker_statistics_signups.eq(
+                    tracker_inner.statistics_signups +
+                        1,
+                ),
+                tracker_updated_at.eq(Utc::now().naive_utc()),
+            ))
+            .execute(&**db);
+
+        if update_result.is_ok() == true {
+            return Ok(());
+        }
+    }
+
+    log::warn!("signup: {} could not be stored", tracking_id);
+
+    Err(HandleSignupError::NotFound)
 }
 
 pub fn run_notify_payment(

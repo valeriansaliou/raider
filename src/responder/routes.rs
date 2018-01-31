@@ -32,9 +32,10 @@ use super::auth_guard::{AuthGuard, AuthAnonymousGuard, cleanup as auth_cleanup,
 use super::track_guard::TrackGuard;
 use super::utilities::{get_balance, get_balance_string, list_payouts, check_argument_value,
                        send_payout_emails};
-use track::payment::{handle_payment as track_handle_payment,
+use track::payment::{handle_payment as track_handle_payment, handle_signup as track_handle_signup,
                      run_notify_payment as track_run_notify_payment,
-                     HandlePaymentError as TrackHandlePaymentError};
+                     HandlePaymentError as TrackHandlePaymentError,
+                     HandleSignupError as TrackHandleSignupError};
 use notifier::email::EmailNotifier;
 use storage::db::DbConn;
 use storage::schemas::account::dsl::{account, id as account_id, email as account_email,
@@ -174,7 +175,6 @@ pub struct DashboardTrackersContextTracker {
     pub tracking_id: String,
     pub label: String,
     pub statistics_signups: String,
-    pub statistics_paying: String,
     pub total_earned: String,
 }
 
@@ -577,7 +577,6 @@ fn get_dashboard_trackers_args(auth: AuthGuard, db: DbConn, args: DashboardArgs)
                 tracking_id: result.id,
                 label: result.label,
                 statistics_signups: result.statistics_signups.separated_string(),
-                statistics_paying: result.statistics_paying.separated_string(),
                 total_earned: total_earned
                     .unwrap_or(0.0)
                     .separated_string_with_fixed_place(2),
@@ -975,6 +974,14 @@ fn post_track_payment(
         Err(TrackHandlePaymentError::InvalidAmount) => Err(Failure(Status::BadRequest)),
         Err(TrackHandlePaymentError::BadCurrency) => Err(Failure(Status::PreconditionFailed)),
         Err(TrackHandlePaymentError::NotFound) => Err(Failure(Status::NotFound)),
+    }
+}
+
+#[post("/track/signup/<tracking_id>")]
+fn post_track_signup(_auth: TrackGuard, db: DbConn, tracking_id: String) -> Result<(), Failure> {
+    match track_handle_signup(&db, &tracking_id) {
+        Ok(results) => Ok(()),
+        Err(TrackHandleSignupError::NotFound) => Err(Failure(Status::NotFound)),
     }
 }
 

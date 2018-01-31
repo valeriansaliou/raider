@@ -56,7 +56,6 @@ table! {
         id -> VarChar,
         label -> VarChar,
         statistics_signups -> Integer,
-        statistics_paying -> Integer,
         account_id -> Integer,
         created_at -> Timestamp,
         updated_at -> Timestamp,

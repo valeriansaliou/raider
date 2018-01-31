@@ -53,7 +53,6 @@ CREATE TABLE `tracker` (
   `id` char(10) NOT NULL DEFAULT '',
   `label` varchar(191) NOT NULL,
   `statistics_signups` int(11) unsigned NOT NULL DEFAULT '0',
-  `statistics_paying` int(11) unsigned NOT NULL DEFAULT '0',
   `account_id` int(11) unsigned NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,

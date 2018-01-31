@@ -62,7 +62,6 @@ pub struct Tracker {
     pub id: String,
     pub label: String,
     pub statistics_signups: i32,
-    pub statistics_paying: i32,
     pub account_id: i32,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,

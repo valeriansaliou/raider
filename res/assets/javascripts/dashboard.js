@@ -192,7 +192,47 @@ var IntentManager = (function() {
 var FormManager = (function() {
   return {
     submit : function() {
-      document.querySelector("main").setAttribute("data-pending", "true");
+      FormManager.__toggle(true);
+    },
+
+    unsubmit : function() {
+      FormManager.__toggle(false);
+    },
+
+    __toggle : function(is_pending) {
+      document.querySelector("main").setAttribute("data-pending", (
+        (is_pending === true) ? "true" : "false"
+      ));
+    }
+  };
+})();
+
+
+var PartialManager = (function() {
+  return {
+    load : function(path, fn_handle_done, fn_handle_error) {
+      var request = new XMLHttpRequest();
+
+      request.open("GET", path, true);
+
+      request.responseType = "document";
+
+      request.onreadystatechange = function() {
+        // Request finished.
+        if (request.readyState === 4) {
+          if (request.status === 200) {
+            if (typeof fn_handle_done === "function") {
+              fn_handle_done(request);
+            }
+          } else {
+            if (typeof fn_handle_error === "function") {
+              fn_handle_error(request);
+            }
+          }
+        }
+      };
+
+      request.send();
     }
   };
 })();
