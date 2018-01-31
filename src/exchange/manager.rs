@@ -111,7 +111,7 @@ pub fn run() {
 
         log::info!("ran exchange poll operation");
 
-        // Hold for next aggregate run
+        // Hold for next poll run
         thread::sleep(Duration::from_secs(POLL_RATE_SECONDS));
     }
 }

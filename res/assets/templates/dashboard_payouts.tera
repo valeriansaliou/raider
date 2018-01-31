@@ -3,6 +3,7 @@
 {% import "_dashboard_toast" as dashboard_toast %}
 {% import "_dashboard_header" as dashboard_header %}
 {% import "_dashboard_menu" as dashboard_menu %}
+{% import "_dashboard_payouts" as dashboard_payouts %}
 
 {% block title %}Trackers | Dashboard{% endblock title %}
 
@@ -82,69 +83,13 @@
               <div class="section-title-main">
                 <h3 class="font-sans-semibold">Payout history</h3>
 
-                <div class="section-title-status font-sans-semibold">({{ payouts | length }} payout{{ payouts | length | pluralize }})</div>
+                <div class="section-title-status font-sans-semibold">({{ payouts_total }} payout{{ payouts_total | pluralize }})</div>
               </div>
 
               <div class="clear"></div>
             </div>
 
-            <div class="section-box">
-              <div class="section-box-inner">
-                <ul class="section-list">
-                  {% if payouts | length > 0 %}
-                    {% for payout in payouts %}
-                      <li class="selected">
-                        <div class="section-list-content section-list-content-payouts">
-                          <div class="item-identity">
-                            <h6 class="font-sans-bold">Payout #{{ payout.number }}</h6>
-                            <p class="font-sans-regular">{{ payout.date | escape }}</p>
-                          </div>
-
-                          <div class="item-metrics">
-                            <div class="item-metrics-one">
-                              <p class="font-sans-regular">Status</p>
-                              <h5 class="color-{% if payout.status == "pending" %}orange{% elif payout.status == "rejected" %}red{% elif payout.status == "processed" %}green{% else %}blue{% endif %} capitalize font-sans-semibold">{{ payout.status | escape }}</h5>
-                            </div>
-
-                            <div class="item-metrics-one">
-                              <p class="font-sans-regular">Payout amount</p>
-                              <h5 class="color-blue font-sans-regular">{{ payout.currency | escape }} {{ payout.amount | escape }}</h5>
-                            </div>
-
-                            {% if payout.account %}
-                              <div class="item-metrics-one">
-                                <p class="font-sans-regular">Payout account</p>
-                                <h5 class="color-grey uppercase font-sans-regular">{{ payout.account | escape }}</h5>
-                              </div>
-                            {% endif %}
-
-                            <div class="clear"></div>
-                          </div>
-
-                          <div class="clear"></div>
-                        </div>
-
-                        <div class="section-list-actions">
-                          <a href="{{ payout.invoice_url | escape }}" class="button button-tiny font-sans-semibold {% if not payout.invoice_url %}disabled{% endif %}">{% if payout.invoice_url %}Download invoice{% else %}No invoice available{% endif %}</a>
-
-                          <div class="clear"></div>
-                        </div>
-
-                        <div class="clear"></div>
-                      </li>
-                    {% endfor %}
-                  {% else %}
-                    <h4 class="section-list-empty font-sans-semibold">No payout was found. Request your first payout now!</h4>
-                  {% endif %}
-                </ul>
-              </div>
-            </div>
-
-            {% if has_more %}
-              <div class="section-box-more-wrap">
-                <a class="section-box-more font-sans-semibold" href="#">Load older payouts</a>
-              </div>
-            {% endif %}
+            {{ dashboard_payouts::payouts(payouts=payouts, has_more=has_more) }}
           </div>
         </div>
       </section>

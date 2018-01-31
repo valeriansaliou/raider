@@ -4,6 +4,7 @@
 // Copyright: 2018, Valerian Saliou <valerian@valeriansaliou.name>
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
+use std::cmp;
 use log;
 use separator::FixedPlaceSeparatable;
 use bigdecimal::BigDecimal;
@@ -11,11 +12,17 @@ use num_traits::cast::ToPrimitive;
 use diesel::prelude::*;
 use diesel::dsl::sum;
 
+use super::routes::DashboardPayoutsContextPayout;
 use notifier::email::EmailNotifier;
 use storage::schemas::balance::dsl::{balance, account_id as balance_account_id,
                                      amount as balance_amount, released as balance_released};
+use storage::schemas::payout::dsl::{payout, account_id as payout_account_id,
+                                    created_at as payout_created_at};
+use storage::models::Payout;
 use storage::db::DbConn;
 use APP_CONF;
+
+const PAYOUTS_LIMIT_PER_PAGE: i64 = 20;
 
 pub fn get_balance(db: &DbConn, user_id: i32, released: Option<bool>) -> f32 {
     let balance_result = if let Some(released_inner) = released {
@@ -52,6 +59,51 @@ pub fn check_argument_value(argument: &Option<String>, against: &str) -> bool {
     } else {
         false
     }
+}
+
+pub fn list_payouts(
+    db: &DbConn,
+    user_id: i32,
+    page_number: u16,
+) -> (Vec<DashboardPayoutsContextPayout>, bool) {
+    let mut payouts = Vec::new();
+    let mut has_more = false;
+
+    payout
+        .filter(payout_account_id.eq(user_id))
+        .order(payout_created_at.desc())
+        .limit(PAYOUTS_LIMIT_PER_PAGE + 1)
+        .offset(paging_to_offset(page_number, PAYOUTS_LIMIT_PER_PAGE))
+        .load::<Payout>(&**db)
+        .map(|results| for (index, result) in results
+            .into_iter()
+            .enumerate()
+        {
+            if (index as i64) < PAYOUTS_LIMIT_PER_PAGE {
+                log::debug!("got payout #{}: {:?}", index, result);
+
+                let amount_value = result
+                    .amount
+                    .to_f32()
+                    .unwrap_or(0.0)
+                    .separated_string_with_fixed_place(2);
+
+                payouts.push(DashboardPayoutsContextPayout {
+                    number: result.number,
+                    status: result.status,
+                    amount: amount_value,
+                    currency: result.currency,
+                    account: result.account.unwrap_or("".to_string()),
+                    invoice_url: result.invoice_url.unwrap_or("".to_string()),
+                    date: result.created_at.date().format("%d/%m/%Y").to_string(),
+                });
+            } else {
+                has_more = true;
+            }
+        })
+        .ok();
+
+    (payouts, has_more)
 }
 
 pub fn send_payout_emails(user_id: i32, user_email: &str, balance_due: f32, currency: &str) {
@@ -135,4 +187,8 @@ pub fn send_payout_emails(user_id: i32, user_email: &str, balance_due: f32, curr
             );
         }
     }
+}
+
+fn paging_to_offset(page_number: u16, limit_per_page: i64) -> i64 {
+    ((cmp::max(page_number, 1) - 1) as i64) * limit_per_page
 }

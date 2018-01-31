@@ -1,0 +1,7 @@
+{% extends "__partial" %}
+
+{% import "_dashboard_payouts" as dashboard_payouts %}
+
+{% block body %}
+  {{ dashboard_payouts::payouts(payouts=payouts, has_more=has_more) }}
+{% endblock body %}

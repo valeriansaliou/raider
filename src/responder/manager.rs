@@ -64,6 +64,7 @@ pub fn run() {
                 routes::get_dashboard_trackers_args,
                 routes::get_dashboard_payouts,
                 routes::get_dashboard_payouts_args,
+                routes::get_dashboard_payouts_partial_payouts,
                 routes::get_dashboard_account,
                 routes::get_dashboard_account_args,
 

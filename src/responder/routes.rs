@@ -30,7 +30,8 @@ use super::auth_guard::{AuthGuard, AuthAnonymousGuard, cleanup as auth_cleanup,
                         password_encode as auth_password_encode,
                         recovery_generate as auth_recovery_generate};
 use super::track_guard::TrackGuard;
-use super::utilities::{get_balance, get_balance_string, check_argument_value, send_payout_emails};
+use super::utilities::{get_balance, get_balance_string, list_payouts, check_argument_value,
+                       send_payout_emails};
 use track::payment::{handle_payment as track_handle_payment,
                      run_notify_payment as track_run_notify_payment,
                      HandlePaymentError as TrackHandlePaymentError};
@@ -46,8 +47,9 @@ use storage::schemas::account::dsl::{account, id as account_id, email as account
                                      notify_balance as account_notify_balance,
                                      created_at as account_created_at,
                                      updated_at as account_updated_at};
-use storage::schemas::payout::dsl::{payout, amount as payout_amount, number as payout_number,
-                                    currency as payout_currency, account_id as payout_account_id,
+use storage::schemas::payout::dsl::{payout, id as payout_id, amount as payout_amount,
+                                    number as payout_number, currency as payout_currency,
+                                    account_id as payout_account_id,
                                     created_at as payout_created_at,
                                     updated_at as payout_updated_at};
 use storage::schemas::tracker::dsl::{tracker, id as tracker_id, label as tracker_label,
@@ -59,11 +61,9 @@ use storage::schemas::balance::dsl::{balance, amount as balance_amount,
                                      account_id as balance_account_id,
                                      tracker_id as balance_tracker_id,
                                      updated_at as balance_updated_at};
-use storage::models::{Account, Payout, Tracker, AccountRecoveryUpdate};
+use storage::models::{Account, Tracker, AccountRecoveryUpdate};
 use storage::choices::ACCOUNT_PAYOUT_METHODS;
 use APP_CONF;
-
-const PAYOUTS_LIMIT_PER_PAGE: i64 = 50;
 
 #[derive(FromForm)]
 pub struct InitiateArgs {
@@ -186,6 +186,13 @@ pub struct DashboardPayoutsContext<'a> {
     pub common: DashboardCommonContext,
     pub config: &'a ConfigContext,
     pub balance_total: String,
+    pub payouts_total: i64,
+    pub payouts: Vec<DashboardPayoutsContextPayout>,
+    pub has_more: bool,
+}
+
+#[derive(Serialize)]
+pub struct DashboardPayoutsPartialPayoutsContext {
     pub payouts: Vec<DashboardPayoutsContextPayout>,
     pub has_more: bool,
 }
@@ -673,41 +680,13 @@ fn get_dashboard_payouts(auth: AuthGuard, db: DbConn) -> Template {
 
 #[get("/dashboard/payouts?<args>")]
 fn get_dashboard_payouts_args(auth: AuthGuard, db: DbConn, args: DashboardArgs) -> Template {
-    let mut payouts = Vec::new();
-    let mut has_more = false;
-
-    payout
+    let payouts_total = payout
         .filter(payout_account_id.eq(auth.0))
-        .order(payout_created_at.desc())
-        .limit(PAYOUTS_LIMIT_PER_PAGE + 1)
-        .load::<Payout>(&*db)
-        .map(|results| for (index, result) in results
-            .into_iter()
-            .enumerate()
-        {
-            if (index as i64) < PAYOUTS_LIMIT_PER_PAGE {
-                log::debug!("got payout #{}: {:?}", index, result);
+        .select(count(payout_id))
+        .first(&*db)
+        .unwrap_or(0);
 
-                let amount_value = result
-                    .amount
-                    .to_f32()
-                    .unwrap_or(0.0)
-                    .separated_string_with_fixed_place(2);
-
-                payouts.push(DashboardPayoutsContextPayout {
-                    number: result.number,
-                    status: result.status,
-                    amount: amount_value,
-                    currency: result.currency,
-                    account: result.account.unwrap_or("".to_string()),
-                    invoice_url: result.invoice_url.unwrap_or("".to_string()),
-                    date: result.created_at.date().format("%d/%m/%Y").to_string(),
-                });
-            } else {
-                has_more = true;
-            }
-        })
-        .ok();
+    let (payouts, has_more) = list_payouts(&db, auth.0, 1);
 
     Template::render(
         "dashboard_payouts",
@@ -718,6 +697,24 @@ fn get_dashboard_payouts_args(auth: AuthGuard, db: DbConn, args: DashboardArgs) 
             common: DashboardCommonContext::build(&db, auth.0),
             config: &CONFIG_CONTEXT,
             balance_total: get_balance_string(&db, auth.0, None),
+            payouts_total: payouts_total,
+            payouts: payouts,
+            has_more: has_more,
+        },
+    )
+}
+
+#[get("/dashboard/payouts/partial/payouts/<page_number>")]
+fn get_dashboard_payouts_partial_payouts(
+    auth: AuthGuard,
+    db: DbConn,
+    page_number: u16,
+) -> Template {
+    let (payouts, has_more) = list_payouts(&db, auth.0, page_number);
+
+    Template::render(
+        "dashboard_payouts_partial_payouts",
+        &DashboardPayoutsPartialPayoutsContext {
             payouts: payouts,
             has_more: has_more,
         },
