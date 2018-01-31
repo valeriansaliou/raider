@@ -191,7 +191,7 @@ Adjust the request data to your payment context and send it as `HTTP POST`:
 
 Where:
 
-* `amount`: The full amount of the payment (Raider process the commission amount itself, eg. with 20% commission you send `100.00` and Raider processes it as `20.00`)
+* `amount`: The full amount of the payment (Raider process the commission amount itself, eg. with `20%` commission you send `100.00` and Raider processes it as `20.00`)
 * `currency`: The payment currency code (if the currency is different than the default currency configured with `payout.currency`, a conversion is applied using current day market rates)
 * `trace`: An optional trace value which is logged in the database (may be used for your own records; this is never visible to your affiliate users)
 
