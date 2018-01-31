@@ -45,7 +45,7 @@
       <section>
         <div class="section-inner">
           <div class="section-wrap">
-            <form action="/dashboard/trackers/form/remove/" method="post">
+            <form action="/dashboard/trackers/form/remove/" method="post" id="trackers-remove-form">
               <div class="section-title">
                 <div class="section-title-main">
                   <h2 class="font-sans-bold">Trackers</h2>
@@ -57,7 +57,7 @@
 
                 <ul>
                   <li class="icon remove">
-                    <button type="submit" data-locked="true" id="trackers-remove" class="button button-small button-action font-sans-semibold">Remove selection</button>
+                    <a href="javascript:FormTrackersManager.remove_trackers_confirm()" data-locked="true" id="trackers-remove-button" class="button button-small button-action font-sans-semibold">Remove selection</a>
                   </li>
 
                   <li>
@@ -144,7 +144,7 @@
         <p class="modal-main font-sans-semibold">Name your tracker and start making money.</p>
         <p class="font-sans-regular">Please enter a name for your tracker. This lets you recognize trackers if you use multiple ones at once, eg. if you run multiple campaigns.</p>
 
-        <form method="post" action="/dashboard/trackers/form/create/">
+        <form method="post" action="/dashboard/trackers/form/create/" onsubmit="FormManager.submit(); IntentManager.hide('modal', 'create');">
           <input class="modal-field" type="text" name="name" placeholder="Enter tracker name (eg. Website Footer)..." required>
 
           <div class="modal-actions">
@@ -153,6 +153,28 @@
             <div class="clear"></div>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="lock modal-lock" data-name="remove" data-visible="false">
+    <div class="modal">
+      <div class="modal-inner">
+        <div class="modal-title">
+          <h1 class="font-sans-bold">Remove selected trackers…</h1>
+          <a href="javascript:IntentManager.hide('modal', 'remove')" class="close"></a>
+
+          <div class="clear"></div>
+        </div>
+
+        <p class="modal-main font-sans-semibold">Remove all the selected trackers?</p>
+        <p class="font-sans-regular">Please confirm you want to remove those trackers. If this code is used for payment reports in the future, you may lose money. Beware!</p>
+
+        <div class="modal-actions">
+          <a href="javascript:FormTrackersManager.remove_trackers_submit()" class="button button-medium button-next button-danger font-sans-semibold">Remove selected trackers</a>
+
+          <div class="clear"></div>
+        </div>
       </div>
     </div>
   </div>

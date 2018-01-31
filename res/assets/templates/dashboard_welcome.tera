@@ -45,7 +45,7 @@
         </div>
 
         <p class="modal-main font-sans-semibold">To start earning money, create a tracker link and share it.</p>
-        <p class="font-sans-regular">Once people signup using your link and pay for the service, you will earn a {{ commission_percent }}% commission. You will then be able to request a payout.</p>
+        <p class="font-sans-regular">Once people signup using your link and pay for the service, you will earn a {{ commission_percent }}% commission of what's paid. You will then be able to request a payout.</p>
 
         <div class="modal-actions">
           <a href="/dashboard/trackers/" class="button button-medium button-next button-important font-sans-semibold">Create an affiliates tracker</a>

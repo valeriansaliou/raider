@@ -47,7 +47,7 @@
 body {
   font-family: "Raider Open Sans Regular", sans-serif;
   font-size: 14px;
-  background: #F7F8FA !important;
+  background: #EFF3F6 !important;
   color: #000000;
 }
 
@@ -325,9 +325,17 @@ a:hover {
 }
 
 .button[data-locked="true"] {
-  opacity: 0.6 !important;
+  opacity: 0.7 !important;
   pointer-events: none !important;
   user-select: none !important;
+}
+
+.button.button-danger {
+  background: #EA2C2C;
+}
+
+.button.button-danger:active {
+  background: #D42222;
 }
 
 .button.button-important {

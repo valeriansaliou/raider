@@ -110,7 +110,7 @@
         <p class="modal-main font-sans-semibold"><mark class="font-sans-bold">{{ config.payout_currency | escape }} {{ common.balance_pending | escape }}</mark> from your balance will be wired to your bank.</p>
         <p class="font-sans-regular">Payouts are manually processed by our team. The wire will take a few days to be accepted, and then a few days to be received at your bank.</p>
 
-        <form method="post" action="/dashboard/payouts/form/request/">
+        <form method="post" action="/dashboard/payouts/form/request/" onsubmit="FormManager.submit(); IntentManager.hide('modal', 'request');">
           <div class="modal-actions">
             <button type="submit" class="button button-medium button-next font-sans-semibold">Request payout now</button>
 

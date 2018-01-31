@@ -2,6 +2,18 @@ var FormTrackersManager = (function() {
   return {
     _count_selected : 0,
 
+    remove_trackers_confirm : function() {
+      IntentManager.show("modal", "remove");
+    },
+
+    remove_trackers_submit : function() {
+      IntentManager.hide("modal", "remove");
+
+      FormManager.submit();
+
+      document.getElementById("trackers-remove-form").submit();
+    },
+
     create_tracker : function() {
       var modal_selector = IntentManager.show("modal", "create");
 
@@ -24,7 +36,7 @@ var FormTrackersManager = (function() {
         "data-selected", ((checkbox.checked === true) ? "true" : "false")
       );
 
-      document.getElementById("trackers-remove").setAttribute(
+      document.getElementById("trackers-remove-button").setAttribute(
         "data-locked",
         ((FormTrackersManager._count_selected > 0) ? "false" : "true")
       );

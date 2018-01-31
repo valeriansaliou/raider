@@ -16,7 +16,7 @@ mark {
 
 header {
   background: #FFFFFF;
-  height: 50px;
+  height: 51px;
   overflow: hidden;
   position: relative;
   z-index: 1;
@@ -24,7 +24,7 @@ header {
 }
 
 header .logo {
-  margin-top: 13px;
+  margin-top: 14px;
   margin-left: 40px;
   float: left;
 }
@@ -54,7 +54,7 @@ header .logo .logo-label {
 
 header .menu {
   margin-right: 60px;
-  margin-top: 12px;
+  margin-top: 13px;
   float: right;
 }
 
@@ -115,7 +115,7 @@ main aside.animated {
 }
 
 main aside .infobox {
-  background: #FFF587;
+  background: #FFF374;
   padding: 13px 16px 13px 40px;
 }
 
@@ -142,7 +142,7 @@ main aside .side {
 }
 
 main aside .payout {
-  background-color: #F7F8FA;
+  background-color: #F6F8FA;
   margin-bottom: 24px;
   border-radius: 2px;
 }
@@ -173,7 +173,7 @@ main aside .navigate ul li {
 }
 
 main aside .navigate ul li a {
-  background-color: #F7F8FA;
+  background-color: #F6F8FA;
   letter-spacing: 0.15px;
   padding: 12px 20px 15px;
   display: block;
@@ -183,11 +183,11 @@ main aside .navigate ul li a {
 }
 
 main aside .navigate ul li a:hover {
-  background-color: #E8E9EF;
+  background-color: #EFF2F5;
 }
 
 main aside .navigate ul li a:active {
-  background-color: #DFE0E6;
+  background-color: #EAECEF;
   box-shadow: inset 0 1px 4px 0 rgba(0, 0, 0, 0.06);
 }
 
@@ -459,7 +459,7 @@ form.section-wrap label .select-wrap:after {
 }
 
 .section-list li {
-  background: #F7F8FA;
+  background: #F6F8FA;
   list-style-type: none;
   height: 56px;
   margin-bottom: 9px;
@@ -634,13 +634,14 @@ form.section-wrap label textarea {
 .item-identity h6 {
   color: #000000;
   font-size: 12.5px;
+  margin-top: -1px;
 }
 
 .item-identity p,
 .item-identity .item-identity-sub {
   color: #000000;
-  font-size: 10.5px;
-  margin-top: 3px;
+  font-size: 11px;
+  margin-top: 4px;
   opacity: 0.55;
 }
 
@@ -659,7 +660,7 @@ form.section-wrap label textarea {
 .item-metrics-one p {
   color: #000000;
   font-size: 11px;
-  margin-top: -1px;
+  margin-top: -2px;
 }
 
 .item-metrics-one h5 {
@@ -685,7 +686,7 @@ form.section-wrap label textarea {
 }
 
 .payout-balance-unpaid .payout-balance-inner {
-  background: #F7F8FA;
+  background: #F6F8FA;
   padding: 12px 20px 16px;
   border-radius: 2px 2px 0 0;
 }
@@ -751,7 +752,7 @@ form.section-wrap label textarea {
 }
 
 .popup-banner-picker li a {
-  background-color: #F7F8FA;
+  background-color: #F6F8FA;
   height: 100%;
   width: 100%;
   display: block;
