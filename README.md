@@ -155,7 +155,7 @@ Raider can be run as such:
 
 ## How can I integrate Raider payment reporting in my code?
 
-When a payment for which you have a `tracking_id` is made on your platform (ie. a payment for a customer that was referred by an affiliate); your backend needs to submit this payment to the Raider tracking API. The full payment amount needs to be submitted, as the commission percentage is applied by Raider.
+When a payment for which you have a `tracking_id` is made on your platform (ie. a payment for a customer that was referred by an affiliate); your backend needs to submit this payment to the Raider tracking API. The full payment amount needs to be submitted, as the commission percentage is applied by Raider itself.
 
 ### Raider reporting libraries
 
@@ -179,7 +179,7 @@ Where:
 
 **Request data:**
 
-Adjust the request data to your replica context and send it as `HTTP POST`:
+Adjust the request data to your payment context and send it as `HTTP POST`:
 
 ```json
 {
@@ -191,7 +191,7 @@ Adjust the request data to your replica context and send it as `HTTP POST`:
 
 Where:
 
-* `amount`: The full amount of the payment (Raider process the commission amount itself)
+* `amount`: The full amount of the payment (Raider process the commission amount itself, eg. with 20% commission you send `100.00` and Raider processes it as `20.00`)
 * `currency`: The payment currency code (if the currency is different than the default currency configured with `payout.currency`, a conversion is applied using current day market rates)
 * `trace`: An optional trace value which is logged in the database (may be used for your own records; this is never visible to your affiliate users)
 
