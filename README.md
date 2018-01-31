@@ -153,6 +153,48 @@ Raider can be run as such:
 
 `./raider -c /path/to/config.cfg`
 
+## How can I integrate Raider payment reporting in my code?
+
+When a payment for which you have a `tracking_id` is made on your platform (ie. a payment for a customer that was referred by an affiliate); your backend needs to submit this payment to the Raider tracking API. The full payment amount needs to be submitted, as the commission percentage is applied by Raider.
+
+### Raider reporting libraries
+
+👉 Cannot find the library for your programming language? Build your own and be referenced here! ([contact me](https://valeriansaliou.name/))
+
+### Manual reporting
+
+In case you need to manually report payments to the Raider endpoint, use the following HTTP configuration (adjust it to yours):
+
+**Endpoint URL:**
+
+`HTTP POST https://affiliates.example.com/track/payment/<tracking_id>/`
+
+Where:
+
+* `tracking_id`: The tracking identifier associated to customer who paid
+
+**Request headers:**
+
+* Add an `Authorization` header with a `Basic` authentication where the password is your configured `server.track_token`.
+
+**Request data:**
+
+Adjust the request data to your replica context and send it as `HTTP POST`:
+
+```json
+{
+  "amount": 95.00,
+  "currency": "USD",
+  "trace": "Plan: Unlimited; Customer: valerian@crisp.chat; Website: crisp.chat"
+}
+```
+
+Where:
+
+* `amount`: The full amount of the payment (Raider process the commission amount itself)
+* `currency`: The payment currency code (if the currency is different than the default currency configured with `payout.currency`, a conversion is applied using current day market rates)
+* `trace`: An optional trace value which is logged in the database (may be used for your own records; this is never visible to your affiliate users)
+
 ## :fire: Report A Vulnerability
 
 If you find a vulnerability in Raider, you are more than welcome to report it directly to [@valeriansaliou](https://github.com/valeriansaliou) by sending an encrypted email to [valerian@valeriansaliou.name](mailto:valerian@valeriansaliou.name). Do not report vulnerabilities in public GitHub issues, as they may be exploited by malicious people to target production servers running an unpatched Raider server.

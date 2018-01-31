@@ -17,6 +17,7 @@
   {{ super() }}
 
   <script src="/assets/javascripts/dashboard.js?v={{ config.runtime_version | escape }}" type="text/javascript"></script>
+  <script src="/assets/javascripts/dashboard_payouts.js?v={{ config.runtime_version | escape }}" type="text/javascript"></script>
 
   <script type="text/javascript">
     window.onload = function() {
