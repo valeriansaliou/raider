@@ -26,7 +26,7 @@ impl EmailNotifier {
         message.push_str("\n\n--\n\n");
 
         message.push_str(&format!(
-            "You receive this email because you have initiated an action on your {} account at: {}",
+            "You receive this email because an event occured on your {} account at: {}",
             APP_CONF.branding.page_title,
             APP_CONF.branding.page_url.as_str()
         ));

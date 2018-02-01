@@ -28,6 +28,7 @@ use super::asset_file::AssetFile;
 use super::auth_guard::{AuthGuard, AuthAnonymousGuard, cleanup as auth_cleanup,
                         insert as auth_insert, password_verify as auth_password_verify,
                         password_encode as auth_password_encode,
+                        password_policy_check as auth_password_policy_check,
                         recovery_generate as auth_recovery_generate};
 use super::track_guard::TrackGuard;
 use super::utilities::{get_balance, get_balance_string, list_payouts, check_argument_value,
@@ -300,7 +301,8 @@ fn post_initiate_login_form_login(
     let data_inner = data.get();
 
     if data_inner.email.is_empty() == false && data_inner.password.is_empty() == false &&
-        validate_email().validate(&data_inner.email).is_ok() == true
+        validate_email().validate(&data_inner.email).is_ok() == true &&
+        auth_password_policy_check(&data_inner.password) == true
     {
         let account_result = account
             .filter(account_email.eq(&data_inner.email))
@@ -375,7 +377,8 @@ fn post_initiate_signup_form_signup(
 
     if data_inner.email.is_empty() == false && data_inner.password.is_empty() == false &&
         validate_email().validate(&data_inner.email).is_ok() == true &&
-        data_inner.password == data_inner.password_repeat
+        data_inner.password == data_inner.password_repeat &&
+        auth_password_policy_check(&data_inner.password) == true
     {
         let now_date = Utc::now().naive_utc();
 
@@ -859,15 +862,20 @@ fn post_dashboard_account_form_account(
     let notify_balance_value = data_inner.notify_balance == Some("1".to_string());
 
     let update_result = if data_inner.password.is_empty() == false {
-        diesel::update(account.filter(account_id.eq(auth.0)))
-            .set((
-                account_email.eq(&data_inner.email),
-                account_password.eq(
-                    &auth_password_encode(&data_inner.password),
-                ),
-                account_notify_balance.eq(&notify_balance_value),
-            ))
-            .execute(&*db)
+        if auth_password_policy_check(&data_inner.password) == true {
+            diesel::update(account.filter(account_id.eq(auth.0)))
+                .set((
+                    account_email.eq(&data_inner.email),
+                    account_password.eq(
+                        &auth_password_encode(&data_inner.password),
+                    ),
+                    account_notify_balance.eq(&notify_balance_value),
+                ))
+                .execute(&*db)
+                .or(Err(()))
+        } else {
+            Err(())
+        }
     } else {
         diesel::update(account.filter(account_id.eq(auth.0)))
             .set((
@@ -875,6 +883,7 @@ fn post_dashboard_account_form_account(
                 account_notify_balance.eq(&notify_balance_value),
             ))
             .execute(&*db)
+            .or(Err(()))
     };
 
     let count_updated = update_result.as_ref().unwrap_or(&0);

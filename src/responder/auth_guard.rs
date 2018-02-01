@@ -16,6 +16,9 @@ use APP_CONF;
 pub struct AuthGuard(pub i32);
 pub struct AuthAnonymousGuard;
 
+const PASSWORD_MINIMUM_LENGTH: usize = 4;
+const PASSWORD_MAXIMUM_LENGTH: usize = 200;
+
 pub static AUTH_USER_COOKIE_NAME: &'static str = "user_id";
 
 impl<'a, 'r> FromRequest<'a, 'r> for AuthGuard {
@@ -88,4 +91,10 @@ pub fn recovery_generate() -> (Vec<u8>, String) {
         .collect::<String>();
 
     (password_encode(&recovery_password), recovery_password)
+}
+
+pub fn password_policy_check(password: &str) -> bool {
+    let size = password.len();
+
+    (size >= PASSWORD_MINIMUM_LENGTH && size <= PASSWORD_MAXIMUM_LENGTH)
 }
