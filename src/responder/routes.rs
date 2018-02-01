@@ -237,6 +237,8 @@ pub struct DashboardAccountContextPayout {
     pub instructions: String,
 }
 
+const TRACKERS_PER_ACCOUNT_MAXIMUM: i64 = 100;
+
 impl DashboardCommonContext {
     fn build(db: &DbConn, user_id: i32) -> DashboardCommonContext {
         DashboardCommonContext { balance_pending: get_balance_string(db, user_id, Some(false)) }
@@ -616,22 +618,35 @@ fn post_dashboard_trackers_form_create(
         .take(10)
         .collect::<String>();
 
-    let insert_result = diesel::insert_into(tracker)
-        .values((
-            &tracker_id.eq(&new_tracker_id),
-            &tracker_label.eq(&data_inner.name),
-            &tracker_account_id.eq(&auth.0),
-            &tracker_created_at.eq(&now_date),
-            &tracker_updated_at.eq(&now_date),
-        ))
-        .execute(&*db);
+    let trackers_total = tracker
+        .filter(tracker_account_id.eq(auth.0))
+        .select(count(tracker_id))
+        .first(&*db)
+        .unwrap_or(0);
 
-    log::debug!(
-        "created tracker: {} named: {} for user_id: {}",
-        new_tracker_id,
-        data_inner.name,
-        auth.0
-    );
+    let insert_result = if trackers_total < TRACKERS_PER_ACCOUNT_MAXIMUM {
+        let result = diesel::insert_into(tracker)
+            .values((
+                &tracker_id.eq(&new_tracker_id),
+                &tracker_label.eq(&data_inner.name),
+                &tracker_account_id.eq(&auth.0),
+                &tracker_created_at.eq(&now_date),
+                &tracker_updated_at.eq(&now_date),
+            ))
+            .execute(&*db)
+            .or(Err(()));
+
+        log::debug!(
+            "created tracker: {} named: {} for user_id: {}",
+            new_tracker_id,
+            data_inner.name,
+            auth.0
+        );
+
+        result
+    } else {
+        Err(())
+    };
 
     Redirect::to(&format!(
         "/dashboard/trackers/?result={}",
