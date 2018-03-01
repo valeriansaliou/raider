@@ -181,9 +181,11 @@ pub struct DashboardTrackersContextTracker {
 
 #[derive(Serialize)]
 pub struct DashboardPayoutsContext<'a> {
-    pub success: bool,
-    pub neutral: bool,
-    pub failure: bool,
+    pub request_success: bool,
+    pub request_failure: bool,
+    pub amount_failure: bool,
+    pub amount_neutral: bool,
+    pub config_failure: bool,
     pub common: DashboardCommonContext,
     pub config: &'a ConfigContext,
     pub balance_total: String,
@@ -708,9 +710,11 @@ fn get_dashboard_payouts_args(auth: AuthGuard, db: DbConn, args: DashboardArgs) 
     Template::render(
         "dashboard_payouts",
         &DashboardPayoutsContext {
-            failure: check_argument_value(&args.result, "failure"),
-            neutral: check_argument_value(&args.result, "neutral"),
-            success: check_argument_value(&args.result, "success"),
+            request_success: check_argument_value(&args.result, "request_success"),
+            request_failure: check_argument_value(&args.result, "request_failure"),
+            amount_failure: check_argument_value(&args.result, "amount_failure"),
+            amount_neutral: check_argument_value(&args.result, "amount_neutral"),
+            config_failure: check_argument_value(&args.result, "config_failure"),
             common: DashboardCommonContext::build(&db, auth.0),
             config: &CONFIG_CONTEXT,
             balance_total: get_balance_string(&db, auth.0, None),
@@ -745,68 +749,76 @@ fn post_dashboard_payouts_form_request(auth: AuthGuard, db: DbConn) -> Result<Re
     if let Ok(account_inner) = account_result {
         let result_code = {
             // Check if user has all payout details properly configured
-            if account_inner.full_name.is_none() || account_inner.address.is_none() ||
-                account_inner.country.is_none() ||
-                account_inner.payout_method.is_none() ||
-                account_inner.payout_instructions.is_none()
+            if account_inner.full_name.unwrap_or_default().is_empty() ||
+                account_inner.address.unwrap_or_default().is_empty() ||
+                account_inner.country.unwrap_or_default().is_empty() ||
+                account_inner.payout_method.unwrap_or_default().is_empty() ||
+                account_inner
+                    .payout_instructions
+                    .unwrap_or_default()
+                    .is_empty()
             {
-                "failure"
+                "config_failure"
             } else {
                 // Check if there is money due
                 let balance_due = get_balance(&db, auth.0, Some(false));
 
                 if balance_due > 0.0 {
-                    let now_date = Utc::now().naive_utc();
+                    if balance_due >= APP_CONF.payout.amount_minimum {
+                        let now_date = Utc::now().naive_utc();
 
-                    // Bump all balance contents to mark them as requested
-                    let update_result =
-                        diesel::update(balance.filter(balance_account_id.eq(auth.0)).filter(
-                            balance_released.eq(false),
-                        )).set((
-                            balance_released.eq(true),
-                            balance_updated_at.eq(&now_date),
-                        ))
-                            .execute(&*db);
-
-                    // Acquire latest payout number
-                    let maximum_result =
-                        payout
-                            .filter(payout_account_id.eq(auth.0))
-                            .select(max(payout_number))
-                            .first::<Option<i32>>(&*db)
-                            .map(|value| if value.is_none() { Some(0) } else { value });
-
-                    match (update_result, maximum_result) {
-                        (Ok(_), Ok(Some(maximum_number))) => {
-                            // Create payout
-                            let insert_result = diesel::insert_into(payout)
-                                .values((
-                                    &payout_amount.eq(BigDecimal::from(balance_due)),
-                                    &payout_number.eq(maximum_number + 1),
-                                    &payout_currency.eq(&APP_CONF.payout.currency),
-                                    &payout_account_id.eq(auth.0),
-                                    &payout_created_at.eq(&now_date),
-                                    &payout_updated_at.eq(&now_date),
-                                ))
+                        // Bump all balance contents to mark them as requested
+                        let update_result =
+                            diesel::update(balance.filter(balance_account_id.eq(auth.0)).filter(
+                                balance_released.eq(false),
+                            )).set((
+                                balance_released.eq(true),
+                                balance_updated_at.eq(&now_date),
+                            ))
                                 .execute(&*db);
 
-                            if insert_result.is_ok() == true {
-                                send_payout_emails(
-                                    auth.0,
-                                    &account_inner.email,
-                                    balance_due,
-                                    &APP_CONF.payout.currency,
-                                );
+                        // Acquire latest payout number
+                        let maximum_result =
+                            payout
+                                .filter(payout_account_id.eq(auth.0))
+                                .select(max(payout_number))
+                                .first::<Option<i32>>(&*db)
+                                .map(|value| if value.is_none() { Some(0) } else { value });
 
-                                "success"
-                            } else {
-                                "failure"
+                        match (update_result, maximum_result) {
+                            (Ok(_), Ok(Some(maximum_number))) => {
+                                // Create payout
+                                let insert_result = diesel::insert_into(payout)
+                                    .values((
+                                        &payout_amount.eq(BigDecimal::from(balance_due)),
+                                        &payout_number.eq(maximum_number + 1),
+                                        &payout_currency.eq(&APP_CONF.payout.currency),
+                                        &payout_account_id.eq(auth.0),
+                                        &payout_created_at.eq(&now_date),
+                                        &payout_updated_at.eq(&now_date),
+                                    ))
+                                    .execute(&*db);
+
+                                if insert_result.is_ok() == true {
+                                    send_payout_emails(
+                                        auth.0,
+                                        &account_inner.email,
+                                        balance_due,
+                                        &APP_CONF.payout.currency,
+                                    );
+
+                                    "request_success"
+                                } else {
+                                    "request_failure"
+                                }
                             }
+                            _ => "request_failure",
                         }
-                        _ => "failure",
+                    } else {
+                        "amount_failure"
                     }
                 } else {
-                    "neutral"
+                    "amount_neutral"
                 }
             }
         };

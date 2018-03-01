@@ -117,5 +117,8 @@ pub struct ConfigPayout {
     #[serde(default = "defaults::payout_currency")]
     pub currency: String,
 
+    #[serde(default = "defaults::payout_amount_minimum")]
+    pub amount_minimum: f32,
+
     pub administrator_email: String,
 }

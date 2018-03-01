@@ -145,6 +145,7 @@ Use the sample [config.cfg](https://github.com/valeriansaliou/raider/blob/master
 **[payout]**
 
 * `currency` (type: _string_, allowed: currency code, default: `USD`) — Currency to be used for payouts (and balances in general)
+* `amount_minimum` (type: _float_, allowed: any number, default: `100.00`) — Minimum amount for payout requests
 * `administrator_email` (type: _string_, allowed: email address, no default) — Email address of the affiliates system administrator (payout request emails will be sent there)
 
 ### Run Raider

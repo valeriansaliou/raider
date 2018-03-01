@@ -68,3 +68,7 @@ pub fn tracker_banner() -> Vec<ConfigTrackerBanner> {
 pub fn payout_currency() -> String {
     "USD".to_string()
 }
+
+pub fn payout_amount_minimum() -> f32 {
+    100.00
+}

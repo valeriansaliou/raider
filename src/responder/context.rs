@@ -5,6 +5,7 @@
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
 use url_serde::SerdeUrl;
+use separator::FixedPlaceSeparatable;
 
 use config::config::ConfigTrackerBanner;
 use APP_CONF;
@@ -24,6 +25,7 @@ lazy_static! {
         logo_dark_url: APP_CONF.branding.logo_dark_url.to_owned(),
         custom_html: APP_CONF.branding.custom_html.to_owned(),
         payout_currency: APP_CONF.payout.currency.to_owned(),
+        payout_amount_minimum: APP_CONF.payout.amount_minimum.separated_string_with_fixed_place(2),
         track_url: APP_CONF.tracker.track_url.to_owned(),
         track_parameter: APP_CONF.tracker.track_parameter.to_owned(),
         banners: ConfigContext::map_banners(&APP_CONF.tracker.banner)
@@ -76,6 +78,7 @@ pub struct ConfigContext {
     pub logo_dark_url: SerdeUrl,
     pub custom_html: Option<String>,
     pub payout_currency: String,
+    pub payout_amount_minimum: String,
     pub track_url: String,
     pub track_parameter: String,
     pub banners: Vec<(SerdeUrl, u16, u16)>,

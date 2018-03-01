@@ -21,11 +21,15 @@
 
   <script type="text/javascript">
     window.onload = function() {
-      {% if failure %}
-        ToastManager.error("Payout not requested.", "The payout could not be requested. Please check your payout recipient settings are complete (go to the account page).");
-      {% elif neutral %}
+      {% if request_failure %}
+        ToastManager.error("Payout not requested.", "The payout could not be requested. Please try again later.");
+      {% elif amount_failure %}
+        ToastManager.error("Payout not requested.", "A payout can only be requested when your balance is above {{ config.payout_currency | escape }} {{ config.payout_amount_minimum | escape }}. Earn more and try again later.");
+      {% elif config_failure %}
+        ToastManager.error("Payout not requested.", "You need to fill your payout recipient settings first (go to the account page).");
+      {% elif amount_neutral %}
         ToastManager.warning("No money available.", "You have no money available on your account. The payout could not be requested.");
-      {% elif success %}
+      {% elif request_success %}
         ToastManager.success("Payout requested.", "The payout has been requested. We will process it shortly and email you about it.");
       {% endif %}
     };
