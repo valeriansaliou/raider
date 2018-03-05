@@ -59,7 +59,7 @@ cargo install raider-server
 
 Ensure that your `$PATH` is properly configured to source the Crates binaries, and then run Raider using the `raider` command.
 
-**Install from sources:**
+**Install from source:**
 
 The last option is to pull the source code from Git and compile Raider via `cargo`:
 
