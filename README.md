@@ -69,7 +69,30 @@ cargo build --release
 
 You can find the built binaries in the `./target/release` directory.
 
-_Install the `libssl-dev` (ie. OpenSSL headers) before you compile Raider. SSL dependencies are required for email notifications._
+_Install the `libssl-dev` (ie. OpenSSL headers) and `libmysqlclient-dev` (ie. MySQL client headers) before you compile Raider. SSL dependencies are required for email notifications, and MySQL dependencies are required to connect to your database._
+
+**Install from Docker Hub:**
+
+You might find it convenient to run Raider via Docker. You can find the pre-built Raider image on Docker Hub as [valeriansaliou/raider](https://hub.docker.com/r/valeriansaliou/raider/).
+
+First, pull the `valeriansaliou/raider` image:
+
+```bash
+docker pull valeriansaliou/raider:v1.0.2
+```
+
+Then, seed it a configuration file and run it (replace `/path/to/your/raider/config.cfg` with the path to your configuration file):
+
+```bash
+docker run -p 8080:8080 -v /path/to/your/raider/config.cfg:/etc/raider.cfg valeriansaliou/raider:v1.0.2
+```
+
+In the configuration file, ensure that:
+
+* `server.inet` is set to `0.0.0.0:8080` (this lets Raider be reached from outside the container)
+* `assets.path` is set to `./res/assets/` (this refers to an internal path in the container, as the assets are contained there)
+
+Raider will be reachable from `http://localhost:8080`.
 
 ### Database
 
