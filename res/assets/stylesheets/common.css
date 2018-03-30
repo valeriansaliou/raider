@@ -111,7 +111,7 @@ a:hover {
 }
 
 .color-blue {
-  color: #3C82E7 !important;
+  color: #1972F5 !important;
 }
 
 .color-orange {
@@ -294,7 +294,7 @@ a:hover {
 }
 
 .button {
-  background: #3C82E7;
+  background: #1972F5;
   color: #FFFFFF;
   border: 0 none;
   text-align: center;
@@ -312,7 +312,7 @@ a:hover {
 }
 
 .button:active {
-  background: #3272D0;
+  background: #0F64E2;
   transform: translateY(1px);
   box-shadow: 0 1px 2px 0 rgba(15, 31, 64, 0.1);
 }
@@ -459,7 +459,7 @@ button.button.button-tiny {
 }
 
 .checkbox:checked + .checkbox-label .checkbox-image {
-  background-color: #3C82E7;
+  background-color: #1972F5;
   border: 0 none;
   width: 22px;
   height: 22px;

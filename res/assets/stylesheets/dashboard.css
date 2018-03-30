@@ -192,7 +192,7 @@ main aside .navigate ul li a:active {
 }
 
 main aside .navigate ul li a.selected {
-  background: #3C82E7;
+  background: #1972F5;
   box-shadow: inset 0 1px 4px 0 rgba(0, 0, 0, 0.12);
 }
 
@@ -248,7 +248,7 @@ main aside .controls li a {
 }
 
 main aside .controls li:nth-of-type(1) a {
-  color: #3C82E7;
+  color: #1972F5;
 }
 
 main aside .controls li:nth-of-type(2) a {
@@ -479,7 +479,7 @@ form.section-wrap label .select-wrap:after {
 
 .section-list-selection:before {
   content: "";
-  background-color: #3C82E7;
+  background-color: #1972F5;
   width: 0;
   height: 100%;
   float: left;
@@ -664,7 +664,7 @@ form.section-wrap label textarea {
 }
 
 .item-metrics-one h5 {
-  color: #3C82E7;
+  color: #1972F5;
   font-size: 14px;
   margin-top: 3px;
 }
@@ -747,7 +747,7 @@ form.section-wrap label textarea {
 }
 
 .popup-banner-picker li[data-selected="true"] {
-  border: 2px solid #3C82E7;
+  border: 2px solid #1972F5;
   margin: -1px;
 }
 
