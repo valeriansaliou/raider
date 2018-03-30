@@ -517,7 +517,7 @@ button.button.button-tiny {
 }
 
 .toast[data-level="info"] .toast-view {
-  background-color: #2484F4;
+  background-color: #1972F5;
 }
 
 .toast[data-level="info"] .toast-view-wrapped-icon:before {
