@@ -1,7 +1,7 @@
 Raider
 ======
 
-[![Build Status](https://travis-ci.org/valeriansaliou/raider.svg?branch=master)](https://travis-ci.org/valeriansaliou/raider)
+[![Build Status](https://travis-ci.org/valeriansaliou/raider.svg?branch=master)](https://travis-ci.org/valeriansaliou/raider) [![Dependency Status](https://deps.rs/repo/github/valeriansaliou/raider/status.svg)](https://deps.rs/repo/github/valeriansaliou/raider)
 
 **Affiliates dashboard. Used by affiliates to generate tracking codes and review their balance.**
 
