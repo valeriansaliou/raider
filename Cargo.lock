@@ -937,7 +937,7 @@ dependencies = [
 
 [[package]]
 name = "raider-server"
-version = "1.0.3"
+version = "1.0.2"
 dependencies = [
  "base64 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "bigdecimal 0.0.10 (registry+https://github.com/rust-lang/crates.io-index)",
