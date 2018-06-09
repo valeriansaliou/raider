@@ -134,6 +134,7 @@ Use the sample [config.cfg](https://github.com/valeriansaliou/raider/blob/master
 
 **[exchange.fixer]**
 
+* `endpoint` (type: _string_, allowed: any string, default: `http://data.fixer.io`) — Fixer.io API endpoint (if using a Fixer paid plan, you can use the HTTPS endpoint: `https://data.fixer.io`)
 * `access_key` (type: _string_, allowed: any string, no default) — Fixer.io API key (if `payout.currency` is different than your default base currency, which should be `EUR`, you will need a paid Fixer account)
 
 **[email]**
@@ -175,7 +176,7 @@ Use the sample [config.cfg](https://github.com/valeriansaliou/raider/blob/master
 
 **[payout]**
 
-* `currency` (type: _string_, allowed: currency code, default: `USD`) — Currency to be used for payouts (and balances in general)
+* `currency` (type: _string_, allowed: currency code, default: `EUR`) — Currency to be used for payouts (and balances in general)
 * `amount_minimum` (type: _float_, allowed: any number, default: `100.00`) — Minimum amount for payout requests
 * `administrator_email` (type: _string_, allowed: email address, no default) — Email address of the affiliates system administrator (payout request emails will be sent there)
 
@@ -218,7 +219,7 @@ Adjust the request data to your payment context and send it as `HTTP POST`:
 ```json
 {
   "amount": 95.00,
-  "currency": "USD",
+  "currency": "EUR",
   "trace": "Plan: Unlimited; Customer: valerian@crisp.chat; Website: crisp.chat"
 }
 ```

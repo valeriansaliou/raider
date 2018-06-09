@@ -33,6 +33,10 @@ pub fn database_connection_timeout() -> u64 {
     10
 }
 
+pub fn exchange_fixer_endpoint() -> String {
+    "http://data.fixer.io".to_string()
+}
+
 pub fn email_smtp_host() -> String {
     "localhost".to_string()
 }
@@ -66,7 +70,7 @@ pub fn tracker_banner() -> Vec<ConfigTrackerBanner> {
 }
 
 pub fn payout_currency() -> String {
-    "USD".to_string()
+    "EUR".to_string()
 }
 
 pub fn payout_amount_minimum() -> f32 {
