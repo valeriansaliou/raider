@@ -128,6 +128,12 @@ Use the sample [config.cfg](https://github.com/valeriansaliou/raider/blob/master
 * `connection_timeout` (type: _integer_, allowed: seconds, default: `10`) — Connection timeout in seconds to MySQL
 * `password_salt` (type: _string_, allowed: any string, no default) — Password salt (preferably strong and long; do not change this after accounts got created as it will make them unusable)
 
+**[exchange]**
+
+**[exchange.fixer]**
+
+* `access_key` (type: _string_, allowed: any string, no default) — Fixer.io API key (if `payout.currency` is different than your default base currency, which should be `EUR`, you will need a paid Fixer account)
+
 **[email]**
 
 * `from` (type: _string_, allowed: email address, no default) — Email address from which to send emails

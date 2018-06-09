@@ -45,8 +45,8 @@ fn update_rates() -> Result<(), ()> {
     // Acquire latest rates from Fixer.io
     let response = HTTP_CLIENT
         .get(&format!(
-            "https://api.fixer.io/latest?base={}",
-            &APP_CONF.payout.currency
+            "https://api.fixer.io/latest?access_key={}&base={}",
+            &APP_CONF.exchange.fixer.access_key, &APP_CONF.payout.currency
         ))
         .send();
 

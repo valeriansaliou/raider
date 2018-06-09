@@ -15,6 +15,7 @@ use super::defaults;
 pub struct Config {
     pub server: ConfigServer,
     pub database: ConfigDatabase,
+    pub exchange: ConfigExchange,
     pub email: ConfigEmail,
     pub assets: ConfigAssets,
     pub branding: ConfigBranding,
@@ -51,6 +52,16 @@ pub struct ConfigDatabase {
     pub connection_timeout: u64,
 
     pub password_salt: String,
+}
+
+#[derive(Deserialize)]
+pub struct ConfigExchange {
+    pub fixer: ConfigExchangeFixer,
+}
+
+#[derive(Deserialize)]
+pub struct ConfigExchangeFixer {
+    pub access_key: String,
 }
 
 #[derive(Deserialize)]
