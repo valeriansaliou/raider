@@ -9,7 +9,7 @@
           <span class="toast-view-wrapped-message-sub font-sans-regular"></span>
         </div>
 
-        <a href="javascript:ToastManager.close()" class="toast-view-wrapped-close"></a>
+        <a href="#" onclick="ToastManager.close(); return false;" class="toast-view-wrapped-close"></a>
       </div>
 
       <div class="toast-view-progress"></div>

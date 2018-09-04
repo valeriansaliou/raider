@@ -53,7 +53,7 @@
 
   {% if has_more %}
     <div class="section-box-more-wrap">
-      <a class="section-box-more font-sans-semibold" href="javascript:PayoutsManager.load_more()">Load older payouts</a>
+      <a class="section-box-more font-sans-semibold" href="#" onclick="PayoutsManager.load_more(); return false;">Load older payouts</a>
     </div>
   {% endif %}
 {% endmacro payouts %}

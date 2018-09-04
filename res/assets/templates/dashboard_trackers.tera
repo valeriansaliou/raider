@@ -57,11 +57,11 @@
 
                 <ul>
                   <li class="icon remove">
-                    <a href="javascript:FormTrackersManager.remove_trackers_confirm()" data-locked="true" id="trackers-remove-button" class="button button-small button-action font-sans-semibold">Remove selection</a>
+                    <a href="#" onclick="FormTrackersManager.remove_trackers_confirm(); return false;" data-locked="true" id="trackers-remove-button" class="button button-small button-action font-sans-semibold">Remove selection</a>
                   </li>
 
                   <li>
-                    <a href="javascript:FormTrackersManager.create_tracker()" class="button button-small font-sans-semibold">Add a new tracker</a>
+                    <a href="#" onclick="FormTrackersManager.create_tracker(); return false;" class="button button-small font-sans-semibold">Add a new tracker</a>
                   </li>
                 </ul>
 
@@ -136,7 +136,7 @@
       <div class="modal-inner">
         <div class="modal-title">
           <h1 class="font-sans-bold">Create a new tracker…</h1>
-          <a href="javascript:IntentManager.hide('modal', 'create')" class="close"></a>
+          <a href="#" onclick="IntentManager.hide('modal', 'create'); return false;" class="close"></a>
 
           <div class="clear"></div>
         </div>
@@ -162,7 +162,7 @@
       <div class="modal-inner">
         <div class="modal-title">
           <h1 class="font-sans-bold">Remove selected trackers…</h1>
-          <a href="javascript:IntentManager.hide('modal', 'remove')" class="close"></a>
+          <a href="#" onclick="IntentManager.hide('modal', 'remove'); return false;" class="close"></a>
 
           <div class="clear"></div>
         </div>
@@ -171,7 +171,7 @@
         <p class="font-sans-regular">Please confirm you want to remove those trackers. If this code is used for payment reports in the future, you may lose money. Beware!</p>
 
         <div class="modal-actions">
-          <a href="javascript:FormTrackersManager.remove_trackers_submit()" class="button button-medium button-next button-danger font-sans-semibold">Remove selected trackers</a>
+          <a href="#" onclick="FormTrackersManager.remove_trackers_submit(); return false;" class="button button-medium button-next button-danger font-sans-semibold">Remove selected trackers</a>
 
           <div class="clear"></div>
         </div>
@@ -185,7 +185,7 @@
         <div class="popup-scroll">
           <div class="popup-title">
             <h1 class="font-sans-bold">Pick a tracker banner…</h1>
-            <a href="javascript:IntentManager.hide('popup', 'banner')" class="close"></a>
+            <a href="#" onclick="IntentManager.hide('popup', 'banner'); return false;" class="close"></a>
 
             <div class="clear"></div>
           </div>
@@ -204,7 +204,7 @@
         <div class="popup-actions popup-banner-actions">
           <input id="trackers-banner-code" value="" readonly>
 
-          <a href="javascript:FormBannersManager.copy_selected_banner()" class="button button-medium button-next font-sans-semibold" data-locked="true">Copy this banner HTML</a>
+          <a href="#" onclick="FormBannersManager.copy_selected_banner(); return false;" class="button button-medium button-next font-sans-semibold" data-locked="true">Copy this banner HTML</a>
 
           <div class="clear"></div>
         </div>

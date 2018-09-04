@@ -63,7 +63,7 @@
                       <p class="payout-balance-amount color-{% if common.balance_pending != "0.00" %}blue{% else %}grey{% endif %} font-sans-semibold">{{ config.payout_currency | escape }} {{ common.balance_pending | escape }}</p>
                     </div>
 
-                    <a href="javascript:IntentManager.show('modal', 'request')" class="button button-medium font-sans-semibold {% if common.balance_pending == "0.00" %}disabled{% endif %}">Request payout of {{ config.payout_currency | escape }} {{ common.balance_pending | escape }}</a>
+                    <a href="#" onclick="IntentManager.show('modal', 'request'); return false;" class="button button-medium font-sans-semibold {% if common.balance_pending == "0.00" %}disabled{% endif %}">Request payout of {{ config.payout_currency | escape }} {{ common.balance_pending | escape }}</a>
                   </div>
 
                   <div class="payout-balance payout-balance-all">
@@ -106,7 +106,7 @@
       <div class="modal-inner">
         <div class="modal-title">
           <h1 class="font-sans-bold">Request a payout…</h1>
-          <a href="javascript:IntentManager.hide('modal', 'request')" class="close"></a>
+          <a href="#" onclick="IntentManager.hide('modal', 'request'); return false;" class="close"></a>
 
           <div class="clear"></div>
         </div>
