@@ -15,7 +15,7 @@ var FormTrackersManager = (function() {
     },
 
     create_tracker : function() {
-      var modal_selector = IntentManager.show("modal", "create");
+      var modal_selector = IntentManager.show("modal", "create", true);
 
       if (modal_selector) {
         modal_selector.querySelector("input").focus();

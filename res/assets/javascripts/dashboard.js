@@ -162,12 +162,20 @@ var ToastManager = (function() {
 
 var IntentManager = (function() {
   return {
-    show : function(type, name) {
-      return this.__visibility(type, name, true);
+    show : function(type, name, return_selector) {
+      var target_selector = this.__visibility(type, name, true);
+
+      return (
+        (return_selector === true) ? target_selector : null
+      );
     },
 
-    hide : function(type, name) {
-      return this.__visibility(type, name, false);
+    hide : function(type, name, return_selector) {
+      var target_selector = this.__visibility(type, name, false);
+
+      return (
+        (return_selector === true) ? target_selector : null
+      );
     },
 
     __visibility : function(type, name, is_visible) {
