@@ -9,6 +9,8 @@ Raider is easy to integrate in your existing system. You can also customize the 
 
 _Tested at Rust version: `rust version 1.25.0-nightly (8ccab7eed 2018-01-31)`_
 
+**🇭🇺 Crafted in Budapest, Hungary.**
+
 ![Raider](https://valeriansaliou.github.io/raider/images/raider.png)
 
 ## Who uses it?
