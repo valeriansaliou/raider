@@ -10,7 +10,7 @@ use std::path::PathBuf;
 use super::config::ConfigTrackerBanner;
 
 pub fn server_log_level() -> String {
-    "warn".to_string()
+    "error".to_string()
 }
 
 pub fn server_inet() -> SocketAddr {
