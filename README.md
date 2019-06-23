@@ -7,7 +7,7 @@ Raider
 
 Raider is easy to integrate in your existing system. You can also customize the dashboard look & feel with templates and styles. It can be used as a self-service affiliates system, for your affiliate users to manage their account, create tracking URLs, review their balance and request for payouts.
 
-_Tested at Rust version: `rust version 1.25.0-nightly (8ccab7eed 2018-01-31)`_
+_Tested at Rust version: `rust 1.25.0-nightly (8ccab7eed 2018-01-31)`_
 
 **🇭🇺 Crafted in Budapest, Hungary.**
 
