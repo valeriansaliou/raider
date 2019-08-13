@@ -1,3 +1,5 @@
+cargo-features = ["publish-lockfile"]
+
 [package]
 name = "raider-server"
 version = "1.1.1"
@@ -10,6 +12,7 @@ keywords = ["affiliates", "dashboard", "sales", "tracker"]
 categories = ["web-programming"]
 authors = ["Valerian Saliou <valerian@valeriansaliou.name>"]
 exclude = ["dev/*"]
+publish-lockfile = true
 
 [badges]
 travis-ci = { repository = "valeriansaliou/raider", branch = "master" }
@@ -40,8 +43,7 @@ lettre = { version = "0.7", features = ["smtp-transport"] }
 lettre_email = "0.7"
 rocket = { version = "0.4", features = ["private-cookies"] }
 rocket_contrib = { version = "0.4", features = ["tera_templates"] }
-diesel = { version = "=1.1.1", features = ["mysql", "chrono", "numeric"] }
-diesel_derives = "=1.1.0"
+diesel = { version = "1.1", features = ["mysql", "chrono", "numeric"] }
 r2d2 = "0.8"
 r2d2-diesel = "1.0"
 reqwest = "0.8"
