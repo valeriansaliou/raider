@@ -22,7 +22,7 @@ COPY ./res/assets/ ./res/assets/
 COPY --from=build /app/target/release/raider /usr/local/bin/raider
 
 RUN apt-get update
-RUN apt-get install -y libssl-dev libmysqlclient-dev
+RUN apt-get install -y libssl-dev default-libmysqlclient-dev
 
 CMD [ "raider", "-c", "/etc/raider.cfg" ]
 
