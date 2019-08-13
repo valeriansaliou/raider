@@ -1,6 +1,6 @@
 [package]
 name = "raider-server"
-version = "1.0.2"
+version = "1.1.0"
 description = "Affiliates dashboard. Used by affiliates to generate tracking codes and review their balance."
 readme = "README.md"
 license = "MPL-2.0"
