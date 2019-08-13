@@ -5,11 +5,11 @@
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
 use log;
-use rocket::Outcome;
-use rocket::http::{Status, Cookies, Cookie};
-use rocket::request::{self, Request, FromRequest};
 use rand::{self, Rng};
-use sha2::{Sha256, Digest};
+use rocket::http::{Cookie, Cookies, Status};
+use rocket::request::{self, FromRequest, Request};
+use rocket::Outcome;
+use sha2::{Digest, Sha256};
 
 use APP_CONF;
 

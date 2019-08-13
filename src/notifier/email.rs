@@ -4,14 +4,16 @@
 // Copyright: 2018, Valerian Saliou <valerian@valeriansaliou.name>
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
-use std::time::Duration;
-use log;
-use native_tls::TlsConnector;
-use lettre::smtp::{ClientSecurity, SmtpTransportBuilder, SmtpTransport, ConnectionReuseParameters};
 use lettre::smtp::authentication::Credentials;
 use lettre::smtp::client::net::ClientTlsParameters;
+use lettre::smtp::{
+    ClientSecurity, ConnectionReuseParameters, SmtpTransport, SmtpTransportBuilder,
+};
 use lettre::EmailTransport;
 use lettre_email::EmailBuilder;
+use log;
+use native_tls::TlsConnector;
+use std::time::Duration;
 
 use APP_CONF;
 
@@ -52,9 +54,10 @@ impl EmailNotifier {
             APP_CONF.email.smtp_username.to_owned(),
             APP_CONF.email.smtp_password.to_owned(),
             APP_CONF.email.smtp_encrypt,
-        ).map(|mut transport| transport.send(&email_message))
-            .and(Ok(()))
-            .or(Err(true));
+        )
+        .map(|mut transport| transport.send(&email_message))
+        .and(Ok(()))
+        .or(Err(true));
     }
 }
 
@@ -94,10 +97,8 @@ fn acquire_transport(
 
             match (smtp_username, smtp_password) {
                 (Some(smtp_username_value), Some(smtp_password_value)) => {
-                    transport_builder = transport_builder.credentials(Credentials::new(
-                        smtp_username_value,
-                        smtp_password_value,
-                    ));
+                    transport_builder = transport_builder
+                        .credentials(Credentials::new(smtp_username_value, smtp_password_value));
                 }
                 _ => {}
             }

@@ -5,7 +5,7 @@
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
 use log;
-use log::{LogRecord, LogLevel, LogMetadata, LogLevelFilter, SetLoggerError};
+use log::{LogLevel, LogLevelFilter, LogMetadata, LogRecord, SetLoggerError};
 
 pub struct ConfigLogger;
 

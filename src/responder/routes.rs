@@ -4,67 +4,67 @@
 // Copyright: 2018, Valerian Saliou <valerian@valeriansaliou.name>
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
-use std::path::PathBuf;
-use std::collections::HashSet;
-use log;
-use chrono::offset::Utc;
-use validate::rules::email as validate_email;
-use separator::{Separatable, FixedPlaceSeparatable};
 use bigdecimal::BigDecimal;
-use num_traits::cast::ToPrimitive;
-use iso_country::data::all as countries;
-use rand::{self, Rng};
-use rocket::error::Error as RocketError;
-use rocket::response::{Redirect, Failure};
-use rocket::request::{Form, FromForm, FormItems, FromFormValue};
-use rocket::http::{Cookies, Status};
-use rocket_contrib::{Template, Json};
+use chrono::offset::Utc;
 use diesel;
+use diesel::dsl::{count, max, sum};
 use diesel::prelude::*;
-use diesel::dsl::{sum, count, max};
+use iso_country::data::all as countries;
+use log;
+use num_traits::cast::ToPrimitive;
+use rand::{self, Rng};
+use rocket::http::{Cookies, Status};
+use rocket::request::{Form, FormItems, FromForm, FromFormValue};
+use rocket::response::Redirect;
+use rocket_contrib::json::Json;
+use rocket_contrib::templates::Template;
+use separator::{FixedPlaceSeparatable, Separatable};
+use std::collections::HashSet;
+use std::path::PathBuf;
+use validate::rules::email as validate_email;
 
-use super::context::{CONFIG_CONTEXT, ConfigContext};
 use super::asset_file::AssetFile;
-use super::auth_guard::{AuthGuard, AuthAnonymousGuard, cleanup as auth_cleanup,
-                        insert as auth_insert, password_verify as auth_password_verify,
-                        password_encode as auth_password_encode,
-                        password_policy_check as auth_password_policy_check,
-                        recovery_generate as auth_recovery_generate};
+use super::auth_guard::{
+    cleanup as auth_cleanup, insert as auth_insert, password_encode as auth_password_encode,
+    password_policy_check as auth_password_policy_check, password_verify as auth_password_verify,
+    recovery_generate as auth_recovery_generate, AuthAnonymousGuard, AuthGuard,
+};
+use super::context::{ConfigContext, CONFIG_CONTEXT};
 use super::track_guard::TrackGuard;
-use super::utilities::{get_balance, get_balance_string, list_payouts, check_argument_value,
-                       send_payout_emails};
-use track::payment::{handle_payment as track_handle_payment, handle_signup as track_handle_signup,
-                     run_notify_payment as track_run_notify_payment,
-                     HandlePaymentError as TrackHandlePaymentError,
-                     HandleSignupError as TrackHandleSignupError};
+use super::utilities::{
+    check_argument_value, get_balance, get_balance_string, list_payouts, send_payout_emails,
+};
 use notifier::email::EmailNotifier;
-use storage::db::DbConn;
-use storage::schemas::account::dsl::{account, id as account_id, email as account_email,
-                                     password as account_password, recovery as account_recovery,
-                                     commission as account_commission,
-                                     full_name as account_full_name, address as account_address,
-                                     country as account_country,
-                                     payout_method as account_payout_method,
-                                     payout_instructions as account_payout_instructions,
-                                     notify_balance as account_notify_balance,
-                                     created_at as account_created_at,
-                                     updated_at as account_updated_at};
-use storage::schemas::payout::dsl::{payout, id as payout_id, amount as payout_amount,
-                                    number as payout_number, currency as payout_currency,
-                                    account_id as payout_account_id,
-                                    created_at as payout_created_at,
-                                    updated_at as payout_updated_at};
-use storage::schemas::tracker::dsl::{tracker, id as tracker_id, label as tracker_label,
-                                     account_id as tracker_account_id,
-                                     created_at as tracker_created_at,
-                                     updated_at as tracker_updated_at};
-use storage::schemas::balance::dsl::{balance, amount as balance_amount,
-                                     released as balance_released,
-                                     account_id as balance_account_id,
-                                     tracker_id as balance_tracker_id,
-                                     updated_at as balance_updated_at};
-use storage::models::{Account, Tracker, AccountRecoveryUpdate};
 use storage::choices::ACCOUNT_PAYOUT_METHODS;
+use storage::db::DbConn;
+use storage::models::{Account, AccountRecoveryUpdate, Tracker};
+use storage::schemas::account::dsl::{
+    account, address as account_address, commission as account_commission,
+    country as account_country, created_at as account_created_at, email as account_email,
+    full_name as account_full_name, id as account_id, notify_balance as account_notify_balance,
+    password as account_password, payout_instructions as account_payout_instructions,
+    payout_method as account_payout_method, recovery as account_recovery,
+    updated_at as account_updated_at,
+};
+use storage::schemas::balance::dsl::{
+    account_id as balance_account_id, amount as balance_amount, balance,
+    released as balance_released, tracker_id as balance_tracker_id,
+    updated_at as balance_updated_at,
+};
+use storage::schemas::payout::dsl::{
+    account_id as payout_account_id, amount as payout_amount, created_at as payout_created_at,
+    currency as payout_currency, id as payout_id, number as payout_number, payout,
+    updated_at as payout_updated_at,
+};
+use storage::schemas::tracker::dsl::{
+    account_id as tracker_account_id, created_at as tracker_created_at, id as tracker_id,
+    label as tracker_label, tracker, updated_at as tracker_updated_at,
+};
+use track::payment::{
+    handle_payment as track_handle_payment, handle_signup as track_handle_signup,
+    run_notify_payment as track_run_notify_payment, HandlePaymentError as TrackHandlePaymentError,
+    HandleSignupError as TrackHandleSignupError,
+};
 use APP_CONF;
 
 #[derive(FromForm)]
@@ -243,24 +243,27 @@ const TRACKERS_PER_ACCOUNT_MAXIMUM: i64 = 100;
 
 impl DashboardCommonContext {
     fn build(db: &DbConn, user_id: i32) -> DashboardCommonContext {
-        DashboardCommonContext { balance_pending: get_balance_string(db, user_id, Some(false)) }
+        DashboardCommonContext {
+            balance_pending: get_balance_string(db, user_id, Some(false)),
+        }
     }
 }
 
 impl<'f> FromForm<'f> for DashboardTrackersFormRemoveData {
-    type Error = RocketError;
+    type Error = ();
 
     fn from_form(form_items: &mut FormItems<'f>, _: bool) -> Result<Self, Self::Error> {
-        let mut update = DashboardTrackersFormRemoveData { trackers: HashSet::new() };
+        let mut update = DashboardTrackersFormRemoveData {
+            trackers: HashSet::new(),
+        };
 
-        for (k, v) in form_items {
-            let key: &str = &*k;
-            let value = String::from_form_value(v).or(Err(RocketError::BadParse))?;
+        for form_item in form_items {
+            let value = String::from_form_value(form_item.value).or(Err(()))?;
 
-            match key {
+            match form_item.key.as_str() {
                 "tracker" => update.trackers.insert(value),
                 _ => {
-                    return Err(RocketError::BadParse);
+                    return Err(());
                 }
             };
         }
@@ -270,22 +273,17 @@ impl<'f> FromForm<'f> for DashboardTrackersFormRemoveData {
 }
 
 #[get("/")]
-fn get_index(_anon: AuthAnonymousGuard) -> Redirect {
+pub fn get_index(_anon: AuthAnonymousGuard) -> Redirect {
     Redirect::found("/initiate/")
 }
 
 #[get("/initiate")]
-fn get_initiate_base(_anon: AuthAnonymousGuard) -> Redirect {
+pub fn get_initiate_base(_anon: AuthAnonymousGuard) -> Redirect {
     Redirect::found("/initiate/login/")
 }
 
-#[get("/initiate/login")]
-fn get_initiate_login(anon: AuthAnonymousGuard) -> Template {
-    get_initiate_login_args(anon, InitiateArgs { result: None })
-}
-
-#[get("/initiate/login?<args>")]
-fn get_initiate_login_args(_anon: AuthAnonymousGuard, args: InitiateArgs) -> Template {
+#[get("/initiate/login?<args..>")]
+pub fn get_initiate_login(_anon: AuthAnonymousGuard, args: Form<InitiateArgs>) -> Template {
     Template::render(
         "initiate_login",
         &LoginContext {
@@ -296,31 +294,29 @@ fn get_initiate_login_args(_anon: AuthAnonymousGuard, args: InitiateArgs) -> Tem
 }
 
 #[post("/initiate/login/form/login", data = "<data>")]
-fn post_initiate_login_form_login(
+pub fn post_initiate_login_form_login(
     _anon: AuthAnonymousGuard,
     cookies: Cookies,
     db: DbConn,
     data: Form<LoginData>,
 ) -> Redirect {
-    let data_inner = data.get();
-
-    if data_inner.email.is_empty() == false && data_inner.password.is_empty() == false &&
-        validate_email().validate(&data_inner.email).is_ok() == true &&
-        auth_password_policy_check(&data_inner.password) == true
+    if data.email.is_empty() == false
+        && data.password.is_empty() == false
+        && validate_email().validate(&data.email).is_ok() == true
+        && auth_password_policy_check(&data.password) == true
     {
         let account_result = account
-            .filter(account_email.eq(&data_inner.email))
+            .filter(account_email.eq(&data.email))
             .first::<Account>(&*db);
 
         match account_result {
             Ok(result) => {
-                let mut is_auth_valid =
-                    auth_password_verify(&result.password, &data_inner.password);
+                let mut is_auth_valid = auth_password_verify(&result.password, &data.password);
 
                 // Attempt to check recovery password?
                 if is_auth_valid == false {
                     if let Some(ref recovery) = result.recovery {
-                        is_auth_valid = auth_password_verify(recovery, &data_inner.password);
+                        is_auth_valid = auth_password_verify(recovery, &data.password);
                     }
                 }
 
@@ -330,7 +326,9 @@ fn post_initiate_login_form_login(
                     if result.recovery.is_some() == true {
                         let recovery_update =
                             diesel::update(account.filter(account_id.eq(result.id)))
-                                .set(&AccountRecoveryUpdate { recovery: Vec::new() })
+                                .set(&AccountRecoveryUpdate {
+                                    recovery: Vec::new(),
+                                })
                                 .execute(&*db);
 
                         match recovery_update {
@@ -354,13 +352,8 @@ fn post_initiate_login_form_login(
     Redirect::to("/initiate/login/?result=failure")
 }
 
-#[get("/initiate/signup")]
-fn get_initiate_signup(anon: AuthAnonymousGuard) -> Template {
-    get_initiate_signup_args(anon, InitiateArgs { result: None })
-}
-
-#[get("/initiate/signup?<args>")]
-fn get_initiate_signup_args(_anon: AuthAnonymousGuard, args: InitiateArgs) -> Template {
+#[get("/initiate/signup?<args..>")]
+pub fn get_initiate_signup(_anon: AuthAnonymousGuard, args: Form<InitiateArgs>) -> Template {
     Template::render(
         "initiate_signup",
         &SignupContext {
@@ -371,30 +364,25 @@ fn get_initiate_signup_args(_anon: AuthAnonymousGuard, args: InitiateArgs) -> Te
 }
 
 #[post("/initiate/signup/form/signup", data = "<data>")]
-fn post_initiate_signup_form_signup(
+pub fn post_initiate_signup_form_signup(
     _anon: AuthAnonymousGuard,
     cookies: Cookies,
     db: DbConn,
     data: Form<SignupData>,
 ) -> Redirect {
-    let data_inner = data.get();
-
-    if data_inner.email.is_empty() == false && data_inner.password.is_empty() == false &&
-        validate_email().validate(&data_inner.email).is_ok() == true &&
-        data_inner.password == data_inner.password_repeat &&
-        auth_password_policy_check(&data_inner.password) == true
+    if data.email.is_empty() == false
+        && data.password.is_empty() == false
+        && validate_email().validate(&data.email).is_ok() == true
+        && data.password == data.password_repeat
+        && auth_password_policy_check(&data.password) == true
     {
         let now_date = Utc::now().naive_utc();
 
         let insert_result = diesel::insert_into(account)
             .values((
-                &account_email.eq(&data_inner.email),
-                &account_password.eq(
-                    &auth_password_encode(&data_inner.password),
-                ),
-                &account_commission.eq(BigDecimal::from(
-                    APP_CONF.tracker.commission_default,
-                )),
+                &account_email.eq(&data.email),
+                &account_password.eq(&auth_password_encode(&data.password)),
+                &account_commission.eq(BigDecimal::from(APP_CONF.tracker.commission_default)),
                 &account_created_at.eq(&now_date),
                 &account_updated_at.eq(&now_date),
             ))
@@ -402,7 +390,7 @@ fn post_initiate_signup_form_signup(
 
         if insert_result.is_ok() == true {
             let account_result = account
-                .filter(account_email.eq(&data_inner.email))
+                .filter(account_email.eq(&data.email))
                 .first::<Account>(&*db);
 
             match account_result {
@@ -422,13 +410,8 @@ fn post_initiate_signup_form_signup(
     Redirect::to("/initiate/signup/?result=failure")
 }
 
-#[get("/initiate/recover")]
-fn get_initiate_recover(anon: AuthAnonymousGuard) -> Template {
-    get_initiate_recover_args(anon, InitiateArgs { result: None })
-}
-
-#[get("/initiate/recover?<args>")]
-fn get_initiate_recover_args(_anon: AuthAnonymousGuard, args: InitiateArgs) -> Template {
+#[get("/initiate/recover?<args..>")]
+pub fn get_initiate_recover(_anon: AuthAnonymousGuard, args: Form<InitiateArgs>) -> Template {
     Template::render(
         "initiate_recover",
         &RecoverContext {
@@ -440,18 +423,14 @@ fn get_initiate_recover_args(_anon: AuthAnonymousGuard, args: InitiateArgs) -> T
 }
 
 #[post("/initiate/recover/form/recover", data = "<data>")]
-fn post_initiate_recover_form_recover(
+pub fn post_initiate_recover_form_recover(
     _anon: AuthAnonymousGuard,
     db: DbConn,
     data: Form<RecoverData>,
 ) -> Redirect {
-    let data_inner = data.get();
-
-    if data_inner.email.is_empty() == false &&
-        validate_email().validate(&data_inner.email).is_ok() == true
-    {
+    if data.email.is_empty() == false && validate_email().validate(&data.email).is_ok() == true {
         let result = account
-            .filter(account_email.eq(&data_inner.email))
+            .filter(account_email.eq(&data.email))
             .first::<Account>(&*db);
 
         if let Ok(account_result) = result {
@@ -492,7 +471,9 @@ fn post_initiate_recover_form_recover(
                     &account_result.email,
                     "Recover your password".to_string(),
                     &message,
-                ).is_ok() == true
+                )
+                .is_ok()
+                    == true
                 {
                     return Redirect::to("/initiate/recover/?result=success");
                 }
@@ -504,14 +485,14 @@ fn post_initiate_recover_form_recover(
 }
 
 #[get("/initiate/logout")]
-fn get_initiate_logout(_auth: AuthGuard, cookies: Cookies) -> Redirect {
+pub fn get_initiate_logout(_auth: AuthGuard, cookies: Cookies) -> Redirect {
     auth_cleanup(cookies);
 
     Redirect::to("/initiate/")
 }
 
 #[get("/dashboard")]
-fn get_dashboard_base(auth: AuthGuard, db: DbConn) -> Redirect {
+pub fn get_dashboard_base(auth: AuthGuard, db: DbConn) -> Redirect {
     let tracker_count_result = tracker
         .filter(tracker_account_id.eq(auth.0))
         .select(count(tracker_id))
@@ -525,7 +506,7 @@ fn get_dashboard_base(auth: AuthGuard, db: DbConn) -> Redirect {
 }
 
 #[get("/dashboard/welcome")]
-fn get_dashboard_welcome(auth: AuthGuard, db: DbConn) -> Template {
+pub fn get_dashboard_welcome(auth: AuthGuard, db: DbConn) -> Template {
     let account_result = account.filter(account_id.eq(auth.0)).first::<Account>(&*db);
 
     let tracker_count_result = tracker
@@ -550,44 +531,41 @@ fn get_dashboard_welcome(auth: AuthGuard, db: DbConn) -> Template {
     )
 }
 
-#[get("/dashboard/trackers")]
-fn get_dashboard_trackers(auth: AuthGuard, db: DbConn) -> Template {
-    get_dashboard_trackers_args(auth, db, DashboardArgs { result: None })
-}
-
-#[get("/dashboard/trackers?<args>")]
-fn get_dashboard_trackers_args(auth: AuthGuard, db: DbConn, args: DashboardArgs) -> Template {
+#[get("/dashboard/trackers?<args..>")]
+pub fn get_dashboard_trackers(auth: AuthGuard, db: DbConn, args: Form<DashboardArgs>) -> Template {
     let mut trackers = Vec::new();
 
     tracker
         .filter(tracker_account_id.eq(auth.0))
         .order(tracker_label.asc())
         .load::<Tracker>(&*db)
-        .map(|results| for result in results {
-            log::debug!("got tracker: {:?}", result);
+        .map(|results| {
+            for result in results {
+                log::debug!("got tracker: {:?}", result);
 
-            let total_earned: Option<f32> = balance
-                .filter(balance_account_id.eq(auth.0))
-                .filter(balance_tracker_id.eq(&result.id))
-                .select(sum(balance_amount))
-                .first(&*db)
-                .ok()
-                .and_then(|value: Option<BigDecimal>| if let Some(value_inner) =
-                    value
-                {
-                    value_inner.to_f32()
-                } else {
-                    None
+                let total_earned: Option<f32> = balance
+                    .filter(balance_account_id.eq(auth.0))
+                    .filter(balance_tracker_id.eq(&result.id))
+                    .select(sum(balance_amount))
+                    .first(&*db)
+                    .ok()
+                    .and_then(|value: Option<BigDecimal>| {
+                        if let Some(value_inner) = value {
+                            value_inner.to_f32()
+                        } else {
+                            None
+                        }
+                    });
+
+                trackers.push(DashboardTrackersContextTracker {
+                    tracking_id: result.id,
+                    label: result.label,
+                    statistics_signups: result.statistics_signups.separated_string(),
+                    total_earned: total_earned
+                        .unwrap_or(0.0)
+                        .separated_string_with_fixed_place(2),
                 });
-
-            trackers.push(DashboardTrackersContextTracker {
-                tracking_id: result.id,
-                label: result.label,
-                statistics_signups: result.statistics_signups.separated_string(),
-                total_earned: total_earned
-                    .unwrap_or(0.0)
-                    .separated_string_with_fixed_place(2),
-            });
+            }
         })
         .ok();
 
@@ -607,13 +585,11 @@ fn get_dashboard_trackers_args(auth: AuthGuard, db: DbConn, args: DashboardArgs)
 }
 
 #[post("/dashboard/trackers/form/create", data = "<data>")]
-fn post_dashboard_trackers_form_create(
+pub fn post_dashboard_trackers_form_create(
     auth: AuthGuard,
     db: DbConn,
     data: Form<DashboardTrackersFormCreateData>,
 ) -> Redirect {
-    let data_inner = data.get();
-
     let now_date = Utc::now().naive_utc();
     let new_tracker_id = rand::thread_rng()
         .gen_ascii_chars()
@@ -630,7 +606,7 @@ fn post_dashboard_trackers_form_create(
         let result = diesel::insert_into(tracker)
             .values((
                 &tracker_id.eq(&new_tracker_id),
-                &tracker_label.eq(&data_inner.name),
+                &tracker_label.eq(&data.name),
                 &tracker_account_id.eq(&auth.0),
                 &tracker_created_at.eq(&now_date),
                 &tracker_updated_at.eq(&now_date),
@@ -641,7 +617,7 @@ fn post_dashboard_trackers_form_create(
         log::debug!(
             "created tracker: {} named: {} for user_id: {}",
             new_tracker_id,
-            data_inner.name,
+            data.name,
             auth.0
         );
 
@@ -650,7 +626,7 @@ fn post_dashboard_trackers_form_create(
         Err(())
     };
 
-    Redirect::to(&format!(
+    Redirect::to(format!(
         "/dashboard/trackers/?result={}",
         if insert_result.is_ok() == true {
             "create_success"
@@ -661,16 +637,17 @@ fn post_dashboard_trackers_form_create(
 }
 
 #[post("/dashboard/trackers/form/remove", data = "<data>")]
-fn post_dashboard_trackers_form_remove(
+pub fn post_dashboard_trackers_form_remove(
     auth: AuthGuard,
     db: DbConn,
     data: Form<DashboardTrackersFormRemoveData>,
 ) -> Redirect {
-    let data_inner = data.get();
-
-    let delete_result = diesel::delete(tracker.filter(tracker_account_id.eq(auth.0)).filter(
-        tracker_id.eq_any(&data_inner.trackers),
-    )).execute(&*db);
+    let delete_result = diesel::delete(
+        tracker
+            .filter(tracker_account_id.eq(auth.0))
+            .filter(tracker_id.eq_any(&data.trackers)),
+    )
+    .execute(&*db);
 
     let count_updated = delete_result.as_ref().unwrap_or(&0);
 
@@ -680,7 +657,7 @@ fn post_dashboard_trackers_form_remove(
         auth.0
     );
 
-    Redirect::to(&format!(
+    Redirect::to(format!(
         "/dashboard/trackers/?result={}",
         if count_updated > &0 {
             "remove_success"
@@ -692,13 +669,8 @@ fn post_dashboard_trackers_form_remove(
     ))
 }
 
-#[get("/dashboard/payouts")]
-fn get_dashboard_payouts(auth: AuthGuard, db: DbConn) -> Template {
-    get_dashboard_payouts_args(auth, db, DashboardArgs { result: None })
-}
-
-#[get("/dashboard/payouts?<args>")]
-fn get_dashboard_payouts_args(auth: AuthGuard, db: DbConn, args: DashboardArgs) -> Template {
+#[get("/dashboard/payouts?<args..>")]
+pub fn get_dashboard_payouts(auth: AuthGuard, db: DbConn, args: Form<DashboardArgs>) -> Template {
     let payouts_total = payout
         .filter(payout_account_id.eq(auth.0))
         .select(count(payout_id))
@@ -726,7 +698,7 @@ fn get_dashboard_payouts_args(auth: AuthGuard, db: DbConn, args: DashboardArgs) 
 }
 
 #[get("/dashboard/payouts/partial/payouts/<page_number>")]
-fn get_dashboard_payouts_partial_payouts(
+pub fn get_dashboard_payouts_partial_payouts(
     auth: AuthGuard,
     db: DbConn,
     page_number: u16,
@@ -743,17 +715,20 @@ fn get_dashboard_payouts_partial_payouts(
 }
 
 #[post("/dashboard/payouts/form/request")]
-fn post_dashboard_payouts_form_request(auth: AuthGuard, db: DbConn) -> Result<Redirect, Failure> {
+pub fn post_dashboard_payouts_form_request(
+    auth: AuthGuard,
+    db: DbConn,
+) -> Result<Redirect, Status> {
     let account_result = account.filter(account_id.eq(auth.0)).first::<Account>(&*db);
 
     if let Ok(account_inner) = account_result {
         let result_code = {
             // Check if user has all payout details properly configured
-            if account_inner.full_name.unwrap_or_default().is_empty() ||
-                account_inner.address.unwrap_or_default().is_empty() ||
-                account_inner.country.unwrap_or_default().is_empty() ||
-                account_inner.payout_method.unwrap_or_default().is_empty() ||
-                account_inner
+            if account_inner.full_name.unwrap_or_default().is_empty()
+                || account_inner.address.unwrap_or_default().is_empty()
+                || account_inner.country.unwrap_or_default().is_empty()
+                || account_inner.payout_method.unwrap_or_default().is_empty()
+                || account_inner
                     .payout_instructions
                     .unwrap_or_default()
                     .is_empty()
@@ -768,22 +743,20 @@ fn post_dashboard_payouts_form_request(auth: AuthGuard, db: DbConn) -> Result<Re
                         let now_date = Utc::now().naive_utc();
 
                         // Bump all balance contents to mark them as requested
-                        let update_result =
-                            diesel::update(balance.filter(balance_account_id.eq(auth.0)).filter(
-                                balance_released.eq(false),
-                            )).set((
-                                balance_released.eq(true),
-                                balance_updated_at.eq(&now_date),
-                            ))
-                                .execute(&*db);
+                        let update_result = diesel::update(
+                            balance
+                                .filter(balance_account_id.eq(auth.0))
+                                .filter(balance_released.eq(false)),
+                        )
+                        .set((balance_released.eq(true), balance_updated_at.eq(&now_date)))
+                        .execute(&*db);
 
                         // Acquire latest payout number
-                        let maximum_result =
-                            payout
-                                .filter(payout_account_id.eq(auth.0))
-                                .select(max(payout_number))
-                                .first::<Option<i32>>(&*db)
-                                .map(|value| if value.is_none() { Some(0) } else { value });
+                        let maximum_result = payout
+                            .filter(payout_account_id.eq(auth.0))
+                            .select(max(payout_number))
+                            .first::<Option<i32>>(&*db)
+                            .map(|value| if value.is_none() { Some(0) } else { value });
 
                         match (update_result, maximum_result) {
                             (Ok(_), Ok(Some(maximum_number))) => {
@@ -823,25 +796,21 @@ fn post_dashboard_payouts_form_request(auth: AuthGuard, db: DbConn) -> Result<Re
             }
         };
 
-        Ok(Redirect::to(
-            &format!("/dashboard/payouts/?result={}", result_code),
-        ))
+        Ok(Redirect::to(format!(
+            "/dashboard/payouts/?result={}",
+            result_code
+        )))
     } else {
-        Err(Failure(Status::PreconditionFailed))
+        Err(Status::PreconditionFailed)
     }
 }
 
-#[get("/dashboard/account")]
-fn get_dashboard_account(auth: AuthGuard, db: DbConn) -> Result<Template, Failure> {
-    get_dashboard_account_args(auth, db, DashboardArgs { result: None })
-}
-
-#[get("/dashboard/account?<args>")]
-fn get_dashboard_account_args(
+#[get("/dashboard/account?<args..>")]
+pub fn get_dashboard_account(
     auth: AuthGuard,
     db: DbConn,
-    args: DashboardArgs,
-) -> Result<Template, Failure> {
+    args: Form<DashboardArgs>,
+) -> Result<Template, Status> {
     let account_result = account.filter(account_id.eq(auth.0)).first::<Account>(&*db);
 
     if let Ok(account_inner) = account_result {
@@ -874,28 +843,24 @@ fn get_dashboard_account_args(
             },
         ))
     } else {
-        Err(Failure(Status::PreconditionFailed))
+        Err(Status::PreconditionFailed)
     }
 }
 
 #[post("/dashboard/account/form/account", data = "<data>")]
-fn post_dashboard_account_form_account(
+pub fn post_dashboard_account_form_account(
     auth: AuthGuard,
     db: DbConn,
     data: Form<DashboardAccountFormAccountData>,
 ) -> Redirect {
-    let data_inner = data.get();
+    let notify_balance_value = data.notify_balance == Some("1".to_string());
 
-    let notify_balance_value = data_inner.notify_balance == Some("1".to_string());
-
-    let update_result = if data_inner.password.is_empty() == false {
-        if auth_password_policy_check(&data_inner.password) == true {
+    let update_result = if data.password.is_empty() == false {
+        if auth_password_policy_check(&data.password) == true {
             diesel::update(account.filter(account_id.eq(auth.0)))
                 .set((
-                    account_email.eq(&data_inner.email),
-                    account_password.eq(
-                        &auth_password_encode(&data_inner.password),
-                    ),
+                    account_email.eq(&data.email),
+                    account_password.eq(&auth_password_encode(&data.password)),
                     account_notify_balance.eq(&notify_balance_value),
                 ))
                 .execute(&*db)
@@ -906,7 +871,7 @@ fn post_dashboard_account_form_account(
     } else {
         diesel::update(account.filter(account_id.eq(auth.0)))
             .set((
-                account_email.eq(&data_inner.email),
+                account_email.eq(&data.email),
                 account_notify_balance.eq(&notify_balance_value),
             ))
             .execute(&*db)
@@ -921,7 +886,7 @@ fn post_dashboard_account_form_account(
         auth.0
     );
 
-    Redirect::to(&format!(
+    Redirect::to(format!(
         "/dashboard/account/?result={}",
         if count_updated > &0 {
             "success"
@@ -934,22 +899,18 @@ fn post_dashboard_account_form_account(
 }
 
 #[post("/dashboard/account/form/payout", data = "<data>")]
-fn post_dashboard_account_form_payout(
+pub fn post_dashboard_account_form_payout(
     auth: AuthGuard,
     db: DbConn,
     data: Form<DashboardAccountFormPayoutData>,
 ) -> Redirect {
-    let data_inner = data.get();
-
     let update_result = diesel::update(account.filter(account_id.eq(auth.0)))
         .set((
-            account_full_name.eq(&data_inner.full_name),
-            account_address.eq(&data_inner.address),
-            account_country.eq(&data_inner.country),
-            account_payout_method.eq(&data_inner.payout_method),
-            account_payout_instructions.eq(
-                &data_inner.payout_instructions,
-            ),
+            account_full_name.eq(&data.full_name),
+            account_address.eq(&data.address),
+            account_country.eq(&data.country),
+            account_payout_method.eq(&data.payout_method),
+            account_payout_instructions.eq(&data.payout_instructions),
         ))
         .execute(&*db);
 
@@ -961,7 +922,7 @@ fn post_dashboard_account_form_payout(
         auth.0
     );
 
-    Redirect::to(&format!(
+    Redirect::to(format!(
         "/dashboard/account/?result={}",
         if count_updated > &0 {
             "success"
@@ -973,13 +934,17 @@ fn post_dashboard_account_form_payout(
     ))
 }
 
-#[post("/track/payment/<tracking_id>", data = "<data>", format = "application/json")]
-fn post_track_payment(
+#[post(
+    "/track/payment/<tracking_id>",
+    data = "<data>",
+    format = "application/json"
+)]
+pub fn post_track_payment(
     _auth: TrackGuard,
     db: DbConn,
     tracking_id: String,
     data: Json<TrackPaymentData>,
-) -> Result<(), Failure> {
+) -> Result<(), Status> {
     match track_handle_payment(
         &db,
         &tracking_id,
@@ -988,11 +953,13 @@ fn post_track_payment(
         &data.trace,
     ) {
         Ok(results) => {
-            if let Some((should_notify,
-                         email,
-                         source_tracker_id,
-                         commission_amount,
-                         commission_currency)) = results
+            if let Some((
+                should_notify,
+                email,
+                source_tracker_id,
+                commission_amount,
+                commission_currency,
+            )) = results
             {
                 // Notify user about received commission
                 if should_notify == true {
@@ -1007,41 +974,41 @@ fn post_track_payment(
 
             Ok(())
         }
-        Err(TrackHandlePaymentError::InvalidAmount) => Err(Failure(Status::BadRequest)),
-        Err(TrackHandlePaymentError::BadCurrency) => Err(Failure(Status::PreconditionFailed)),
-        Err(TrackHandlePaymentError::NotFound) => Err(Failure(Status::NotFound)),
+        Err(TrackHandlePaymentError::InvalidAmount) => Err(Status::BadRequest),
+        Err(TrackHandlePaymentError::BadCurrency) => Err(Status::PreconditionFailed),
+        Err(TrackHandlePaymentError::NotFound) => Err(Status::NotFound),
     }
 }
 
 #[post("/track/signup/<tracking_id>")]
-fn post_track_signup(_auth: TrackGuard, db: DbConn, tracking_id: String) -> Result<(), Failure> {
+pub fn post_track_signup(_auth: TrackGuard, db: DbConn, tracking_id: String) -> Result<(), Status> {
     match track_handle_signup(&db, &tracking_id) {
         Ok(_) => Ok(()),
-        Err(TrackHandleSignupError::NotFound) => Err(Failure(Status::NotFound)),
+        Err(TrackHandleSignupError::NotFound) => Err(Status::NotFound),
     }
 }
 
 #[get("/robots.txt")]
-fn get_robots() -> Option<AssetFile> {
+pub fn get_robots() -> Option<AssetFile> {
     AssetFile::open(APP_CONF.assets.path.join("./public/robots.txt")).ok()
 }
 
 #[get("/assets/fonts/<file..>")]
-fn get_assets_fonts(file: PathBuf) -> Option<AssetFile> {
+pub fn get_assets_fonts(file: PathBuf) -> Option<AssetFile> {
     AssetFile::open(APP_CONF.assets.path.join("./fonts").join(file)).ok()
 }
 
 #[get("/assets/images/<file..>")]
-fn get_assets_images(file: PathBuf) -> Option<AssetFile> {
+pub fn get_assets_images(file: PathBuf) -> Option<AssetFile> {
     AssetFile::open(APP_CONF.assets.path.join("./images").join(file)).ok()
 }
 
 #[get("/assets/stylesheets/<file..>")]
-fn get_assets_stylesheets(file: PathBuf) -> Option<AssetFile> {
+pub fn get_assets_stylesheets(file: PathBuf) -> Option<AssetFile> {
     AssetFile::open(APP_CONF.assets.path.join("./stylesheets").join(file)).ok()
 }
 
 #[get("/assets/javascripts/<file..>")]
-fn get_assets_javascripts(file: PathBuf) -> Option<AssetFile> {
+pub fn get_assets_javascripts(file: PathBuf) -> Option<AssetFile> {
     AssetFile::open(APP_CONF.assets.path.join("./javascripts").join(file)).ok()
 }

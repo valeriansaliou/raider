@@ -4,13 +4,13 @@
 // Copyright: 2018, Valerian Saliou <valerian@valeriansaliou.name>
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
-use std::thread;
-use std::sync::RwLock;
-use std::sync::Arc;
-use std::collections::HashMap;
-use std::time::Duration;
 use log;
 use reqwest::{Client, StatusCode};
+use std::collections::HashMap;
+use std::sync::Arc;
+use std::sync::RwLock;
+use std::thread;
+use std::time::Duration;
 
 use APP_CONF;
 
@@ -19,7 +19,6 @@ const RETRY_POLL_SECONDS: u64 = 30;
 
 lazy_static! {
     static ref RATES: Arc<RwLock<HashMap<String, f32>>> = Arc::new(RwLock::new(HashMap::new()));
-
     static ref HTTP_CLIENT: Client = Client::builder()
         .timeout(Duration::from_secs(20))
         .gzip(true)
@@ -46,7 +45,9 @@ fn update_rates() -> Result<(), ()> {
     let response = HTTP_CLIENT
         .get(&format!(
             "{}/api/latest?access_key={}&base={}",
-            &APP_CONF.exchange.fixer.endpoint, &APP_CONF.exchange.fixer.access_key, &APP_CONF.payout.currency
+            &APP_CONF.exchange.fixer.endpoint,
+            &APP_CONF.exchange.fixer.access_key,
+            &APP_CONF.payout.currency
         ))
         .send();
 

@@ -4,22 +4,25 @@
 // Copyright: 2018, Valerian Saliou <valerian@valeriansaliou.name>
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
-use std::cmp;
-use log;
-use separator::FixedPlaceSeparatable;
 use bigdecimal::BigDecimal;
-use num_traits::cast::ToPrimitive;
-use diesel::prelude::*;
 use diesel::dsl::sum;
+use diesel::prelude::*;
+use log;
+use num_traits::cast::ToPrimitive;
+use separator::FixedPlaceSeparatable;
+use std::cmp;
 
 use super::routes::DashboardPayoutsContextPayout;
 use notifier::email::EmailNotifier;
-use storage::schemas::balance::dsl::{balance, account_id as balance_account_id,
-                                     amount as balance_amount, released as balance_released};
-use storage::schemas::payout::dsl::{payout, account_id as payout_account_id,
-                                    created_at as payout_created_at};
-use storage::models::Payout;
 use storage::db::DbConn;
+use storage::models::Payout;
+use storage::schemas::balance::dsl::{
+    account_id as balance_account_id, amount as balance_amount, balance,
+    released as balance_released,
+};
+use storage::schemas::payout::dsl::{
+    account_id as payout_account_id, created_at as payout_created_at, payout,
+};
 use APP_CONF;
 
 const PAYOUTS_LIMIT_PER_PAGE: i64 = 20;
@@ -75,30 +78,29 @@ pub fn list_payouts(
         .limit(PAYOUTS_LIMIT_PER_PAGE + 1)
         .offset(paging_to_offset(page_number, PAYOUTS_LIMIT_PER_PAGE))
         .load::<Payout>(&**db)
-        .map(|results| for (index, result) in results
-            .into_iter()
-            .enumerate()
-        {
-            if (index as i64) < PAYOUTS_LIMIT_PER_PAGE {
-                log::debug!("got payout #{}: {:?}", index, result);
+        .map(|results| {
+            for (index, result) in results.into_iter().enumerate() {
+                if (index as i64) < PAYOUTS_LIMIT_PER_PAGE {
+                    log::debug!("got payout #{}: {:?}", index, result);
 
-                let amount_value = result
-                    .amount
-                    .to_f32()
-                    .unwrap_or(0.0)
-                    .separated_string_with_fixed_place(2);
+                    let amount_value = result
+                        .amount
+                        .to_f32()
+                        .unwrap_or(0.0)
+                        .separated_string_with_fixed_place(2);
 
-                payouts.push(DashboardPayoutsContextPayout {
-                    number: result.number,
-                    status: result.status,
-                    amount: amount_value,
-                    currency: result.currency,
-                    account: result.account.unwrap_or("".to_string()),
-                    invoice_url: result.invoice_url.unwrap_or("".to_string()),
-                    date: result.created_at.date().format("%d/%m/%Y").to_string(),
-                });
-            } else {
-                has_more = true;
+                    payouts.push(DashboardPayoutsContextPayout {
+                        number: result.number,
+                        status: result.status,
+                        amount: amount_value,
+                        currency: result.currency,
+                        account: result.account.unwrap_or("".to_string()),
+                        invoice_url: result.invoice_url.unwrap_or("".to_string()),
+                        date: result.created_at.date().format("%d/%m/%Y").to_string(),
+                    });
+                } else {
+                    has_more = true;
+                }
             }
         })
         .ok();
@@ -121,16 +123,11 @@ pub fn send_payout_emails(user_id: i32, user_email: &str, balance_due: f32, curr
         ));
 
         message.push_str("Here are the steps to take:\n\n");
-        message.push_str(
-            " 1. Review the pending payout in the database and accept or refuse it.\n",
-        );
-        message.push_str(
-            " 2. Generate an invoice and update the database accordingly.\n",
-        );
+        message
+            .push_str(" 1. Review the pending payout in the database and accept or refuse it.\n");
+        message.push_str(" 2. Generate an invoice and update the database accordingly.\n");
         message.push_str(" 3. Send the money using user payout details.\n");
-        message.push_str(
-            " 4. Notify the user by email that the payout has been processed.\n",
-        );
+        message.push_str(" 4. Notify the user by email that the payout has been processed.\n");
         message.push_str(" 5. Mark the payout as processed in the database.");
 
         // Send email
@@ -138,7 +135,9 @@ pub fn send_payout_emails(user_id: i32, user_email: &str, balance_due: f32, curr
             &APP_CONF.payout.administrator_email,
             "Pending payout request".to_string(),
             &message,
-        ).is_ok() == true
+        )
+        .is_ok()
+            == true
         {
             log::debug!(
                 "sent payout request email to administrator on: {}",
@@ -165,19 +164,13 @@ pub fn send_payout_emails(user_id: i32, user_email: &str, balance_due: f32, curr
             balance_due.separated_string_with_fixed_place(2)
         ));
 
-        message.push_str(
-            "Our team has been notified and will process it as soon as possible. ",
-        );
-        message.push_str(
-            "The money will then be sent to your registered payout method.",
-        );
+        message.push_str("Our team has been notified and will process it as soon as possible. ");
+        message.push_str("The money will then be sent to your registered payout method.");
 
         // Send email
-        if EmailNotifier::dispatch(
-            user_email,
-            "Payout request submitted".to_string(),
-            &message,
-        ).is_ok() == true
+        if EmailNotifier::dispatch(user_email, "Payout request submitted".to_string(), &message)
+            .is_ok()
+            == true
         {
             log::debug!("sent payout confirmation email to user on: {}", user_email);
         } else {

@@ -4,15 +4,15 @@
 // Copyright: 2018, Valerian Saliou <valerian@valeriansaliou.name>
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
-use std::time::Duration;
-use std::ops::Deref;
+use diesel::mysql::MysqlConnection;
 use log;
 use r2d2;
 use r2d2_diesel::ConnectionManager;
 use rocket::http::Status;
 use rocket::request::{self, FromRequest};
-use rocket::{Request, State, Outcome};
-use diesel::mysql::MysqlConnection;
+use rocket::{Outcome, Request, State};
+use std::ops::Deref;
+use std::time::Duration;
 
 use APP_CONF;
 

@@ -6,12 +6,12 @@
 
 use rocket::response::Redirect;
 
-#[error(403)]
+#[catch(403)]
 pub fn forbidden() -> Redirect {
     Redirect::to("/initiate/")
 }
 
-#[error(410)]
+#[catch(410)]
 pub fn gone() -> Redirect {
     Redirect::to("/dashboard/")
 }

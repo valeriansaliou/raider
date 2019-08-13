@@ -4,9 +4,9 @@
 // Copyright: 2018, Valerian Saliou <valerian@valeriansaliou.name>
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
+use log;
 use std::fs::File;
 use std::io::Read;
-use log;
 use toml;
 
 use super::config::*;
@@ -21,9 +21,8 @@ impl ConfigReader {
         let mut file = File::open(&APP_ARGS.config).expect("cannot find config file");
         let mut conf = String::new();
 
-        file.read_to_string(&mut conf).expect(
-            "cannot read config file",
-        );
+        file.read_to_string(&mut conf)
+            .expect("cannot read config file");
 
         log::debug!("read config file: {}", &APP_ARGS.config);
 

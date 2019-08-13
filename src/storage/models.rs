@@ -4,8 +4,8 @@
 // Copyright: 2018, Valerian Saliou <valerian@valeriansaliou.name>
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
-use chrono::naive::NaiveDateTime;
 use bigdecimal::BigDecimal;
+use chrono::naive::NaiveDateTime;
 
 use super::schemas::{account, balance, payout, tracker};
 

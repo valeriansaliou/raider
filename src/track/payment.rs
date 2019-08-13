@@ -4,29 +4,29 @@
 // Copyright: 2018, Valerian Saliou <valerian@valeriansaliou.name>
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
-use std::thread;
-use log;
+use bigdecimal::BigDecimal;
 use chrono::offset::Utc;
 use diesel;
 use diesel::prelude::*;
-use separator::FixedPlaceSeparatable;
+use log;
 use num_traits::ToPrimitive;
-use bigdecimal::BigDecimal;
+use separator::FixedPlaceSeparatable;
+use std::thread;
 
-use notifier::email::EmailNotifier;
 use exchange::manager::normalize as exchange_normalize;
-use storage::schemas::tracker::dsl::{tracker, id as tracker_id,
-                                     statistics_signups as tracker_statistics_signups,
-                                     updated_at as tracker_updated_at};
-use storage::schemas::account::dsl::account;
-use storage::schemas::balance::dsl::{balance, amount as balance_amount,
-                                     currency as balance_currency, trace as balance_trace,
-                                     account_id as balance_account_id,
-                                     tracker_id as balance_tracker_id,
-                                     created_at as balance_created_at,
-                                     updated_at as balance_updated_at};
-use storage::models::{Account, Tracker};
+use notifier::email::EmailNotifier;
 use storage::db::DbConn;
+use storage::models::{Account, Tracker};
+use storage::schemas::account::dsl::account;
+use storage::schemas::balance::dsl::{
+    account_id as balance_account_id, amount as balance_amount, balance,
+    created_at as balance_created_at, currency as balance_currency, trace as balance_trace,
+    tracker_id as balance_tracker_id, updated_at as balance_updated_at,
+};
+use storage::schemas::tracker::dsl::{
+    id as tracker_id, statistics_signups as tracker_statistics_signups, tracker,
+    updated_at as tracker_updated_at,
+};
 use APP_CONF;
 
 pub enum HandlePaymentError {
@@ -136,10 +136,7 @@ pub fn handle_signup(db: &DbConn, tracking_id: &str) -> Result<(), HandleSignupE
         //   simplicity as Diesel doesnt seem to provide a way to do an increment in the query.
         let update_result = diesel::update(tracker.filter(tracker_id.eq(tracking_id)))
             .set((
-                tracker_statistics_signups.eq(
-                    tracker_inner.statistics_signups +
-                        1,
-                ),
+                tracker_statistics_signups.eq(tracker_inner.statistics_signups + 1),
                 tracker_updated_at.eq(Utc::now().naive_utc()),
             ))
             .execute(&**db);
@@ -201,7 +198,9 @@ fn dispatch_notify_payment(
         &user_email,
         "You received commission money".to_string(),
         &message,
-    ).is_ok() == true
+    )
+    .is_ok()
+        == true
     {
         log::debug!(
             "sent balance commission notification email to user on: {}",

@@ -8,9 +8,9 @@ use std::collections::HashMap;
 
 use rocket;
 use rocket::config::{Config, Environment};
-use rocket_contrib::Template;
+use rocket_contrib::templates::Template;
 
-use super::{routes, catchers};
+use super::{catchers, routes};
 use storage::db;
 
 use APP_CONF;
@@ -42,55 +42,40 @@ pub fn run() {
     config.set_extras(extras);
 
     // Build and run Rocket instance
-    rocket::custom(config, false)
+    rocket::custom(config)
         .mount(
             "/",
             routes![
                 routes::get_index,
                 routes::get_robots,
-
                 routes::get_initiate_base,
                 routes::get_initiate_login,
-                routes::get_initiate_login_args,
                 routes::get_initiate_signup,
-                routes::get_initiate_signup_args,
                 routes::get_initiate_recover,
-                routes::get_initiate_recover_args,
                 routes::get_initiate_logout,
-
                 routes::get_dashboard_base,
                 routes::get_dashboard_welcome,
                 routes::get_dashboard_trackers,
-                routes::get_dashboard_trackers_args,
                 routes::get_dashboard_payouts,
-                routes::get_dashboard_payouts_args,
                 routes::get_dashboard_payouts_partial_payouts,
                 routes::get_dashboard_account,
-                routes::get_dashboard_account_args,
-
                 routes::get_assets_fonts,
                 routes::get_assets_images,
                 routes::get_assets_stylesheets,
                 routes::get_assets_javascripts,
-
                 routes::post_initiate_login_form_login,
                 routes::post_initiate_signup_form_signup,
                 routes::post_initiate_recover_form_recover,
-
                 routes::post_dashboard_trackers_form_create,
                 routes::post_dashboard_trackers_form_remove,
                 routes::post_dashboard_payouts_form_request,
                 routes::post_dashboard_account_form_account,
                 routes::post_dashboard_account_form_payout,
-
                 routes::post_track_payment,
                 routes::post_track_signup,
             ],
         )
-        .catch(errors![
-            catchers::forbidden,
-            catchers::gone,
-        ])
+        .register(catchers![catchers::forbidden, catchers::gone,])
         .attach(Template::fairing())
         .manage(db::pool())
         .launch();

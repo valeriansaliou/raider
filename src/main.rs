@@ -4,8 +4,7 @@
 // Copyright: 2018, Valerian Saliou <valerian@valeriansaliou.name>
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
-#![feature(use_extern_macros, custom_derive, plugin)]
-#![plugin(rocket_codegen)]
+#![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use(log)]
 extern crate log;
@@ -17,27 +16,28 @@ extern crate lazy_static;
 extern crate diesel;
 #[macro_use]
 extern crate serde_derive;
-extern crate sha2;
-extern crate time;
-extern crate rand;
-extern crate validate;
-extern crate toml;
+#[macro_use]
+extern crate rocket;
 extern crate base64;
-extern crate url_serde;
+extern crate bigdecimal;
 extern crate chrono;
-extern crate native_tls;
-extern crate openssl_probe;
+extern crate iso_country;
 extern crate lettre;
 extern crate lettre_email;
+extern crate native_tls;
+extern crate num_traits;
+extern crate openssl_probe;
 extern crate r2d2;
 extern crate r2d2_diesel;
-extern crate rocket;
-extern crate rocket_contrib;
+extern crate rand;
 extern crate reqwest;
-extern crate bigdecimal;
-extern crate num_traits;
+extern crate rocket_contrib;
 extern crate separator;
-extern crate iso_country;
+extern crate sha2;
+extern crate time;
+extern crate toml;
+extern crate url_serde;
+extern crate validate;
 
 mod config;
 mod exchange;
@@ -46,9 +46,9 @@ mod responder;
 mod storage;
 mod track;
 
-use std::thread;
 use std::ops::Deref;
 use std::str::FromStr;
+use std::thread;
 use std::time::Duration;
 
 use clap::{App, Arg};
@@ -68,7 +68,7 @@ pub static THREAD_NAME_EXCHANGE: &'static str = "raider-exchange";
 pub static THREAD_NAME_RESPONDER: &'static str = "raider-responder";
 
 macro_rules! gen_spawn_managed {
-    ($name:expr, $method:ident, $thread_name:ident, $managed_fn:ident) => (
+    ($name:expr, $method:ident, $thread_name:ident, $managed_fn:ident) => {
         fn $method() {
             log::debug!("spawn managed thread: {}", $name);
 
@@ -93,7 +93,7 @@ macro_rules! gen_spawn_managed {
                 $method();
             }
         }
-    )
+    };
 }
 
 lazy_static! {
@@ -130,13 +130,14 @@ fn make_app_args() -> AppArgs {
         .get_matches();
 
     // Generate owned app arguments
-    AppArgs { config: String::from(matches.value_of("config").expect("invalid config value")) }
+    AppArgs {
+        config: String::from(matches.value_of("config").expect("invalid config value")),
+    }
 }
 
 fn ensure_states() {
     // Ensure all statics are valid (a `deref` is enough to lazily initialize them)
-    APP_ARGS.deref();
-    APP_CONF.deref();
+    let (_, _) = (APP_ARGS.deref(), APP_CONF.deref());
 
     // Ensure assets path exists
     assert_eq!(
