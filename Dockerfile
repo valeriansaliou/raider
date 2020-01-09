@@ -13,6 +13,7 @@ RUN rustc --version && \
     cargo --version
 
 RUN cargo clean && cargo build --release
+RUN strip ./target/release/raider
 
 FROM debian:stretch-slim
 
