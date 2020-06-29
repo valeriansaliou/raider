@@ -1,4 +1,4 @@
-FROM rustlang/rust:nightly AS build
+FROM rustlang/rust:nightly-buster AS build
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ RUN rustc --version && \
 RUN cargo clean && cargo build --release
 RUN strip ./target/release/raider
 
-FROM debian:stretch-slim
+FROM debian:buster-slim
 
 WORKDIR /usr/src/raider
 
