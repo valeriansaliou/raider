@@ -6,11 +6,9 @@
 
 use lettre::smtp::authentication::Credentials;
 use lettre::smtp::client::net::ClientTlsParameters;
-use lettre::smtp::{
-    ClientSecurity, ConnectionReuseParameters, SmtpTransport, SmtpTransportBuilder,
-};
-use lettre::EmailTransport;
-use lettre_email::EmailBuilder;
+use lettre::smtp::{ClientSecurity, ConnectionReuseParameters};
+use lettre::{Transport, SmtpTransport, SmtpClient};
+use lettre_email::Email;
 use log;
 use native_tls::TlsConnector;
 use std::time::Duration;
@@ -36,7 +34,7 @@ impl EmailNotifier {
         log::debug!("will send email notification with message: {}", &message);
 
         // Build up the email
-        let email_message = EmailBuilder::new()
+        let email_message = Email::builder()
             .to(to)
             .from((
                 APP_CONF.email.from.as_str(),
@@ -55,7 +53,7 @@ impl EmailNotifier {
             APP_CONF.email.smtp_password.to_owned(),
             APP_CONF.email.smtp_encrypt,
         )
-        .map(|mut transport| transport.send(&email_message))
+        .map(|mut transport| transport.send(email_message.into()))
         .and(Ok(()))
         .or(Err(true));
     }
@@ -71,13 +69,11 @@ fn acquire_transport(
     let mut security = ClientSecurity::None;
 
     if smtp_encrypt == true {
-        if let Ok(connector_builder) = TlsConnector::builder() {
-            if let Ok(connector) = connector_builder.build() {
-                security = ClientSecurity::Required(ClientTlsParameters {
-                    connector: connector,
-                    domain: smtp_host.to_string(),
-                });
-            }
+        if let Ok(connector) = TlsConnector::new() {
+            security = ClientSecurity::Required(ClientTlsParameters {
+                connector: connector,
+                domain: smtp_host.to_string(),
+            });
         }
 
         // Do not deliver email if TLS context cannot be acquired (prevents unencrypted emails \
@@ -89,21 +85,21 @@ fn acquire_transport(
         }
     }
 
-    match SmtpTransportBuilder::new(format!("{}:{}", smtp_host, smtp_port), security) {
-        Ok(transport) => {
-            let mut transport_builder = transport
+    match SmtpClient::new((smtp_host, smtp_port), security) {
+        Ok(client) => {
+            let mut client = client
                 .timeout(Some(Duration::from_secs(5)))
                 .connection_reuse(ConnectionReuseParameters::NoReuse);
 
             match (smtp_username, smtp_password) {
                 (Some(smtp_username_value), Some(smtp_password_value)) => {
-                    transport_builder = transport_builder
+                    client = client
                         .credentials(Credentials::new(smtp_username_value, smtp_password_value));
                 }
                 _ => {}
             }
 
-            Ok(transport_builder.build())
+            Ok(client.transport())
         }
         Err(err) => {
             log::error!("could not acquire smtp transport: {}", err);

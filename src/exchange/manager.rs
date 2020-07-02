@@ -5,7 +5,8 @@
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
 use log;
-use reqwest::{Client, StatusCode};
+use reqwest::StatusCode;
+use reqwest::blocking::Client;
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::sync::RwLock;
@@ -22,7 +23,6 @@ lazy_static! {
     static ref HTTP_CLIENT: Client = Client::builder()
         .timeout(Duration::from_secs(20))
         .gzip(true)
-        .enable_hostname_verification()
         .build()
         .unwrap();
 }
@@ -51,12 +51,12 @@ fn update_rates() -> Result<(), ()> {
         ))
         .send();
 
-    if let Ok(mut response_inner) = response {
+    if let Ok(response_inner) = response {
         let status = response_inner.status();
 
         log::debug!("received updated exchange rates");
 
-        if status == StatusCode::Ok {
+        if status == StatusCode::OK {
             if let Ok(response_json) = response_inner.json::<FixerLatestResponse>() {
                 log::debug!("got updated exchange rates: {:?}", &response_json.rates);
 
