@@ -96,5 +96,5 @@ pub fn recovery_generate() -> (Vec<u8>, String) {
 pub fn password_policy_check(password: &str) -> bool {
     let size = password.len();
 
-    (size >= PASSWORD_MINIMUM_LENGTH && size <= PASSWORD_MAXIMUM_LENGTH)
+    size >= PASSWORD_MINIMUM_LENGTH && size <= PASSWORD_MAXIMUM_LENGTH
 }

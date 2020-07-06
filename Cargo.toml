@@ -34,17 +34,17 @@ base64 = "0.6"
 validate = "0.6"
 url_serde = { version = "0.2", default-features = false }
 chrono = { version = "0.4", default-features = false }
-native-tls = "0.1"
+native-tls = "0.2"
 openssl-probe = "0.1"
-lettre = { version = "0.7", features = ["smtp-transport"] }
-lettre_email = "0.7"
+lettre = { version = "0.9", features = ["smtp-transport"] }
+lettre_email = "0.9"
 rocket = { version = "0.4", features = ["private-cookies"] }
 rocket_contrib = { version = "0.4", features = ["tera_templates"] }
 diesel = { version = "1.1", features = ["mysql", "chrono", "numeric"] }
 r2d2 = "0.8"
 r2d2-diesel = "1.0"
-reqwest = "0.8"
-bigdecimal = "0.0"
+reqwest = { version = "0.10", features = ["blocking", "gzip", "json", "native-tls"] }
+bigdecimal = "0.1"
 num-traits = "0.1"
 separator = "0.3"
 iso_country = "0.1"
