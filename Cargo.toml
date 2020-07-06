@@ -34,7 +34,7 @@ base64 = "0.6"
 validate = "0.6"
 url_serde = { version = "0.2", default-features = false }
 chrono = { version = "0.4", default-features = false }
-native-tls = "0.2"
+native-tls = { version = "0.2", features = ["vendored"] }
 openssl-probe = "0.1"
 lettre = { version = "0.9", features = ["smtp-transport"] }
 lettre_email = "0.9"
@@ -43,7 +43,7 @@ rocket_contrib = { version = "0.4", features = ["tera_templates"] }
 diesel = { version = "1.1", features = ["mysql", "chrono", "numeric"] }
 r2d2 = "0.8"
 r2d2-diesel = "1.0"
-reqwest = { version = "0.10", features = ["blocking", "gzip", "json", "native-tls"] }
+reqwest = { version = "0.10", features = ["native-tls-vendored", "blocking", "gzip", "json"] }
 bigdecimal = "0.1"
 num-traits = "0.1"
 separator = "0.3"
