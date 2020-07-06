@@ -5,8 +5,8 @@
 // License: Mozilla Public License v2.0 (MPL v2.0)
 
 use log;
-use reqwest::StatusCode;
 use reqwest::blocking::Client;
+use reqwest::StatusCode;
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::sync::RwLock;

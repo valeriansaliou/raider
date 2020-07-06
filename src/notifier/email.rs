@@ -7,7 +7,7 @@
 use lettre::smtp::authentication::Credentials;
 use lettre::smtp::client::net::ClientTlsParameters;
 use lettre::smtp::{ClientSecurity, ConnectionReuseParameters};
-use lettre::{Transport, SmtpTransport, SmtpClient};
+use lettre::{SmtpClient, SmtpTransport, Transport};
 use lettre_email::Email;
 use log;
 use native_tls::TlsConnector;
