@@ -62,7 +62,7 @@ rc=0
 pushd "$BASE_DIR" > /dev/null
     echo "Executing release steps for Raider v$RAIDER_VERSION..."
 
-    release_for_architecture "x86_64" "x86_64-unknown-linux-gnu"
+    release_for_architecture "x86_64" "x86_64-unknown-linux-musl"
     rc=$?
 
     if [ $rc -eq 0 ]; then
