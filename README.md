@@ -194,6 +194,8 @@ When a payment for which you have a `tracking_id` is made on your platform (ie. 
 
 ### Raider reporting libraries
 
+* **Python**: **[py-raider-reporter](https://pypi.org/project/py-raider-reporter/)**
+
 👉 Cannot find the library for your programming language? Build your own and be referenced here! ([contact me](https://valeriansaliou.name/))
 
 ### Manual reporting
