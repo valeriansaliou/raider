@@ -11,10 +11,6 @@ categories = ["web-programming"]
 authors = ["Valerian Saliou <valerian@valeriansaliou.name>"]
 exclude = ["dev/*"]
 
-[badges]
-travis-ci = { repository = "valeriansaliou/raider", branch = "master" }
-coveralls = { repository = "valeriansaliou/raider", branch = "master", service = "github" }
-
 [[bin]]
 name = "raider"
 path = "src/main.rs"
