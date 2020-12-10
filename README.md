@@ -1,7 +1,7 @@
 Raider
 ======
 
-[![Test and Build](https://github.com/valeriansaliou/raider/workflows/Test%20and%20Build/badge.svg?branch=master)](https://github.com/valeriansaliou/raider/actions?query=workflow%3A%22Test+and+Build%22) [![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://www.buymeacoffee.com/valeriansaliou)
+[![Test and Build](https://github.com/valeriansaliou/raider/workflows/Test%20and%20Build/badge.svg?branch=master)](https://github.com/valeriansaliou/raider/actions?query=workflow%3A%22Test+and+Build%22) [![dependency status](https://deps.rs/repo/github/valeriansaliou/raider/status.svg)](https://deps.rs/repo/github/valeriansaliou/raider) [![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://www.buymeacoffee.com/valeriansaliou)
 
 **Affiliates dashboard. Used by affiliates to generate tracking codes and review their balance.**
 
