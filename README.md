@@ -131,6 +131,7 @@ Use the sample [config.cfg](https://github.com/valeriansaliou/raider/blob/master
 * `idle_timeout` (type: _integer_, allowed: seconds, default: `300`) — Idle timeout in seconds to MySQL
 * `connection_timeout` (type: _integer_, allowed: seconds, default: `10`) — Connection timeout in seconds to MySQL
 * `password_salt` (type: _string_, allowed: any string, no default) — Password salt (preferably strong and long; do not change this after accounts got created as it will make them unusable)
+* `account_create_allow` (type: _boolean_, allowed: `true`, `false`, default: `true`) — Whether to allow accounts to be created or not
 
 **[exchange]**
 

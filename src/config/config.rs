@@ -52,6 +52,9 @@ pub struct ConfigDatabase {
     pub connection_timeout: u64,
 
     pub password_salt: String,
+
+    #[serde(default = "defaults::database_account_create_allow")]
+    pub account_create_allow: bool,
 }
 
 #[derive(Deserialize)]

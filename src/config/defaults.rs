@@ -33,6 +33,10 @@ pub fn database_connection_timeout() -> u64 {
     10
 }
 
+pub fn database_account_create_allow() -> bool {
+    true
+}
+
 pub fn exchange_fixer_endpoint() -> String {
     "http://data.fixer.io".to_string()
 }
