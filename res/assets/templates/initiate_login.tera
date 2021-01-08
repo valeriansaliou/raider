@@ -42,9 +42,11 @@
 
     <nav>
       <ul>
-        <li>
-          <a href="/initiate/signup/" class="font-sans-semibold">Create your account.</a>
-        </li>
+        {% if config.account_create_allow %}
+          <li>
+            <a href="/initiate/signup/" class="font-sans-semibold">Create your account.</a>
+          </li>
+        {% endif %}
 
         <li>
           <a href="/initiate/recover/" class="font-sans-regular">Forgot your password?</a>

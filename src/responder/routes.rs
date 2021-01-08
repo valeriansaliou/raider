@@ -353,14 +353,21 @@ pub fn post_initiate_login_form_login(
 }
 
 #[get("/initiate/signup?<args..>")]
-pub fn get_initiate_signup(_anon: AuthAnonymousGuard, args: Form<InitiateArgs>) -> Template {
-    Template::render(
-        "initiate_signup",
-        &SignupContext {
-            failure: check_argument_value(&args.result, "failure"),
-            config: &CONFIG_CONTEXT,
-        },
-    )
+pub fn get_initiate_signup(
+    _anon: AuthAnonymousGuard,
+    args: Form<InitiateArgs>,
+) -> Result<Template, Status> {
+    if APP_CONF.database.account_create_allow == true {
+        Ok(Template::render(
+            "initiate_signup",
+            &SignupContext {
+                failure: check_argument_value(&args.result, "failure"),
+                config: &CONFIG_CONTEXT,
+            },
+        ))
+    } else {
+        Err(Status::MisdirectedRequest)
+    }
 }
 
 #[post("/initiate/signup/form/signup", data = "<data>")]
@@ -369,45 +376,49 @@ pub fn post_initiate_signup_form_signup(
     cookies: Cookies,
     db: DbConn,
     data: Form<SignupData>,
-) -> Redirect {
-    if data.email.is_empty() == false
-        && data.password.is_empty() == false
-        && validate_email().validate(&data.email).is_ok() == true
-        && data.password == data.password_repeat
-        && auth_password_policy_check(&data.password) == true
-    {
-        let now_date = Utc::now().naive_utc();
+) -> Result<Redirect, Status> {
+    if APP_CONF.database.account_create_allow == true {
+        if data.email.is_empty() == false
+            && data.password.is_empty() == false
+            && validate_email().validate(&data.email).is_ok() == true
+            && data.password == data.password_repeat
+            && auth_password_policy_check(&data.password) == true
+        {
+            let now_date = Utc::now().naive_utc();
 
-        let insert_result = diesel::insert_into(account)
-            .values((
-                &account_email.eq(&data.email),
-                &account_password.eq(&auth_password_encode(&data.password)),
-                &account_commission.eq(BigDecimal::from(APP_CONF.tracker.commission_default)),
-                &account_created_at.eq(&now_date),
-                &account_updated_at.eq(&now_date),
-            ))
-            .execute(&*db);
+            let insert_result = diesel::insert_into(account)
+                .values((
+                    &account_email.eq(&data.email),
+                    &account_password.eq(&auth_password_encode(&data.password)),
+                    &account_commission.eq(BigDecimal::from(APP_CONF.tracker.commission_default)),
+                    &account_created_at.eq(&now_date),
+                    &account_updated_at.eq(&now_date),
+                ))
+                .execute(&*db);
 
-        if insert_result.is_ok() == true {
-            let account_result = account
-                .filter(account_email.eq(&data.email))
-                .first::<Account>(&*db);
+            if insert_result.is_ok() == true {
+                let account_result = account
+                    .filter(account_email.eq(&data.email))
+                    .first::<Account>(&*db);
 
-            match account_result {
-                Ok(result) => {
-                    // Log-in user (set cookie)
-                    auth_insert(cookies, result.id.to_string());
+                match account_result {
+                    Ok(result) => {
+                        // Log-in user (set cookie)
+                        auth_insert(cookies, result.id.to_string());
 
-                    return Redirect::to("/dashboard/");
-                }
-                Err(err) => {
-                    log::debug!("account not retrieved for login: {}", err);
-                }
-            };
+                        return Ok(Redirect::to("/dashboard/"));
+                    }
+                    Err(err) => {
+                        log::debug!("account not retrieved for login: {}", err);
+                    }
+                };
+            }
         }
-    }
 
-    Redirect::to("/initiate/signup/?result=failure")
+        Ok(Redirect::to("/initiate/signup/?result=failure"))
+    } else {
+        Err(Status::MisdirectedRequest)
+    }
 }
 
 #[get("/initiate/recover?<args..>")]

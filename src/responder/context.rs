@@ -24,6 +24,7 @@ lazy_static! {
         logo_white_url: APP_CONF.branding.logo_white_url.to_owned(),
         logo_dark_url: APP_CONF.branding.logo_dark_url.to_owned(),
         custom_html: APP_CONF.branding.custom_html.to_owned(),
+        account_create_allow: APP_CONF.database.account_create_allow,
         payout_currency: APP_CONF.payout.currency.to_owned(),
         payout_amount_minimum: APP_CONF
             .payout
@@ -80,6 +81,7 @@ pub struct ConfigContext {
     pub logo_white_url: SerdeUrl,
     pub logo_dark_url: SerdeUrl,
     pub custom_html: Option<String>,
+    pub account_create_allow: bool,
     pub payout_currency: String,
     pub payout_amount_minimum: String,
     pub track_url: String,
