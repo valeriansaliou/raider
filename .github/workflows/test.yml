@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        rust-toolchain: [nightly-2020-06-30]
+        rust-toolchain: [nightly-2021-01-07]
       fail-fast: false
 
     runs-on: ${{ matrix.os }}
