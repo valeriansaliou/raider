@@ -17,7 +17,7 @@ _Tested at Rust version: `rustc 1.51.0-nightly (c8915eebe 2021-01-07)`_
 
 <table>
 <tr>
-<td align="center"><a href="https://crisp.chat/"><img src="https://valeriansaliou.github.io/raider/images/crisp-icon.png" height="64" /></a></td>
+<td align="center"><a href="https://crisp.chat/"><img src="https://valeriansaliou.github.io/raider/images/crisp-icon.png" width="64" /></a></td>
 </tr>
 <tr>
 <td align="center">Crisp</td>
