@@ -202,7 +202,7 @@ When a payment for which you have a `tracking_id` is made on your platform (ie. 
 
 ## How can I use Raider HTTP APIs?
 
-### Track API
+### 1️⃣ Track API
 
 #### Payment tracking
 
@@ -254,7 +254,7 @@ Where:
 
 * Add an `Authorization` header with a `Basic` authentication where the password is your configured `server.track_token`.
 
-### Management API
+### 2️⃣ Management API
 
 #### Account creation
 
