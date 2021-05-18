@@ -86,6 +86,8 @@ pub fn handle_account(
             {
                 Ok(())
             } else {
+                log::warn!("account password: {} could not be emailed", email);
+
                 Err(HandleAccountError::Aborted)
             }
         } else {
