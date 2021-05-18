@@ -47,7 +47,7 @@ pub fn handle_payment(
     trace: &Option<String>,
 ) -> Result<Option<(bool, String, String, f32, String)>, HandlePaymentError> {
     log::debug!(
-        "payment handle: {} of real amount: {} {}",
+        "payment track handle: {} of real amount: {} {}",
         tracking_id,
         currency,
         amount_real
@@ -111,7 +111,7 @@ pub fn handle_payment(
         }
 
         log::warn!(
-            "payment: {} could not be stored to balance for amount: {} {}",
+            "payment track: {} could not be stored to balance for amount: {} {}",
             tracking_id,
             currency,
             amount
@@ -124,7 +124,7 @@ pub fn handle_payment(
 }
 
 pub fn handle_signup(db: &DbConn, tracking_id: &str) -> Result<(), HandleSignupError> {
-    log::debug!("signup handle: {}", tracking_id);
+    log::debug!("signup track handle: {}", tracking_id);
 
     // Resolve tracking code
     let tracker_result = tracker
@@ -146,7 +146,7 @@ pub fn handle_signup(db: &DbConn, tracking_id: &str) -> Result<(), HandleSignupE
         }
     }
 
-    log::warn!("signup: {} could not be stored", tracking_id);
+    log::warn!("signup track: {} could not be stored", tracking_id);
 
     Err(HandleSignupError::NotFound)
 }

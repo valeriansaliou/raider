@@ -122,6 +122,7 @@ Use the sample [config.cfg](https://github.com/valeriansaliou/raider/blob/master
 * `inet` (type: _string_, allowed: IPv4 / IPv6 + port, default: `[::1]:8080`) — Host and TCP port the Raider service should listen on
 * `workers` (type: _integer_, allowed: any number, default: `4`) — Number of workers for the Raider service to run on
 * `track_token` (type: _string_, allowed: secret token, default: no default) — Track API secret token (ie. secret password)
+* `management_token` (type: _string_, allowed: secret token, default: no default) — Management API secret token (ie. secret password)
 * `secret_key` (type: _string_, allowed: 192-bit base64 encoded secret key, default: no default) — Secret key for cookie encryption (see [Rocket docs](https://api.rocket.rs/rocket/struct.Config.html#method.set_secret_key) for details)
 
 **[database]**
@@ -199,9 +200,11 @@ When a payment for which you have a `tracking_id` is made on your platform (ie. 
 
 👉 Cannot find the library for your programming language? Build your own and be referenced here! ([contact me](https://valeriansaliou.name/))
 
-### Manual reporting
+## How can I use Raider HTTP APIs?
 
-#### Payment reporting
+### Track API
+
+#### Payment tracking
 
 In case you need to manually report tracked payments to the Raider endpoint, use the following HTTP configuration (adjust it to yours):
 
@@ -235,7 +238,7 @@ Where:
 * `currency`: The payment currency code (if the currency is different than the default currency configured with `payout.currency`, a conversion is applied using current day market rates)
 * `trace`: An optional trace value which is logged in the database (may be used for your own records; this is never visible to your affiliate users)
 
-#### Signup reporting
+#### Signup tracking
 
 In case you need to manually report tracked signups to the Raider endpoint, use the following HTTP configuration (adjust it to yours):
 
@@ -250,6 +253,40 @@ Where:
 **Request headers:**
 
 * Add an `Authorization` header with a `Basic` authentication where the password is your configured `server.track_token`.
+
+### Management API
+
+#### Account creation
+
+In case you need to create accounts in Raider database from a third-party system in your infrastructure (eg. if regular signups are disabled), you may us create new accounts via the Raider endpoint, use the following HTTP configuration (adjust it to yours):
+
+**Endpoint URL:**
+
+`HTTP POST https://affiliates.example.com/management/account/`
+
+**Request headers:**
+
+* Add an `Authorization` header with a `Basic` authentication where the password is your configured `server.management_token`.
+
+**Request data:**
+
+Adjust the request data to your payment context and send it as `HTTP POST`:
+
+```json
+{
+  "email": "john.doe@gmail.com",
+  "full_name": "John Doe",
+  "address": "1 Market Street, San Francisco, CA",
+  "country": "US"
+}
+```
+
+Where:
+
+* `email`: The email address for the new account (an auto-generated password will be sent to this email)
+* `full_name`: An optional full name value to preconfigure in the created account
+* `address`: An optional address value to preconfigure in the created account
+* `country`: An optional country value to preconfigure in the created account
 
 ## :fire: Report A Vulnerability
 

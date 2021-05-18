@@ -41,6 +41,7 @@ extern crate validate;
 
 mod config;
 mod exchange;
+mod management;
 mod notifier;
 mod responder;
 mod storage;

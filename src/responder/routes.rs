@@ -30,9 +30,13 @@ use super::auth_guard::{
     recovery_generate as auth_recovery_generate, AuthAnonymousGuard, AuthGuard,
 };
 use super::context::{ConfigContext, CONFIG_CONTEXT};
+use super::management_guard::ManagementGuard;
 use super::track_guard::TrackGuard;
 use super::utilities::{
     check_argument_value, get_balance, get_balance_string, list_payouts, send_payout_emails,
+};
+use management::account::{
+    handle_account as management_handle_account, HandleAccountError as ManagementHandleAccountError,
 };
 use notifier::email::EmailNotifier;
 use storage::choices::ACCOUNT_PAYOUT_METHODS;
@@ -82,6 +86,14 @@ pub struct TrackPaymentData {
     amount: f32,
     currency: String,
     trace: Option<String>,
+}
+
+#[derive(Deserialize)]
+pub struct ManagementAccountData {
+    email: String,
+    full_name: Option<String>,
+    address: Option<String>,
+    country: Option<String>,
 }
 
 #[derive(FromForm)]
@@ -996,6 +1008,26 @@ pub fn post_track_signup(_auth: TrackGuard, db: DbConn, tracking_id: String) -> 
     match track_handle_signup(&db, &tracking_id) {
         Ok(_) => Ok(()),
         Err(TrackHandleSignupError::NotFound) => Err(Status::NotFound),
+    }
+}
+
+#[post("/management/account", data = "<data>", format = "application/json")]
+pub fn post_management_account(
+    _auth: ManagementGuard,
+    db: DbConn,
+    data: Json<ManagementAccountData>,
+) -> Result<(), Status> {
+    match management_handle_account(
+        &db,
+        &data.email,
+        &data.full_name,
+        &data.address,
+        &data.country,
+    ) {
+        Ok(_) => Ok(()),
+        Err(ManagementHandleAccountError::InvalidEmail) => Err(Status::BadRequest),
+        Err(ManagementHandleAccountError::Aborted) => Err(Status::InternalServerError),
+        Err(ManagementHandleAccountError::Duplicate) => Err(Status::Conflict),
     }
 }
 

@@ -84,6 +84,15 @@ pub fn password_verify(reference: &[u8], password: &str) -> bool {
     password_encoded == reference
 }
 
+pub fn password_generate() -> (Vec<u8>, String) {
+    let password = rand::thread_rng()
+        .gen_ascii_chars()
+        .take(60)
+        .collect::<String>();
+
+    (password_encode(&password), password)
+}
+
 pub fn recovery_generate() -> (Vec<u8>, String) {
     let recovery_password = rand::thread_rng()
         .gen_ascii_chars()

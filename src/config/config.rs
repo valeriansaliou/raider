@@ -35,6 +35,7 @@ pub struct ConfigServer {
     pub workers: u16,
 
     pub track_token: String,
+    pub management_token: String,
     pub secret_key: String,
 }
 
