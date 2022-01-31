@@ -15,8 +15,9 @@ use std::time::Duration;
 
 use APP_CONF;
 
-const POLL_RATE_SECONDS: u64 = 86400;
-const RETRY_POLL_SECONDS: u64 = 30;
+const POLL_RATE_SECONDS: u64 = 259200;
+const RETRY_POLL_SECONDS: u64 = 60;
+const RETRY_POLL_ATTEMPTS_LIMIT: u16 = 2;
 
 lazy_static! {
     static ref RATES: Arc<RwLock<HashMap<String, f32>>> = Arc::new(RwLock::new(HashMap::new()));
@@ -38,7 +39,7 @@ fn store_rates(rates: HashMap<String, f32>) {
     *store = rates;
 }
 
-fn update_rates() -> Result<(), ()> {
+fn update_rates(retry_count: u16) -> Result<(), ()> {
     log::debug!("acquiring updated exchange rates");
 
     // Acquire latest rates from Fixer.io
@@ -73,15 +74,25 @@ fn update_rates() -> Result<(), ()> {
         log::error!("could not request updated exchange rates");
     }
 
-    log::info!(
-        "scheduled an exchange rates update retry in {} seconds",
-        RETRY_POLL_SECONDS
+    // Re-schedule an update after a few seconds? (if retry count not over limit)
+    if retry_count <= RETRY_POLL_ATTEMPTS_LIMIT {
+        log::info!(
+            "scheduled an exchange rates update retry in {} seconds",
+            RETRY_POLL_SECONDS
+        );
+
+        thread::sleep(Duration::from_secs(RETRY_POLL_SECONDS));
+
+        return update_rates(retry_count + 1);
+    }
+
+    log::error!(
+        "exceeded exchange rates update retry limit of {} attempts",
+        RETRY_POLL_ATTEMPTS_LIMIT
     );
 
-    // Re-schedule an update after a few seconds
-    thread::sleep(Duration::from_secs(RETRY_POLL_SECONDS));
-
-    return update_rates();
+    // Failed to update rates (all retry attempts exceeded)
+    return Err(());
 }
 
 pub fn normalize(amount: f32, currency: &str) -> Result<f32, ()> {
@@ -108,7 +119,7 @@ pub fn run() {
     loop {
         log::debug!("running an exchange poll operation...");
 
-        update_rates().ok();
+        update_rates(0).ok();
 
         log::info!("ran exchange poll operation");
 
