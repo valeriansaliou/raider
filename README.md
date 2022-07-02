@@ -53,6 +53,8 @@ The best way to install Raider is to pull the latest release from the [Raider re
 
 Make sure to pick the correct server architecture (eg. Intel 32 bits).
 
+👉 _Each release binary comes with an `.asc` signature file, which can be verified using [@valeriansaliou](https://github.com/valeriansaliou) GPG public key: [:key:valeriansaliou.gpg.pub.asc](https://valeriansaliou.name/files/keys/valeriansaliou.gpg.pub.asc)._
+
 **Install from Cargo:**
 
 If you prefer managing `raider` via Rust's Cargo, install it directly via `cargo install`:
