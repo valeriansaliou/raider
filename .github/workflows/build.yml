@@ -32,7 +32,7 @@ jobs:
           override: true
 
       - name: Install cross-compilation tools (if needed)
-        run: which cross >/dev/null || cargo install cross
+        run: which cross >/dev/null || cargo install cross@0.2.1
 
       - name: Verify versions
         run: rustc --version && rustup --version && cargo --version && cross --version
