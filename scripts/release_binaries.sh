@@ -39,7 +39,7 @@ function release_for_architecture {
     final_tar="v$RAIDER_VERSION-$1.tar.gz"
 
     rm -rf ./raider/ && \
-        cross build --target "$2" --release && \
+        RUSTFLAGS="-C link-arg=-s" cross build --target "$2" --release && \
         mkdir ./raider && \
         cp -p "target/$2/release/raider" ./raider/ && \
         cp -r ./config.cfg ./res raider/ && \
