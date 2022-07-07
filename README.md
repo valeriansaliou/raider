@@ -1,7 +1,7 @@
 Raider
 ======
 
-[![Test and Build](https://github.com/valeriansaliou/raider/workflows/Test%20and%20Build/badge.svg?branch=master)](https://github.com/valeriansaliou/raider/actions?query=workflow%3A%22Test+and+Build%22) [![dependency status](https://deps.rs/repo/github/valeriansaliou/raider/status.svg)](https://deps.rs/repo/github/valeriansaliou/raider) [![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://www.buymeacoffee.com/valeriansaliou)
+[![Test and Build](https://github.com/valeriansaliou/raider/workflows/Test%20and%20Build/badge.svg?branch=master)](https://github.com/valeriansaliou/raider/actions?query=workflow%3A%22Test+and+Build%22) [![Build and Release](https://github.com/valeriansaliou/raider/workflows/Build%20and%20Release/badge.svg)](https://github.com/valeriansaliou/raider/actions?query=workflow%3A%22Build+and+Release%22) [![dependency status](https://deps.rs/repo/github/valeriansaliou/raider/status.svg)](https://deps.rs/repo/github/valeriansaliou/raider) [![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://www.buymeacoffee.com/valeriansaliou)
 
 **Affiliates dashboard. Used by affiliates to generate tracking codes and review their balance.**
 
@@ -84,13 +84,13 @@ You might find it convenient to run Raider via Docker. You can find the pre-buil
 First, pull the `valeriansaliou/raider` image:
 
 ```bash
-docker pull valeriansaliou/raider:v1.2.1
+docker pull valeriansaliou/raider:v1.2.2
 ```
 
 Then, seed it a configuration file and run it (replace `/path/to/your/raider/config.cfg` with the path to your configuration file):
 
 ```bash
-docker run -p 8080:8080 -v /path/to/your/raider/config.cfg:/etc/raider.cfg valeriansaliou/raider:v1.2.1
+docker run -p 8080:8080 -v /path/to/your/raider/config.cfg:/etc/raider.cfg valeriansaliou/raider:v1.2.2
 ```
 
 In the configuration file, ensure that:

@@ -43,7 +43,7 @@ function release_for_architecture {
         mkdir ./raider && \
         cp -p "target/$2/release/raider" ./raider/ && \
         cp -r ./config.cfg ./res raider/ && \
-        tar -czvf "$final_tar" ./raider && \
+        tar --owner=0 --group=0 -czvf "$final_tar" ./raider && \
         rm -r ./raider/
     release_result=$?
 
