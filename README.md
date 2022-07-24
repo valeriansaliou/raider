@@ -112,7 +112,7 @@ Use the sample [config.cfg](https://github.com/valeriansaliou/raider/blob/master
 
 ---
 
-**⚠️ Important: Make sure to change the default `server.secret_key`, `server.track_token` and `server.management_token` configuration values with secret keys you generated. Also, generate a random arbitrary length string for `database.password_salt`. Failing to change any of those values will make your Raider instance insecure.**
+**⚠️ Important: Make sure to change the default `server.secret_key`, `server.track_token` and `server.management_token` configuration values with secret keys you generated. Also, generate a random arbitrary length string for `database.password_salt`. Failing to change any of those values will make your Raider instance insecure. You can easily create these tokens by running `openssl rand -base64 32`.**
 
 ---
 
