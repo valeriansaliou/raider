@@ -45,9 +45,9 @@ fn update_rates(retry_count: u16) -> Result<(), ()> {
     // Acquire latest rates from Fixer.io
     let response = HTTP_CLIENT
         .get(&format!(
-            "{}/api/latest?access_key={}&base={}",
+            "{}/api/latest?apikey={}&base={}",
             &APP_CONF.exchange.fixer.endpoint,
-            &APP_CONF.exchange.fixer.access_key,
+            &APP_CONF.exchange.fixer.apikey,
             &APP_CONF.payout.currency
         ))
         .send();
