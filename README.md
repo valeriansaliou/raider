@@ -140,7 +140,7 @@ Use the sample [config.cfg](https://github.com/valeriansaliou/raider/blob/master
 
 **[exchange.fixer]**
 
-* `endpoint` (type: _string_, allowed: any string, default: `https://api.apilayer.com/fixer`) — Fixer API endpoint
+* `endpoint` (type: _string_, allowed: any string, default: `https://api.apilayer.com/fixer`) — Fixer API endpoint (on APILayer)
 * `api_key` (type: _string_, allowed: any string, no default) — APILayer API key (for Fixer)
 
 **[email]**
