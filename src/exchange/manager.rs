@@ -46,8 +46,7 @@ fn update_rates(retry_count: u16) -> Result<(), ()> {
     let response = HTTP_CLIENT
         .get(&format!(
             "{}/latest?base={}",
-            &APP_CONF.exchange.fixer.endpoint,
-            &APP_CONF.payout.currency
+            &APP_CONF.exchange.fixer.endpoint, &APP_CONF.payout.currency
         ))
         .header("apikey", &APP_CONF.exchange.fixer.api_key)
         .send();
