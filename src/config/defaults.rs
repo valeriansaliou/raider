@@ -38,7 +38,7 @@ pub fn database_account_create_allow() -> bool {
 }
 
 pub fn exchange_fixer_endpoint() -> String {
-    "http://data.fixer.io".to_string()
+    "https://api.apilayer.com/fixer".to_string()
 }
 
 pub fn email_smtp_host() -> String {

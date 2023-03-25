@@ -68,7 +68,7 @@ pub struct ConfigExchangeFixer {
     #[serde(default = "defaults::exchange_fixer_endpoint")]
     pub endpoint: String,
 
-    pub access_key: String,
+    pub api_key: String,
 }
 
 #[derive(Deserialize)]

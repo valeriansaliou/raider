@@ -42,14 +42,14 @@ fn store_rates(rates: HashMap<String, f32>) {
 fn update_rates(retry_count: u16) -> Result<(), ()> {
     log::debug!("acquiring updated exchange rates");
 
-    // Acquire latest rates from Fixer.io
+    // Acquire latest rates from Fixer
     let response = HTTP_CLIENT
         .get(&format!(
-            "{}/api/latest?apikey={}&base={}",
+            "{}/latest?base={}",
             &APP_CONF.exchange.fixer.endpoint,
-            &APP_CONF.exchange.fixer.apikey,
             &APP_CONF.payout.currency
         ))
+        .header("apikey", &APP_CONF.exchange.fixer.api_key)
         .send();
 
     if let Ok(response_inner) = response {

@@ -140,8 +140,8 @@ Use the sample [config.cfg](https://github.com/valeriansaliou/raider/blob/master
 
 **[exchange.fixer]**
 
-* `endpoint` (type: _string_, allowed: any string, default: `http://data.fixer.io`) — Fixer.io API endpoint (if using a Fixer paid plan, you can use the HTTPS endpoint: `https://data.fixer.io`)
-* `access_key` (type: _string_, allowed: any string, no default) — Fixer.io API key (if `payout.currency` is different than your default base currency, which should be `EUR`, you will need a paid Fixer account)
+* `endpoint` (type: _string_, allowed: any string, default: `https://api.apilayer.com/fixer`) — Fixer API endpoint
+* `api_key` (type: _string_, allowed: any string, no default) — APILayer API key (for Fixer)
 
 **[email]**
 
