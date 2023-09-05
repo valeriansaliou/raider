@@ -84,7 +84,7 @@ apt-get install raider
 Then, edit the pre-filled Raider configuration file:
 
 ```bash
-nano /etc/raider.cfg
+nano /etc/raider/raider.cfg
 ```
 
 Finally, restart Raider:
