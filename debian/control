@@ -1,0 +1,13 @@
+Source: raider
+Section: net
+Priority: ext
+Maintainer: Valerian Saliou <valerian@valeriansaliou.name>
+Standards-Version: 3.9.4
+Build-Depends: wget, ca-certificates
+Homepage: https://github.com/valeriansaliou/raider
+
+Package: raider
+Architecture: any
+Depends: adduser, libmariadb3
+Provides: raider
+Description: Affiliates dashboard. Used by affiliates to generate tracking codes and review their balance.

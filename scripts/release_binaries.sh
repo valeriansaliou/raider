@@ -36,19 +36,19 @@ fi
 
 # Define release pipeline
 function release_for_architecture {
-    final_tar="v$RAIDER_VERSION-$1.tar.gz"
+    final_tar="v$RAIDER_VERSION-$1-$2.tar.gz"
 
     rm -rf ./raider/ && \
-        RUSTFLAGS="-C link-arg=-s" cross build --target "$2" --release && \
+        cargo build --target "$3" --release && \
         mkdir ./raider && \
-        cp -p "target/$2/release/raider" ./raider/ && \
+        cp -p "target/$3/release/raider" ./raider/ && \
         cp -r ./config.cfg ./res raider/ && \
         tar --owner=0 --group=0 -czvf "$final_tar" ./raider && \
         rm -r ./raider/
     release_result=$?
 
     if [ $release_result -eq 0 ]; then
-        echo "Result: Packed architecture: $1 to file: $final_tar"
+        echo "Result: Packed architecture: $1 ($2) to file: $final_tar"
     fi
 
     return $release_result
@@ -63,7 +63,7 @@ rc=0
 pushd "$BASE_DIR" > /dev/null
     echo "Executing release steps for Raider v$RAIDER_VERSION..."
 
-    release_for_architecture "x86_64" "x86_64-unknown-linux-gnu"
+    release_for_architecture "x86_64" "gnu" "x86_64-unknown-linux-gnu"
     rc=$?
 
     if [ $rc -eq 0 ]; then

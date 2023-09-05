@@ -1,0 +1,13 @@
+[Unit]
+Description=Affiliates dashboard
+After=network.target
+
+[Service]
+Type=simple
+User=raider
+Group=raider
+ExecStart=/usr/bin/raider -c /etc/raider/raider.cfg
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

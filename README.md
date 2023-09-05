@@ -55,6 +55,44 @@ Make sure to pick the correct server architecture (eg. Intel 32 bits).
 
 👉 _Each release binary comes with an `.asc` signature file, which can be verified using [@valeriansaliou](https://github.com/valeriansaliou) GPG public key: [:key:valeriansaliou.gpg.pub.asc](https://valeriansaliou.name/files/keys/valeriansaliou.gpg.pub.asc)._
 
+**Install from packages:**
+
+Raider provides [pre-built packages](https://packagecloud.io/valeriansaliou/raider) for Debian-based systems (Debian, Ubuntu, etc.).
+
+**Important: Raider only provides 64 bits packages targeting Debian 12 for now (codename: `bookworm`). You might still be able to use them on other Debian versions, as well as Ubuntu (although they rely on a specific `glibc` version that might not be available on older or newer systems).**
+
+First, add the Raider APT repository (eg. for Debian `bookworm`):
+
+```bash
+echo "deb [signed-by=/usr/share/keyrings/valeriansaliou_raider.gpg] https://packagecloud.io/valeriansaliou/raider/debian/ bookworm main" > /etc/apt/sources.list.d/valeriansaliou_raider.list
+```
+
+```bash
+curl -fsSL https://packagecloud.io/valeriansaliou/raider/gpgkey | gpg --dearmor -o /usr/share/keyrings/valeriansaliou_raider.gpg
+```
+
+```bash
+apt-get update
+```
+
+Then, install the Raider package:
+
+```bash
+apt-get install raider
+```
+
+Then, edit the pre-filled Raider configuration file:
+
+```bash
+nano /etc/raider.cfg
+```
+
+Finally, restart Raider:
+
+```
+service raider restart
+```
+
 **Install from Cargo:**
 
 If you prefer managing `raider` via Rust's Cargo, install it directly via `cargo install`:
