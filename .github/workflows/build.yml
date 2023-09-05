@@ -32,7 +32,7 @@ jobs:
           override: true
 
       - name: Install build dependencies
-        run: apt-get install -y libmariadb3 libmariadb-dev
+        run: sudo apt-get install -y libmariadb3 libmariadb-dev
 
       - name: Verify versions
         run: rustc --version && rustup --version && cargo --version
