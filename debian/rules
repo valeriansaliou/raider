@@ -32,4 +32,9 @@ override_dh_gencontrol:
 		dh_gencontrol -- -v$(PACKAGEVERSION)
 
 override_dh_shlibdeps:
-		dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info
+	ln -s /lib/x86_64-linux-gnu/libmariadb.a /lib/x86_64-linux-gnu/libmysqlclient.a
+	ln -s /lib/x86_64-linux-gnu/libmariadb.a /lib/x86_64-linux-gnu/libmysqlclient_r.a
+	ln -s /lib/x86_64-linux-gnu/libmariadb.so.3 /lib/x86_64-linux-gnu/libmysqlclient.so
+	ln -s /lib/x86_64-linux-gnu/libmariadb.so.3 /lib/x86_64-linux-gnu/libmysqlclient_r.so
+
+	dh_shlibdeps

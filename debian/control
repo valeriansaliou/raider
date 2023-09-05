@@ -3,7 +3,7 @@ Section: net
 Priority: ext
 Maintainer: Valerian Saliou <valerian@valeriansaliou.name>
 Standards-Version: 3.9.4
-Build-Depends: wget, ca-certificates
+Build-Depends: wget, ca-certificates, libmariadb3, libmariadb-dev
 Homepage: https://github.com/valeriansaliou/raider
 
 Package: raider
