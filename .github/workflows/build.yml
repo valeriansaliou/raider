@@ -35,12 +35,7 @@ jobs:
         run: sudo apt-get install -y libmariadb3 libmariadb-dev
 
       - name: Alias build dependencies
-      - run: |
-          cd /lib/x86_64-linux-gnu/
-          sudo ln -s libmariadb.a libmysqlclient.a
-          sudo ln -s libmariadb.a libmysqlclient_r.a
-          sudo ln -s libmariadb.so.3 libmysqlclient.so
-          sudo ln -s libmariadb.so.3 libmysqlclient_r.so
+      - run: cd /lib/x86_64-linux-gnu/ && sudo ln -s libmariadb.a libmysqlclient.a && sudo ln -s libmariadb.a libmysqlclient_r.a && sudo ln -s libmariadb.so.3 libmysqlclient.so && sudo ln -s libmariadb.so.3 libmysqlclient_r.so
 
       - name: Verify versions
         run: rustc --version && rustup --version && cargo --version
