@@ -122,13 +122,13 @@ You might find it convenient to run Raider via Docker. You can find the pre-buil
 First, pull the `valeriansaliou/raider` image:
 
 ```bash
-docker pull valeriansaliou/raider:v1.2.2
+docker pull valeriansaliou/raider:v1.2.3
 ```
 
 Then, seed it a configuration file and run it (replace `/path/to/your/raider/config.cfg` with the path to your configuration file):
 
 ```bash
-docker run -p 8080:8080 -v /path/to/your/raider/config.cfg:/etc/raider.cfg valeriansaliou/raider:v1.2.2
+docker run -p 8080:8080 -v /path/to/your/raider/config.cfg:/etc/raider.cfg valeriansaliou/raider:v1.2.3
 ```
 
 In the configuration file, ensure that:
